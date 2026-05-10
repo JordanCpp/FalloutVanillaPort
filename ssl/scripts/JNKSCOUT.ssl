@@ -1,0 +1,149 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure critter_p_proc;
+procedure damage_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure Scout01;
+procedure Scout02;
+procedure Scout03;
+procedure Scout04;
+procedure Scout05;
+procedure ScoutEnd;
+
+variable hostile1;
+
+
+procedure start
+begin
+	if (script_action == critter_proc) then begin
+		call critter_p_proc;
+	end
+	else begin
+		if (script_action == destroy_proc) then begin
+			call destroy_p_proc;
+		end
+		else begin
+			if (script_action == look_at_proc) then begin
+				call look_at_p_proc;
+			end
+			else begin
+				if (script_action == pickup_proc) then begin
+					call pickup_p_proc;
+				end
+				else begin
+					if (script_action == talk_proc) then begin
+						call talk_p_proc;
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (hostile1) then begin
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+	if (global_var(GVAR_ENEMY_JUNKTOWN) == 1) then begin
+		if (obj_can_see_obj(self_obj, dude_obj)) then begin
+			attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+		end
+	end
+end
+
+procedure damage_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		set_global_var(GVAR_ENEMY_JUNKTOWN, 1);
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		set_global_var(GVAR_ENEMY_JUNKTOWN, 1);
+		if (source_obj == dude_obj) then begin
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+				set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+			end
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+				set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+			end
+			set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+			if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+				set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+			end
+		end
+	end
+end
+
+procedure look_at_p_proc
+begin
+	display_msg(message_str(SCRIPT_JNKSCOUT, 100));
+end
+
+procedure pickup_p_proc
+begin
+	hostile1 := 1;
+end
+
+procedure talk_p_proc
+begin
+	start_gdialog(SCRIPT_JNKSCOUT, self_obj, 4, -1, -1);
+	gsay_start;
+	call Scout01;
+	gsay_end;
+	end_dialogue;
+end
+
+procedure Scout01
+begin
+	gsay_reply(SCRIPT_JNKSCOUT, 101);
+	call Scout02;
+end
+
+procedure Scout02
+begin
+	giq_option(4, SCRIPT_JNKSCOUT, 102, Scout03, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_JNKSCOUT, 103, Scout04, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_JNKSCOUT, 104, Scout05, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_JNKSCOUT, 105, ScoutEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_JNKSCOUT, 106, ScoutEnd, NEUTRAL_REACTION);
+end
+
+procedure Scout03
+begin
+	gsay_reply(SCRIPT_JNKSCOUT, 107);
+	call Scout02;
+end
+
+procedure Scout04
+begin
+	gsay_reply(SCRIPT_JNKSCOUT, 108);
+	call Scout02;
+end
+
+procedure Scout05
+begin
+	gsay_reply(SCRIPT_JNKSCOUT, 109);
+	call Scout02;
+end
+
+procedure ScoutEnd
+begin
+end

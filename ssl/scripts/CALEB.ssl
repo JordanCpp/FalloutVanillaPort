@@ -1,0 +1,463 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure look_at_p_proc;
+procedure description_p_proc;
+procedure talk_p_proc;
+procedure critter_p_proc;
+procedure damage_p_proc;
+procedure destroy_p_proc;
+procedure pickup_p_proc;
+procedure DialogWeapon;
+procedure DialogExit;
+procedure DialogMain;
+procedure Dumb;
+procedure DialogMainExit;
+procedure DialogMain1;
+procedure DialogMain2;
+procedure DialogMain3;
+procedure DialogMain4;
+procedure DialogMain5;
+procedure DialogMain6;
+procedure DialogMain7;
+procedure DialogMain8;
+procedure DialogMain9;
+procedure DialogMain10;
+procedure DialogMain11;
+procedure DialogMain12;
+procedure DialogMain13;
+
+variable Initialize := 1;
+variable Hostile;
+variable DisplayMessage := 100;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure Start
+begin
+	variable LVar0 := 0;
+	if (Initialize) then begin
+		if (obj_is_carrying_obj_pid(self_obj, 41) == 0) then begin
+			item_caps_adjust(self_obj, random(10, 100));
+		end
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 89);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_REGULATORS);
+		if (local_var(7) == 0) then begin
+			set_map_var(1, map_var(1) + 1);
+			set_local_var(7, 1);
+			set_global_var(GVAR_MAKE_ANTIDOTE_2, 1);
+		end
+		Initialize := 0;
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	if (local_var(4) == 1) then begin
+		display_msg(message_str(SCRIPT_CALEB, 100));
+	end
+	else begin
+		display_msg(message_str(SCRIPT_CALEB, 101));
+	end
+end
+
+procedure description_p_proc
+begin
+	script_overrides;
+	if (local_var(4) == 1) then begin
+		display_msg(message_str(SCRIPT_CALEB, 100));
+	end
+	else begin
+		display_msg(message_str(SCRIPT_CALEB, 101));
+	end
+end
+
+procedure talk_p_proc
+begin
+	if ((global_var(GVAR_ENEMY_ADYTUM) == 1) or (global_var(GVAR_ENEMY_REGULATOR) == 1)) then begin
+		float_msg(self_obj, message_str(SCRIPT_ENEMY, random(100, 105)), FLOAT_MSG_RED);
+	end
+	else begin
+		if ((local_var(4) == 1) and (get_critter_stat(dude_obj, 4) < 4)) then begin
+			float_msg(self_obj, message_str(SCRIPT_CALEB, 127), FLOAT_MSG_NORMAL);
+		end
+		else begin
+			if (global_var(GVAR_GANG_WAR) == 2) then begin
+				float_msg(self_obj, message_str(SCRIPT_CALEB, 147), FLOAT_MSG_NORMAL);
+			end
+			else begin
+				call Get_Reaction;
+				start_gdialog(SCRIPT_CALEB, self_obj, 4, -1, -1);
+				gsay_start;
+				if ((obj_item_subtype(critter_inven_obj(dude_obj, 1)) == 3) or (obj_item_subtype(critter_inven_obj(dude_obj, 2)) == 3)) then begin
+					call DialogWeapon;
+				end
+				else begin
+					if (local_var(4) == 0) then begin
+						if (local_var(1) < 2) then begin
+							DisplayMessage := 102;
+						end
+						else begin
+							DisplayMessage := 103;
+						end
+						call DialogMain;
+					end
+					else begin
+						if (global_var(GVAR_GANG_WAR) == 0) then begin
+							if (local_var(1) < 2) then begin
+								DisplayMessage := 122;
+							end
+							if (dude_is_male) then begin
+								DisplayMessage := 123;
+							end
+							else begin
+								DisplayMessage := 124;
+							end
+							call DialogMain;
+						end
+						else begin
+							DisplayMessage := 141;
+							call DialogMain11;
+						end
+					end
+				end
+				gsay_end;
+				end_dialogue;
+			end
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (obj_can_see_obj(self_obj, dude_obj)) then begin
+		if ((global_var(GVAR_ENEMY_ADYTUM) == 1) or (global_var(GVAR_ENEMY_REGULATOR) == 1)) then begin
+			attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+		end
+	end
+end
+
+procedure damage_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		set_global_var(GVAR_ENEMY_REGULATOR, 1);
+	end
+end
+
+procedure destroy_p_proc
+begin
+	set_map_var(1, map_var(1) - 1);
+	if (source_obj == dude_obj) then begin
+		set_global_var(GVAR_ENEMY_REGULATOR, 1);
+		if (source_obj == dude_obj) then begin
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+				set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+			end
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+				set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+			end
+			set_global_var(GVAR_BAD_MONSTER, global_var(GVAR_BAD_MONSTER) + 1);
+			if ((global_var(GVAR_BAD_MONSTER) % 6) == 0) then begin
+				set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) + 1);
+			end
+		end
+	end
+	if (map_var(1) == 0) then begin
+		terminate_combat;
+	end
+end
+
+procedure pickup_p_proc
+begin
+	set_global_var(GVAR_ENEMY_REGULATOR, 1);
+end
+
+procedure DialogWeapon
+begin
+	gsay_message(SCRIPT_CALEB, 125, NEUTRAL_REACTION);
+end
+
+procedure DialogExit
+begin
+end
+
+procedure DialogMain
+begin
+	gsay_reply(SCRIPT_CALEB, DisplayMessage);
+	giq_option(4, SCRIPT_CALEB, 105, DialogMain1, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALEB, 106, DialogMain2, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALEB, 107, DialogMain5, NEUTRAL_REACTION);
+	if (local_var(5) == 1) then begin
+		giq_option(4, SCRIPT_CALEB, 108, DialogMain6, NEUTRAL_REACTION);
+	end
+	if (local_var(6) == 1) then begin
+		giq_option(4, SCRIPT_CALEB, 109, DialogMain7, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_GANG_WAR) == 0) then begin
+		giq_option(4, SCRIPT_CALEB, 110, DialogMain8, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_CALEB, 111, DialogMainExit, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CALEB, 126, Dumb, NEUTRAL_REACTION);
+end
+
+procedure Dumb
+begin
+	set_local_var(4, 1);
+	gsay_message(SCRIPT_CALEB, 127, NEUTRAL_REACTION);
+end
+
+procedure DialogMainExit
+begin
+	if (local_var(1) < 2) then begin
+		gsay_message(SCRIPT_CALEB, 120, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_CALEB, 121, NEUTRAL_REACTION);
+	end
+end
+
+procedure DialogMain1
+begin
+	set_local_var(4, 1);
+	if (local_var(1) < 2) then begin
+		DisplayMessage := 116;
+	end
+	else begin
+		set_local_var(5, 1);
+		DisplayMessage := 117;
+	end
+	call DialogMain;
+end
+
+procedure DialogMain2
+begin
+	gsay_reply(SCRIPT_CALEB, 112);
+	giq_option(4, SCRIPT_CALEB, 113, DialogMain3, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALEB, 114, DialogMain4, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALEB, 115, DialogMainExit, NEUTRAL_REACTION);
+end
+
+procedure DialogMain3
+begin
+	DisplayMessage := 128;
+	call DialogMain;
+end
+
+procedure DialogMain4
+begin
+	DisplayMessage := 129;
+	call DialogMain;
+end
+
+procedure DialogMain5
+begin
+	gsay_message(SCRIPT_CALEB, 118, NEUTRAL_REACTION);
+	set_local_var(6, 1);
+	DisplayMessage := 119;
+	call DialogMain;
+end
+
+procedure DialogMain6
+begin
+	gsay_message(SCRIPT_CALEB, 130, NEUTRAL_REACTION);
+	DisplayMessage := 131;
+	call DialogMain;
+end
+
+procedure DialogMain7
+begin
+	DisplayMessage := 132;
+	call DialogMain;
+end
+
+procedure DialogMain8
+begin
+	gsay_reply(SCRIPT_CALEB, 133);
+	giq_option(4, SCRIPT_CALEB, 134, DialogMain10, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALEB, 135, DialogMain9, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALEB, 136, DialogExit, NEUTRAL_REACTION);
+end
+
+procedure DialogMain9
+begin
+	DisplayMessage := 137;
+	call DialogMain;
+end
+
+procedure DialogMain10
+begin
+	gsay_reply(SCRIPT_CALEB, 138);
+	giq_option(4, SCRIPT_CALEB, 139, DialogMain9, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALEB, 140, DialogExit, NEUTRAL_REACTION);
+end
+
+procedure DialogMain11
+begin
+	gsay_reply(SCRIPT_CALEB, DisplayMessage);
+	giq_option(4, SCRIPT_CALEB, 140, DialogMain12, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALEB, 141, DialogMain13, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALEB, 142, DialogExit, NEUTRAL_REACTION);
+end
+
+procedure DialogMain12
+begin
+	DisplayMessage := 145;
+	call DialogMain11;
+end
+
+procedure DialogMain13
+begin
+	DisplayMessage := 146;
+	call DialogMain11;
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

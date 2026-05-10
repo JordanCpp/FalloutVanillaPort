@@ -1,0 +1,31 @@
+#
+# karmavar.txt
+#
+# Controls display of karmas in character editor.
+#
+# format of each line is:
+#
+#   gvar, pic, name, description
+#
+# where:
+#
+#   gvar is the GVAR_* number for the variable corresponding to the karma.
+#
+#   pic is the number of the skilldex art (line number in art\skilldex\skilldex.lst)
+#
+#   name is the number of the message in editor.msg with the karma name.
+#
+#   description is the number of the message in editor.msg with the karma description.
+#
+
+# GVAR_PLAYER_REPUTATION
+0, 48, 1000, 1100
+
+# GVAR_BERSERKER_REPUTATION
+3, 49, 1001, 1101
+
+# GVAR_CHAMPION_REPUTATION
+2, 51, 1002, 1102
+
+# GVAR_CHILDKILLER_REPUTATION
+1, 50, 1003, 1103

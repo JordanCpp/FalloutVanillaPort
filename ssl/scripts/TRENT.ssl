@@ -1,0 +1,569 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure critter_p_proc;
+procedure damage_p_proc;
+procedure destroy_p_proc;
+procedure pickup_p_proc;
+procedure use_obj_on_p_proc;
+procedure talk_p_proc;
+procedure Trent00;
+procedure Trent01;
+procedure Trent02;
+procedure Trent03;
+procedure Trent04;
+procedure Trent05;
+procedure Trent06;
+procedure Trent07;
+procedure Trent08;
+procedure Trent09;
+procedure Trent10;
+procedure Trent11;
+procedure Trent12;
+procedure Trent13;
+procedure Trent14;
+procedure Trent15;
+procedure Trent16;
+procedure Trent17;
+procedure Trent18;
+procedure Trent19;
+procedure Trent20;
+procedure Trent21;
+procedure Trent22;
+procedure Trent23;
+procedure Trent24;
+procedure flee_dude;
+procedure give_money;
+
+variable calm;
+variable initialized1;
+variable known;
+variable scared;
+variable close2dude;
+variable dest_tile1;
+variable direction;
+variable prev_dist;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	if (not(initialized1) and metarule(14, 0)) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 35);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_CAREFUL);
+		initialized1 := 1;
+	end
+	else begin
+		if (script_action == critter_proc) then begin
+			call critter_p_proc;
+		end
+		else begin
+			if (script_action == damage_proc) then begin
+				call damage_p_proc;
+			end
+			else begin
+				if (script_action == destroy_proc) then begin
+					call destroy_p_proc;
+				end
+				else begin
+					if (script_action == pickup_proc) then begin
+						call pickup_p_proc;
+					end
+					else begin
+						if (script_action == use_obj_on_proc) then begin
+							call use_obj_on_p_proc;
+						end
+						else begin
+							if (script_action == talk_proc) then begin
+								call talk_p_proc;
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (scared and (tile_distance_objs(self_obj, dude_obj) < 60)) then begin
+		call flee_dude;
+	end
+	else begin
+		if (not(close2dude)) then begin
+			if (tile_distance_objs(dude_obj, self_obj) <= 2) then begin
+				close2dude := 1;
+			end
+			else begin
+				direction := rotation_to_tile(tile_num(dude_obj) % 200, tile_num(dude_obj) / 200);
+				dest_tile1 := tile_num_in_direction(tile_num(dude_obj), direction, 1);
+				animate_move_obj_to_tile(self_obj, dest_tile1, ANIMATE_RUN);
+				if ((random(1, 18) == 1) and not(calm)) then begin
+					float_msg(self_obj, message_str(SCRIPT_TRENT, 141), FLOAT_MSG_NORMAL);
+				end
+			end
+		end
+		else begin
+			if (not(scared)) then begin
+				if (random(1, 4) == 1) then begin
+					anim(self_obj, 1000, rotation_to_tile(tile_num(self_obj), tile_num(dude_obj)));
+				end
+			end
+		end
+	end
+end
+
+procedure damage_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		scared := 1;
+	end
+	script_overrides;
+	call flee_dude;
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		if (source_obj == dude_obj) then begin
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+				set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+			end
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+				set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+			end
+			set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+			if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+				set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+			end
+		end
+	end
+end
+
+procedure pickup_p_proc
+begin
+	scared := 1;
+end
+
+procedure use_obj_on_p_proc
+begin
+	if ((obj_pid(obj_being_used_with) == 81) or (obj_pid(obj_being_used_with) == 103) or (obj_pid(obj_being_used_with) == 126)) then begin
+		destroy_object(obj_being_used_with);
+		if (obj_is_carrying_obj_pid(self_obj, 41) == 100) then begin
+			if (scared) then begin
+				call Trent21;
+			end
+			else begin
+				call Trent22;
+			end
+		end
+		else begin
+			if (scared) then begin
+				call Trent23;
+			end
+			else begin
+				call Trent24;
+			end
+		end
+		calm := 1;
+		scared := 0;
+	end
+end
+
+procedure talk_p_proc
+begin
+	if ((scared == 1) or (global_var(GVAR_PLAYER_REPUTATION) < -20)) then begin
+		call Trent00;
+	end
+	else begin
+		start_gdialog(SCRIPT_TRENT, self_obj, 4, -1, -1);
+		gsay_start;
+		call Get_Reaction;
+		if (calm) then begin
+			call Trent16;
+		end
+		else begin
+			if (known) then begin
+				call Trent02;
+			end
+			else begin
+				call Trent01;
+			end
+		end
+		gsay_end;
+		end_dialogue;
+	end
+end
+
+procedure Trent00
+begin
+	float_msg(self_obj, message_str(SCRIPT_TRENT, 100), FLOAT_MSG_NORMAL);
+end
+
+procedure Trent01
+begin
+	known := 1;
+	gsay_reply(SCRIPT_TRENT, 101);
+	if (global_var(GVAR_MISSING_CARAVAN) == 1) then begin
+		giq_option(7, SCRIPT_TRENT, 102, Trent03, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_TRENT, 103, Trent04, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TRENT, 104, Trent03, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TRENT, 105, Trent05, BAD_REACTION);
+	if ((global_var(GVAR_FIND_WATER_CHIP) == 0) and (obj_is_carrying_obj_pid(dude_obj, 55) == 0)) then begin
+		giq_option(4, SCRIPT_TRENT, 106, Trent06, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_KILL_DEATHCLAW) == 1) then begin
+		giq_option(4, SCRIPT_TRENT, 107, Trent07, NEUTRAL_REACTION);
+	end
+	giq_option(-3, SCRIPT_TRENT, 108, Trent08, BAD_REACTION);
+end
+
+procedure Trent02
+begin
+	gsay_reply(SCRIPT_TRENT, 109);
+	giq_option(4, SCRIPT_TRENT, 103, Trent04, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TRENT, 104, Trent03, NEUTRAL_REACTION);
+end
+
+procedure Trent03
+begin
+	gsay_reply(SCRIPT_TRENT, 111);
+	giq_option(4, SCRIPT_TRENT, 112, Trent11, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TRENT, 113, Trent12, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TRENT, 114, Trent11, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TRENT, 115, Trent13, NEUTRAL_REACTION);
+end
+
+procedure Trent04
+begin
+	gsay_reply(SCRIPT_TRENT, 116);
+	giq_option(4, SCRIPT_TRENT, 117, Trent11, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TRENT, 118, Trent14, NEUTRAL_REACTION);
+	if (global_var(GVAR_KILL_DEATHCLAW) == 1) then begin
+		giq_option(4, SCRIPT_TRENT, 119, Trent07, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_TRENT, 120, Trent15, NEUTRAL_REACTION);
+end
+
+procedure Trent05
+begin
+	variable LVar0 := 0;
+	variable LVar1 := 0;
+	calm := 0;
+	scared := 1;
+	gsay_message(SCRIPT_TRENT, 121, BAD_REACTION);
+	if (obj_is_carrying_obj_pid(self_obj, 18)) then begin
+		LVar0 := obj_carrying_pid_obj(self_obj, 18);
+		rm_obj_from_inven(self_obj, LVar0);
+		add_obj_to_inven(dude_obj, LVar0);
+	end
+	if (obj_is_carrying_obj_pid(self_obj, 31)) then begin
+		LVar0 := obj_carrying_pid_obj(self_obj, 31);
+		rm_obj_from_inven(self_obj, LVar0);
+		add_obj_to_inven(dude_obj, LVar0);
+	end
+	if (obj_is_carrying_obj_pid(self_obj, 111)) then begin
+		LVar0 := obj_carrying_pid_obj(self_obj, 111);
+		rm_obj_from_inven(self_obj, LVar0);
+		add_obj_to_inven(dude_obj, LVar0);
+	end
+	if (obj_is_carrying_obj_pid(self_obj, 4)) then begin
+		LVar0 := obj_carrying_pid_obj(self_obj, 4);
+		rm_obj_from_inven(self_obj, LVar0);
+		add_obj_to_inven(dude_obj, LVar0);
+	end
+end
+
+procedure Trent06
+begin
+	gsay_message(SCRIPT_TRENT, 122, NEUTRAL_REACTION);
+end
+
+procedure Trent07
+begin
+	scared := 1;
+	gsay_message(SCRIPT_TRENT, 123, NEUTRAL_REACTION);
+end
+
+procedure Trent08
+begin
+	gsay_message(SCRIPT_TRENT, 124, BAD_REACTION);
+end
+
+procedure Trent09
+begin
+	gsay_message(SCRIPT_TRENT, 125, NEUTRAL_REACTION);
+end
+
+procedure Trent10
+begin
+	if (dude_is_male) then begin
+		gsay_message(SCRIPT_TRENT, 142, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_TRENT, 143, NEUTRAL_REACTION);
+	end
+end
+
+procedure Trent11
+begin
+	gsay_message(SCRIPT_TRENT, 127, NEUTRAL_REACTION);
+end
+
+procedure Trent12
+begin
+	gsay_message(SCRIPT_TRENT, 128, NEUTRAL_REACTION);
+end
+
+procedure Trent13
+begin
+	gsay_message(SCRIPT_TRENT, 129, NEUTRAL_REACTION);
+end
+
+procedure Trent14
+begin
+	gsay_message(SCRIPT_TRENT, 130, NEUTRAL_REACTION);
+end
+
+procedure Trent15
+begin
+	gsay_message(SCRIPT_TRENT, 131, NEUTRAL_REACTION);
+end
+
+procedure Trent16
+begin
+	gsay_reply(SCRIPT_TRENT, 132);
+	if (global_var(GVAR_MISSING_CARAVAN) == 1) then begin
+		giq_option(7, SCRIPT_TRENT, 102, Trent17, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_TRENT, 103, Trent18, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TRENT, 105, Trent05, BAD_REACTION);
+	if ((global_var(GVAR_FIND_WATER_CHIP) == 0) and (obj_is_carrying_obj_pid(dude_obj, 55) == 0)) then begin
+		giq_option(4, SCRIPT_TRENT, 106, Trent19, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_KILL_DEATHCLAW) == 1) then begin
+		giq_option(4, SCRIPT_TRENT, 107, Trent20, NEUTRAL_REACTION);
+	end
+	giq_option(-3, SCRIPT_TRENT, 108, Trent10, NEUTRAL_REACTION);
+end
+
+procedure Trent17
+begin
+	gsay_message(SCRIPT_TRENT, 133, NEUTRAL_REACTION);
+end
+
+procedure Trent18
+begin
+	gsay_message(SCRIPT_TRENT, 134, NEUTRAL_REACTION);
+end
+
+procedure Trent19
+begin
+	gsay_message(SCRIPT_TRENT, 135, NEUTRAL_REACTION);
+end
+
+procedure Trent20
+begin
+	gsay_message(SCRIPT_TRENT, 136, NEUTRAL_REACTION);
+end
+
+procedure Trent21
+begin
+	float_msg(self_obj, message_str(SCRIPT_TRENT, 137), FLOAT_MSG_GREEN);
+	call give_money;
+end
+
+procedure Trent22
+begin
+	float_msg(self_obj, message_str(SCRIPT_TRENT, 138), FLOAT_MSG_GREEN);
+	call give_money;
+end
+
+procedure Trent23
+begin
+	float_msg(self_obj, message_str(SCRIPT_TRENT, 138), FLOAT_MSG_GREEN);
+	call give_money;
+end
+
+procedure Trent24
+begin
+	float_msg(self_obj, message_str(SCRIPT_TRENT, 139), FLOAT_MSG_GREEN);
+	call give_money;
+end
+
+procedure flee_dude
+begin
+	direction := 0;
+	prev_dist := 0;
+	while(direction < 5) do begin
+		if (tile_distance(tile_num(dude_obj), tile_num_in_direction(tile_num(self_obj), direction, 3)) > prev_dist) then begin
+			dest_tile1 := tile_num_in_direction(tile_num(self_obj), direction, 3);
+			prev_dist := tile_distance(tile_num(dude_obj), dest_tile1);
+		end
+		direction := direction + 1;
+	end
+	animate_move_obj_to_tile(self_obj, dest_tile1, ANIMATE_RUN);
+end
+
+procedure give_money
+begin
+	variable LVar0 := 0;
+	variable LVar1 := 0;
+	if (obj_is_carrying_obj_pid(self_obj, 41)) then begin
+		LVar0 := obj_carrying_pid_obj(self_obj, 41);
+		LVar1 := rm_mult_objs_from_inven(self_obj, LVar0, 100);
+		add_mult_objs_to_inven(dude_obj, LVar0, LVar1);
+	end
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

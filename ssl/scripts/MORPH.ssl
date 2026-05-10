@@ -1,0 +1,994 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure do_dialogue;
+procedure morphend;
+procedure morphcbt;
+procedure morph02;
+procedure morph02a;
+procedure morph02_1;
+procedure morph02_2;
+procedure morph02_3;
+procedure morph03;
+procedure morph03_1;
+procedure morph03_2;
+procedure morph04;
+procedure morph04a;
+procedure morph05;
+procedure morph06;
+procedure morph07;
+procedure morph07_1;
+procedure morph08;
+procedure morph09;
+procedure morph10;
+procedure morph10_1;
+procedure morph11;
+procedure morph12;
+procedure morph13;
+procedure morph14;
+procedure morph15;
+procedure morph16;
+procedure morph17;
+procedure morph18;
+procedure morph18_1;
+procedure morph18_2;
+procedure morph19;
+procedure morph20;
+procedure morph21;
+procedure morph23;
+procedure morph24;
+procedure morph26;
+procedure morph27;
+procedure morph27_1;
+procedure morph28;
+procedure morph29;
+procedure morph30;
+procedure morph31;
+procedure morph32;
+procedure morph33;
+procedure morph33_1;
+procedure morph34;
+procedure morph35;
+procedure morph36;
+procedure morph37;
+procedure morph38;
+procedure morph39;
+procedure morph39_1;
+procedure morph40;
+procedure morph41;
+procedure morph42;
+procedure morph42a;
+procedure morph42a_1;
+procedure morph42b;
+procedure morph42c;
+procedure morph45;
+procedure morph46;
+procedure morph47;
+procedure morph48;
+procedure morph49;
+procedure morph50;
+procedure morph51;
+procedure morph52;
+procedure morph53;
+procedure morph54;
+procedure morph55;
+procedure morph56;
+procedure morph57;
+procedure morph58;
+procedure morph59;
+procedure morph60;
+procedure morph61;
+procedure morph62;
+procedure morph63;
+procedure morph64;
+procedure morph65;
+procedure morphx;
+procedure morphx2;
+procedure morphx4;
+procedure morph66;
+procedure morph05a;
+procedure morph08a;
+procedure morph32a;
+procedure morph39a;
+procedure morph05b;
+
+variable MALE;
+variable ONTHEJOB;
+variable DESTROYED;
+variable LIED;
+variable ONCEBEFORE;
+variable TRESPASS;
+variable Signal_wait;
+variable deliver_player;
+variable Only_Once := 1;
+
+import variable Master_Ptr;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+if (Only_Once) then begin
+    Only_Once := 0;
+    if (cur_map_index == MAP_CHILDRN2) then begin
+      critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 20);
+    end
+    else begin
+      critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 55);
+    end
+    critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_COC_MORPHEUS);
+  end
+  if (script_action == talk_proc) then begin
+    call do_dialogue;
+  end
+  else begin
+    if ((script_action == look_at_proc) or (script_action == description_proc)) then begin
+      script_overrides;
+      display_msg(message_str(SCRIPT_MORPH, 100));
+    end
+    else begin
+      if (script_action == timed_event_proc) then begin
+        if (fixed_param == 1) then begin
+          if (obj_can_see_obj(self_obj, dude_obj)) then begin
+            dialogue_system_enter;
+          end
+          else begin
+            Signal_wait := 0;
+          end
+        end
+        else begin
+          if ((fixed_param == 2) and not(combat_is_initialized)) then begin
+            set_obj_visibility(self_obj, 1);
+          end
+        end
+      end
+      else begin
+        if (script_action == destroy_proc) then begin
+          if (source_obj == dude_obj) then begin
+            if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+              set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+              set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+            end
+            if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+              set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+              set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+            end
+            set_global_var(GVAR_BAD_MONSTER, global_var(GVAR_BAD_MONSTER) + 1);
+            if ((global_var(GVAR_BAD_MONSTER) % 6) == 0) then begin
+              set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) + 1);
+            end
+          end
+          display_msg(message_str(SCRIPT_MORPH, 500));
+          give_exp_points(1000);
+        end
+        else begin
+          if (script_action == pickup_proc) then begin
+            set_local_var(5, 2);
+          end
+          else begin
+            if (script_action == damage_proc) then begin
+              set_local_var(5, 1);
+            end
+            else begin
+              if (script_action == critter_proc) then begin
+                if (global_var(GVAR_MORPHEUS_DELIVERS_PLAYER) == 1) then begin
+                  set_global_var(GVAR_MORPHEUS_DELIVERS_PLAYER, 2);
+                  add_timer_event(Master_Ptr, game_ticks(5), 1);
+                  add_timer_event(self_obj, game_ticks(5), 2);
+                  dialogue_system_enter;
+                end
+                if (local_var(5) == 2) then begin
+                  set_local_var(5, 1);
+                  attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+                end
+                if (tile_num(self_obj) == 23457) then begin
+                  set_obj_visibility(self_obj, 1);
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+procedure do_dialogue
+begin
+  call Get_Reaction;
+  MALE := dude_is_male;
+  if (local_var(5) != 0) then begin
+    float_msg(self_obj, message_str(SCRIPT_GENCHAT, 172), FLOAT_MSG_RED);
+    call morphcbt;
+  end
+  else begin
+    if (global_var(GVAR_MORPHEUS_DELIVERS_PLAYER) == 2) then begin
+      set_global_var(GVAR_MORPHEUS_DELIVERS_PLAYER, 3);
+      call morph66;
+      animate_move_obj_to_tile(self_obj, 23457, ANIMATE_WALK);
+    end
+    else begin
+      if (Signal_wait) then begin
+        Signal_wait := 0;
+        call morph04a;
+      end
+      else begin
+        if (cur_map_index == MAP_CHILDRN1) then begin
+          start_gdialog(SCRIPT_MORPH, self_obj, 4, HEAD_MORPHEUS, BACKGROUND_CATHEDRAL);
+          gsay_start;
+          call morph28;
+          gsay_end;
+          end_dialogue;
+        end
+        else begin
+          if (global_var(GVAR_MORPHEUS_DELIVERS_PLAYER) == 3) then begin
+            float_msg(self_obj, message_str(SCRIPT_GENCHAT, 171), FLOAT_MSG_RED);
+          end
+          else begin
+            start_gdialog(SCRIPT_MORPH, self_obj, 4, HEAD_MORPHEUS, BACKGROUND_CATHEDRAL);
+            gsay_start;
+            call morph02;
+            gsay_end;
+            end_dialogue;
+          end
+        end
+      end
+    end
+  end
+end
+
+procedure morphend
+begin
+end
+
+procedure morphcbt
+begin
+  set_local_var(5, 2);
+end
+
+procedure morph02
+begin
+  gsay_reply(SCRIPT_MORPH, 101);
+  giq_option(4, SCRIPT_MORPH, 102, morph02_1, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_MORPH, 103, morph02_3, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, message_str(SCRIPT_MORPH, 104) + proto_data(obj_pid(dude_obj), 1) + message_str(SCRIPT_MORPH, 105), morph27, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 106, morph06, BAD_REACTION);
+  giq_option(-3, SCRIPT_MORPH, 107, morph02a, NEUTRAL_REACTION);
+end
+
+procedure morph02a
+begin
+  gsay_message(SCRIPT_MORPH, 108, BAD_REACTION);
+  call morphcbt;
+end
+
+procedure morph02_1
+begin
+  if (obj_pid(critter_inven_obj(dude_obj, 0)) == 113) then begin
+    call morph02_2;
+  end
+  else begin
+    call morph06;
+  end
+end
+
+procedure morph02_2
+begin
+  if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+    call morph03;
+  end
+  else begin
+    call morph06;
+  end
+end
+
+procedure morph02_3
+begin
+  if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+    call morph07;
+  end
+  else begin
+    call morph26;
+  end
+end
+
+procedure morph03
+begin
+  gsay_reply(SCRIPT_MORPH, 109);
+  giq_option(4, SCRIPT_MORPH, 110, morph03_1, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_MORPH, 111, morph03_2, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 112, morph23, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 113, morph24, BAD_REACTION);
+  giq_option(4, SCRIPT_MORPH, 114, morph06, NEUTRAL_REACTION);
+end
+
+procedure morph03_1
+begin
+  if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+    call morph04;
+  end
+  else begin
+    call morph05;
+  end
+end
+
+procedure morph03_2
+begin
+  if (is_success(roll_vs_skill(dude_obj, 14, -20))) then begin
+    call morph04;
+  end
+  else begin
+    call morph05;
+  end
+end
+
+procedure morph04
+begin
+  gsay_message(SCRIPT_MORPH, 115, NEUTRAL_REACTION);
+  call morphx;
+end
+
+procedure morph04a
+begin
+  float_msg(self_obj, message_str(SCRIPT_MORPH, 116), FLOAT_MSG_LIGHT_RED);
+  call morphcbt;
+end
+
+procedure morph05
+begin
+  gsay_reply(SCRIPT_MORPH, 117);
+  giq_option(4, SCRIPT_MORPH, 118, morph05a, BAD_REACTION);
+  giq_option(4, SCRIPT_MORPH, 119, morph05b, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 120, morph06, BAD_REACTION);
+end
+
+procedure morph06
+begin
+  gsay_message(SCRIPT_MORPH, 121, BAD_REACTION);
+  call morphcbt;
+end
+
+procedure morph07
+begin
+  gsay_reply(SCRIPT_MORPH, 122);
+  giq_option(4, SCRIPT_MORPH, 123, morph08, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 124, morph16, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_MORPH, 125, morph07_1, NEUTRAL_REACTION);
+end
+
+procedure morph07_1
+begin
+  if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+    call morph20;
+  end
+  else begin
+    call morph21;
+  end
+end
+
+procedure morph08
+begin
+  gsay_reply(SCRIPT_MORPH, 126);
+  giq_option(5, SCRIPT_MORPH, 127, morph08a, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 128, morph12, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_MORPH, 129, morph14, NEUTRAL_REACTION);
+end
+
+procedure morph09
+begin
+  gsay_reply(SCRIPT_MORPH, 130);
+  giq_option(5, SCRIPT_MORPH, 131, morph10, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_MORPH, 132, morph10, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 133, morph06, BAD_REACTION);
+  giq_option(4, SCRIPT_MORPH, 134, morph11, BAD_REACTION);
+end
+
+procedure morph10
+begin
+  gsay_reply(SCRIPT_MORPH, 135);
+  giq_option(4, SCRIPT_MORPH, 136, morph11, BAD_REACTION);
+  giq_option(4, SCRIPT_MORPH, 137, morph12, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 138, morph10_1, NEUTRAL_REACTION);
+end
+
+procedure morph10_1
+begin
+  if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+    set_local_var(1, 2);
+    call morph13;
+  end
+  else begin
+    call morph11;
+  end
+end
+
+procedure morph11
+begin
+  gsay_message(SCRIPT_MORPH, 139, BAD_REACTION);
+  call morphcbt;
+end
+
+procedure morph12
+begin
+  gsay_reply(SCRIPT_MORPH, 140);
+  giq_option(4, SCRIPT_MORPH, 141, morphx2, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 142, morphcbt, BAD_REACTION);
+end
+
+procedure morph13
+begin
+  gsay_message(SCRIPT_MORPH, 143, NEUTRAL_REACTION);
+  call morphx2;
+end
+
+procedure morph14
+begin
+  gsay_reply(SCRIPT_MORPH, 144);
+  giq_option(4, SCRIPT_MORPH, 145, morph12, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 146, morph11, BAD_REACTION);
+  giq_option(4, SCRIPT_MORPH, 147, morph15, BAD_REACTION);
+end
+
+procedure morph15
+begin
+  gsay_message(SCRIPT_MORPH, 148, BAD_REACTION);
+  call morphcbt;
+end
+
+procedure morph16
+begin
+  gsay_reply(SCRIPT_MORPH, 149);
+  giq_option(4, SCRIPT_MORPH, 150, morph17, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 151, morph17, NEUTRAL_REACTION);
+end
+
+procedure morph17
+begin
+  gsay_reply(SCRIPT_MORPH, 152);
+  giq_option(4, SCRIPT_MORPH, 153, morph18, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 154, morph18, NEUTRAL_REACTION);
+end
+
+procedure morph18
+begin
+  gsay_reply(SCRIPT_MORPH, 155);
+  giq_option(4, SCRIPT_MORPH, 156, morph18_1, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 157, morph18_2, NEUTRAL_REACTION);
+end
+
+procedure morph18_1
+begin
+  if (is_success(roll_vs_skill(dude_obj, 14, -5))) then begin
+    call morph19;
+  end
+  else begin
+    call morph15;
+  end
+end
+
+procedure morph18_2
+begin
+  if (is_success(roll_vs_skill(dude_obj, 14, -15))) then begin
+    call morph12;
+  end
+  else begin
+    call morph15;
+  end
+end
+
+procedure morph19
+begin
+  gsay_reply(SCRIPT_MORPH, 158);
+  giq_option(4, SCRIPT_MORPH, 159, morphcbt, BAD_REACTION);
+  giq_option(4, SCRIPT_MORPH, 160, morphx2, NEUTRAL_REACTION);
+end
+
+procedure morph20
+begin
+  gsay_message(SCRIPT_MORPH, 161, BAD_REACTION);
+  call morphcbt;
+end
+
+procedure morph21
+begin
+  gsay_reply(SCRIPT_MORPH, 162);
+  giq_option(4, SCRIPT_MORPH, 163, morph08, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 164, morph16, NEUTRAL_REACTION);
+end
+
+procedure morph23
+begin
+  gsay_reply(SCRIPT_MORPH, 165);
+  giq_option(4, SCRIPT_MORPH, 166, morph12, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 167, morph16, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 168, morph11, BAD_REACTION);
+  giq_option(4, SCRIPT_MORPH, 169, morph15, BAD_REACTION);
+end
+
+procedure morph24
+begin
+  gsay_reply(SCRIPT_MORPH, 170);
+  giq_option(4, SCRIPT_MORPH, 171, morphcbt, BAD_REACTION);
+  giq_option(7, SCRIPT_MORPH, 172, morphcbt, BAD_REACTION);
+  giq_option(4, SCRIPT_MORPH, 173, morphcbt, BAD_REACTION);
+end
+
+procedure morph26
+begin
+  gsay_reply(SCRIPT_MORPH, 174);
+  giq_option(4, SCRIPT_MORPH, 175, morph12, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_MORPH, 176, morph16, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 177, morph11, BAD_REACTION);
+  giq_option(4, SCRIPT_MORPH, 178, morph15, BAD_REACTION);
+end
+
+procedure morph27
+begin
+  gsay_reply(SCRIPT_MORPH, 179);
+  giq_option(4, SCRIPT_MORPH, 180, morph02_1, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 181, morph27_1, NEUTRAL_REACTION);
+end
+
+procedure morph27_1
+begin
+  if (is_success(roll_vs_skill(dude_obj, 14, -20))) then begin
+    call morph07;
+  end
+  else begin
+    call morph06;
+  end
+end
+
+procedure morph28
+begin
+  gsay_reply(SCRIPT_MORPH, 182);
+  giq_option(5, SCRIPT_MORPH, 183, morph29, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 184, morphend, NEUTRAL_REACTION);
+  giq_option(-3, SCRIPT_MORPH, 185, morph42c, NEUTRAL_REACTION);
+end
+
+procedure morph29
+begin
+  gsay_reply(SCRIPT_MORPH, 186);
+  giq_option(4, SCRIPT_MORPH, 187, morph30, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 188, morphend, NEUTRAL_REACTION);
+end
+
+procedure morph30
+begin
+  gsay_reply(0, 0);
+  giq_option(4, SCRIPT_MORPH, 189, morph31, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 190, morphend, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 191, morph42a, NEUTRAL_REACTION);
+end
+
+procedure morph31
+begin
+  gsay_reply(SCRIPT_MORPH, 192);
+  giq_option(4, SCRIPT_MORPH, 193, morph32, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 194, morph39, NEUTRAL_REACTION);
+end
+
+procedure morph32
+begin
+  gsay_reply(SCRIPT_MORPH, 195);
+  giq_option(4, SCRIPT_MORPH, 196, morph32a, BAD_REACTION);
+  giq_option(4, SCRIPT_MORPH, 197, morph38, NEUTRAL_REACTION);
+end
+
+procedure morph33
+begin
+  gsay_reply(SCRIPT_MORPH, 198);
+  giq_option(4, SCRIPT_MORPH, 199, morph34, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 200, morph33_1, NEUTRAL_REACTION);
+end
+
+procedure morph33_1
+begin
+  if (is_success(roll_vs_skill(dude_obj, 14, -5))) then begin
+    call morph35;
+  end
+  else begin
+    call morph37;
+  end
+end
+
+procedure morph34
+begin
+  gsay_message(SCRIPT_MORPH, 201, NEUTRAL_REACTION);
+  call morphx4;
+end
+
+procedure morph35
+begin
+  gsay_reply(SCRIPT_MORPH, 202);
+  giq_option(4, SCRIPT_MORPH, 203, morph36, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 204, morphend, NEUTRAL_REACTION);
+end
+
+procedure morph36
+begin
+  gsay_message(SCRIPT_MORPH, 205, NEUTRAL_REACTION);
+  call morph30;
+end
+
+procedure morph37
+begin
+  gsay_message(SCRIPT_MORPH, 206, GOOD_REACTION);
+  call morphx4;
+end
+
+procedure morph38
+begin
+  gsay_reply(SCRIPT_MORPH, 207);
+  giq_option(4, SCRIPT_MORPH, 208, morph36, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 209, morphend, NEUTRAL_REACTION);
+end
+
+procedure morph39
+begin
+  gsay_reply(SCRIPT_MORPH, 210);
+  giq_option(4, SCRIPT_MORPH, 211, morph39a, BAD_REACTION);
+  giq_option(4, SCRIPT_MORPH, 212, morph39_1, NEUTRAL_REACTION);
+end
+
+procedure morph39_1
+begin
+end
+
+procedure morph40
+begin
+  gsay_message(SCRIPT_MORPH, 213, NEUTRAL_REACTION);
+  call morph30;
+end
+
+procedure morph41
+begin
+  gsay_reply(SCRIPT_MORPH, 214);
+  giq_option(4, SCRIPT_MORPH, 215, morph30, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 216, morphend, NEUTRAL_REACTION);
+end
+
+procedure morph42
+begin
+  gsay_reply(SCRIPT_MORPH, 217);
+  giq_option(4, SCRIPT_MORPH, 218, morph36, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_MORPH, 219, morphend, NEUTRAL_REACTION);
+end
+
+procedure morph42a
+begin
+  gsay_reply(SCRIPT_MORPH, 220);
+  giq_option(4, SCRIPT_MORPH, 221, morph42a_1, NEUTRAL_REACTION);
+end
+
+procedure morph42a_1
+begin
+  if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+    call morph42b;
+  end
+  else begin
+    call morph42c;
+  end
+end
+
+procedure morph42b
+begin
+  gsay_message(SCRIPT_MORPH, 222, NEUTRAL_REACTION);
+  call morphx2;
+end
+
+procedure morph42c
+begin
+  gsay_message(SCRIPT_MORPH, 223, NEUTRAL_REACTION);
+  call morphx4;
+end
+
+procedure morph45
+begin
+  gsay_message(SCRIPT_MORPH, 224, NEUTRAL_REACTION);
+end
+
+procedure morph46
+begin
+  gsay_message(SCRIPT_MORPH, 225, NEUTRAL_REACTION);
+end
+
+procedure morph47
+begin
+  gsay_message(SCRIPT_MORPH, 226, NEUTRAL_REACTION);
+end
+
+procedure morph48
+begin
+  gsay_message(SCRIPT_MORPH, 227, NEUTRAL_REACTION);
+end
+
+procedure morph49
+begin
+  gsay_message(SCRIPT_MORPH, 228, NEUTRAL_REACTION);
+end
+
+procedure morph50
+begin
+  gsay_message(SCRIPT_MORPH, 229, NEUTRAL_REACTION);
+end
+
+procedure morph51
+begin
+  gsay_message(SCRIPT_MORPH, 230, NEUTRAL_REACTION);
+end
+
+procedure morph52
+begin
+  gsay_message(SCRIPT_MORPH, 231, NEUTRAL_REACTION);
+end
+
+procedure morph53
+begin
+  gsay_message(SCRIPT_MORPH, 232, NEUTRAL_REACTION);
+end
+
+procedure morph54
+begin
+  gsay_message(SCRIPT_MORPH, 233, NEUTRAL_REACTION);
+end
+
+procedure morph55
+begin
+  gsay_message(SCRIPT_MORPH, 234, NEUTRAL_REACTION);
+end
+
+procedure morph56
+begin
+  gsay_message(SCRIPT_MORPH, 235, NEUTRAL_REACTION);
+end
+
+procedure morph57
+begin
+  gsay_message(SCRIPT_MORPH, 236, NEUTRAL_REACTION);
+end
+
+procedure morph58
+begin
+  gsay_message(SCRIPT_MORPH, 237, NEUTRAL_REACTION);
+end
+
+procedure morph59
+begin
+  gsay_message(SCRIPT_MORPH, 238, NEUTRAL_REACTION);
+end
+
+procedure morph60
+begin
+  gsay_message(SCRIPT_MORPH, 239, NEUTRAL_REACTION);
+end
+
+procedure morph61
+begin
+  gsay_message(SCRIPT_MORPH, 240, NEUTRAL_REACTION);
+end
+
+procedure morph62
+begin
+  gsay_message(SCRIPT_MORPH, 241, NEUTRAL_REACTION);
+end
+
+procedure morph63
+begin
+  gsay_message(SCRIPT_MORPH, 242, NEUTRAL_REACTION);
+end
+
+procedure morph64
+begin
+  gsay_message(SCRIPT_MORPH, 243, NEUTRAL_REACTION);
+end
+
+procedure morph65
+begin
+  gsay_message(SCRIPT_MORPH, 244, NEUTRAL_REACTION);
+end
+
+procedure morphx
+begin
+  Signal_wait := 1;
+  add_timer_event(self_obj, game_ticks(15), 1);
+end
+
+procedure morphx2
+begin
+  deliver_player := 1;
+  set_global_var(GVAR_MORPHEUS_DELIVERS_PLAYER, 1);
+  load_map("mstrlr34.map", 12);
+end
+
+procedure morphx4
+begin
+end
+
+procedure morph66
+begin
+  float_msg(self_obj, message_str(SCRIPT_MORPH, 245), FLOAT_MSG_RED);
+end
+
+procedure morph05a
+begin
+  call Down_React;
+  call morph06;
+end
+
+procedure morph08a
+begin
+  call Down_React;
+  call morph09;
+end
+
+procedure morph32a
+begin
+  call Down_React;
+  call morph33;
+end
+
+procedure morph39a
+begin
+  call Down_React;
+  call morph33;
+end
+
+procedure morph05b
+begin
+  if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+    call morph07;
+  end
+  else begin
+    call morph26;
+  end
+end
+
+procedure Get_Reaction
+begin
+  if (local_var(2) == 0) then begin
+    set_local_var(0, 50);
+    set_local_var(1, 2);
+    set_local_var(2, 1);
+    set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+    set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+    if (has_trait(0, dude_obj, 39)) then begin
+      if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+        set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+      end
+      else begin
+        set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+      end
+    end
+    else begin
+      if (local_var(3) == 1) then begin
+        set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+      end
+      else begin
+        set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+      end
+    end
+    if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+      set_local_var(0, local_var(0) - 30);
+    end
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+      set_local_var(0, local_var(0) + 20);
+    end
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+      set_local_var(0, local_var(0) - 20);
+    end
+    call React_To_Level;
+  end
+end
+
+procedure React_To_Level
+begin
+  if (local_var(0) <= 25) then begin
+    set_local_var(1, 1);
+  end
+  else begin
+    if (local_var(0) <= 75) then begin
+      set_local_var(1, 2);
+    end
+    else begin
+      set_local_var(1, 3);
+    end
+  end
+end
+
+procedure Level_To_React
+begin
+  if (local_var(1) == 1) then begin
+    set_local_var(0, random(1, 25));
+  end
+  else begin
+    if (local_var(1) == 2) then begin
+      set_local_var(0, random(26, 75));
+    end
+    else begin
+      set_local_var(0, random(76, 100));
+    end
+  end
+end
+
+procedure Up_React
+begin
+  set_local_var(0, local_var(0) + 10);
+  call React_To_Level;
+end
+
+procedure Down_React
+begin
+  set_local_var(0, local_var(0) - 10);
+  call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+  set_local_var(1, 1);
+  set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+  set_local_var(0, 100);
+  set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+  set_local_var(0, local_var(0) + 25);
+  call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+  set_local_var(0, local_var(0) - 25);
+  call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+  set_local_var(1, local_var(1) + 1);
+  if (local_var(1) > 3) then begin
+    set_local_var(1, 3);
+  end
+  call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+  set_local_var(1, local_var(1) - 1);
+  if (local_var(1) < 1) then begin
+    set_local_var(1, 1);
+  end
+  call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+  exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

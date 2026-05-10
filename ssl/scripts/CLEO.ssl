@@ -1,0 +1,538 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure combat;
+procedure critter_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure Cleo00;
+procedure Cleo01;
+procedure Cleo02;
+procedure Cleo03;
+procedure Cleo04;
+procedure Cleo05;
+procedure Cleo06;
+procedure Cleo07;
+procedure Cleo08;
+procedure Cleo09;
+procedure Cleo10;
+procedure Cleo11;
+procedure Cleo12;
+procedure Cleo13;
+procedure Cleo14;
+procedure Cleo15;
+procedure Cleo16;
+procedure Cleo17;
+procedure Cleo18;
+procedure Cleo19;
+procedure Cleo20;
+procedure Cleo21;
+procedure Cleo22;
+procedure CleoEnd;
+
+variable hostile1;
+variable Only_Once := 1;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	if (Only_Once) then begin
+		Only_Once := 0;
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 39);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_HUB_THIEF);
+	end
+	if (script_action == look_at_proc) then begin
+		call look_at_p_proc;
+	end
+	else begin
+		if (script_action == pickup_proc) then begin
+			call pickup_p_proc;
+		end
+		else begin
+			if (script_action == talk_proc) then begin
+				call talk_p_proc;
+			end
+			else begin
+				if (script_action == critter_proc) then begin
+					call critter_p_proc;
+				end
+				else begin
+					if (script_action == destroy_proc) then begin
+						call destroy_p_proc;
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure combat
+begin
+	hostile1 := 1;
+end
+
+procedure critter_p_proc
+begin
+	if (hostile1) then begin
+		hostile1 := 0;
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+end
+
+procedure pickup_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		hostile1 := 1;
+	end
+end
+
+procedure talk_p_proc
+begin
+	call Get_Reaction;
+	if (map_var(1) == 1) then begin
+		call Cleo01;
+	end
+	else begin
+		if (global_var(GVAR_STEAL_NECKLACE) != 2) then begin
+			start_gdialog(SCRIPT_CLEO, self_obj, 4, -1, -1);
+			gsay_start;
+			call Cleo02;
+			gsay_end;
+			end_dialogue;
+		end
+		else begin
+			start_gdialog(SCRIPT_CLEO, self_obj, 4, -1, -1);
+			gsay_start;
+			call Cleo03;
+			gsay_end;
+			end_dialogue;
+		end
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+		if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+		end
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	display_msg(message_str(SCRIPT_CLEO, 100));
+end
+
+procedure Cleo00
+begin
+	if (dude_is_male) then begin
+		float_msg(self_obj, message_str(SCRIPT_CLEO, 101), FLOAT_MSG_RED);
+	end
+	else begin
+		float_msg(self_obj, message_str(SCRIPT_CLEO, 102), FLOAT_MSG_RED);
+	end
+	call combat;
+end
+
+procedure Cleo01
+begin
+	float_msg(self_obj, message_str(SCRIPT_CLEO, 103), FLOAT_MSG_RED);
+end
+
+procedure Cleo02
+begin
+	gsay_reply(SCRIPT_CLEO, 104);
+	if (map_var(2) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 106, Cleo05, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_Loxley_known) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 105, Cleo04, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_CLEO, 107, Cleo06, NEUTRAL_REACTION);
+	if (global_var(GVAR_DECKER_KNOWN) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 108, Cleo07, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_MISSING_CARAVAN) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 109, Cleo08, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_CLEO, 110, Cleo09, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CLEO, 111, Cleo10, NEUTRAL_REACTION);
+end
+
+procedure Cleo03
+begin
+	gsay_reply(SCRIPT_CLEO, 112);
+	if (global_var(GVAR_Loxley_known) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 113, Cleo11, NEUTRAL_REACTION);
+	end
+	if (map_var(2) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 114, Cleo05, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_CLEO, 115, Cleo12, NEUTRAL_REACTION);
+	if (global_var(GVAR_DECKER_KNOWN) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 116, Cleo13, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_MISSING_CARAVAN) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 117, Cleo14, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_CLEO, 119, Cleo09, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CLEO, 120, Cleo10, NEUTRAL_REACTION);
+end
+
+procedure Cleo04
+begin
+	gsay_reply(SCRIPT_CLEO, 121);
+	if (map_var(2) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 122, Cleo05, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_CLEO, 123, Cleo06, NEUTRAL_REACTION);
+	if (global_var(GVAR_DECKER_KNOWN) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 124, Cleo07, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_MISSING_CARAVAN) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 125, Cleo08, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_CLEO, 126, Cleo09, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CLEO, 127, Cleo10, NEUTRAL_REACTION);
+end
+
+procedure Cleo05
+begin
+	gsay_reply(SCRIPT_CLEO, 128);
+	if (global_var(GVAR_Loxley_known) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 129, Cleo04, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_CLEO, 131, Cleo06, NEUTRAL_REACTION);
+	if (global_var(GVAR_DECKER_KNOWN) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 132, Cleo07, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_MISSING_CARAVAN) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 133, Cleo08, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_CLEO, 134, Cleo09, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CLEO, 135, Cleo10, NEUTRAL_REACTION);
+end
+
+procedure Cleo06
+begin
+	gsay_reply(SCRIPT_CLEO, 136);
+	if (global_var(GVAR_Loxley_known) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 137, Cleo04, NEUTRAL_REACTION);
+	end
+	if (map_var(2) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 138, Cleo05, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_DECKER_KNOWN) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 139, Cleo07, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_MISSING_CARAVAN) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 140, Cleo08, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_CLEO, 141, Cleo09, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CLEO, 142, Cleo10, NEUTRAL_REACTION);
+end
+
+procedure Cleo07
+begin
+	gsay_reply(SCRIPT_CLEO, 143);
+	if (global_var(GVAR_Loxley_known) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 144, Cleo04, NEUTRAL_REACTION);
+	end
+	if (map_var(2) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 145, Cleo05, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_CLEO, 146, Cleo06, NEUTRAL_REACTION);
+	if (global_var(GVAR_MISSING_CARAVAN) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 147, Cleo08, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_CLEO, 148, Cleo09, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CLEO, 149, Cleo10, NEUTRAL_REACTION);
+end
+
+procedure Cleo08
+begin
+	gsay_reply(SCRIPT_CLEO, 150);
+	if (global_var(GVAR_Loxley_known) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 151, Cleo04, NEUTRAL_REACTION);
+	end
+	if (map_var(2) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 152, Cleo05, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_CLEO, 153, Cleo06, NEUTRAL_REACTION);
+	if (global_var(GVAR_DECKER_KNOWN) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 154, Cleo07, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_CLEO, 155, Cleo09, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CLEO, 156, Cleo10, NEUTRAL_REACTION);
+end
+
+procedure Cleo09
+begin
+	gsay_message(SCRIPT_CLEO, 157, NEUTRAL_REACTION);
+end
+
+procedure Cleo10
+begin
+	gsay_message(SCRIPT_CLEO, 158, NEUTRAL_REACTION);
+end
+
+procedure Cleo11
+begin
+	gsay_reply(SCRIPT_CLEO, 159);
+	if (map_var(2) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 160, Cleo05, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_CLEO, 161, Cleo12, NEUTRAL_REACTION);
+	if (global_var(GVAR_DECKER_KNOWN) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 162, Cleo13, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_MISSING_CARAVAN) == 1) then begin
+		gsay_message(SCRIPT_CLEO, 4, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_CLEO, 165, Cleo09, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CLEO, 166, Cleo10, NEUTRAL_REACTION);
+end
+
+procedure Cleo12
+begin
+	gsay_reply(SCRIPT_CLEO, 167);
+	if (global_var(GVAR_Loxley_known) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 168, Cleo11, NEUTRAL_REACTION);
+	end
+	if (map_var(2) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 169, Cleo05, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_DECKER_KNOWN) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 170, Cleo13, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_MISSING_CARAVAN) == 1) then begin
+		giq_option(4, SCRIPT_CLEO, 171, Cleo14, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_CLEO, 173, Cleo09, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CLEO, 174, Cleo10, NEUTRAL_REACTION);
+end
+
+procedure Cleo13
+begin
+	gsay_message(SCRIPT_CLEO, 175, NEUTRAL_REACTION);
+end
+
+procedure Cleo14
+begin
+	set_global_var(GVAR_DECKER_KNOWN, 1);
+	gsay_reply(SCRIPT_CLEO, 176);
+	giq_option(4, SCRIPT_CLEO, 177, Cleo15, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CLEO, 178, Cleo16, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CLEO, 179, Cleo17, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CLEO, 180, Cleo18, NEUTRAL_REACTION);
+end
+
+procedure Cleo15
+begin
+	gsay_message(SCRIPT_CLEO, 181, NEUTRAL_REACTION);
+end
+
+procedure Cleo16
+begin
+	gsay_message(SCRIPT_CLEO, 182, NEUTRAL_REACTION);
+end
+
+procedure Cleo17
+begin
+	gsay_reply(SCRIPT_CLEO, 183);
+	giq_option(4, SCRIPT_CLEO, 184, Cleo20, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CLEO, 185, Cleo20, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CLEO, 186, Cleo21, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CLEO, 187, Cleo22, NEUTRAL_REACTION);
+end
+
+procedure Cleo18
+begin
+	gsay_message(SCRIPT_CLEO, 188, NEUTRAL_REACTION);
+end
+
+procedure Cleo19
+begin
+	gsay_message(SCRIPT_CLEO, 189, NEUTRAL_REACTION);
+end
+
+procedure Cleo20
+begin
+	gsay_message(SCRIPT_CLEO, 190, NEUTRAL_REACTION);
+end
+
+procedure Cleo21
+begin
+	gsay_message(SCRIPT_CLEO, 191, NEUTRAL_REACTION);
+end
+
+procedure Cleo22
+begin
+	gsay_message(SCRIPT_CLEO, 192, NEUTRAL_REACTION);
+end
+
+procedure CleoEnd
+begin
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

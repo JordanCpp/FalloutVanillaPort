@@ -1,0 +1,224 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure talk_p_proc;
+procedure Initialize_p_proc;
+procedure critter_p_proc;
+procedure map_enter_p_proc;
+
+variable Only_Once := 1;
+variable Hex_Number;
+
+
+procedure start
+begin
+	if (Only_Once) then begin
+		call Initialize_p_proc;
+	end
+	else begin
+		if (script_action == talk_proc) then begin
+			call talk_p_proc;
+		end
+		else begin
+			if (script_action == critter_proc) then begin
+				call critter_p_proc;
+			end
+			else begin
+				if (script_action == map_enter_proc) then begin
+					call map_enter_p_proc;
+				end
+			end
+		end
+	end
+end
+
+procedure talk_p_proc
+begin
+	if (local_var(3) == 0) then begin
+		if (dude_is_male) then begin
+			float_msg(self_obj, message_str(SCRIPT_BROINVAD, random(100, 105)), FLOAT_MSG_WHITE);
+		end
+		else begin
+			float_msg(self_obj, message_str(SCRIPT_BROINVAD, random(106, 111)), FLOAT_MSG_WHITE);
+		end
+	end
+end
+
+procedure Initialize_p_proc
+begin
+	critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 0);
+	critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_BROTHERHOOD_PALADIN);
+	Only_Once := 0;
+end
+
+procedure critter_p_proc
+begin
+	variable LVar0 := 0;
+	if (global_var(GVAR_BROTHERHOOD_INVASION) == 1) then begin
+		if (local_var(4) == 0) then begin
+			if (Hex_Number == 0) then begin
+				LVar0 := random(1, 6);
+				if (LVar0 == 1) then begin
+					Hex_Number := 22098;
+				end
+				else begin
+					if (LVar0 == 2) then begin
+						Hex_Number := 20700;
+					end
+					else begin
+						if (LVar0 == 3) then begin
+							Hex_Number := 20506;
+						end
+						else begin
+							if (LVar0 == 4) then begin
+								Hex_Number := 20902;
+							end
+							else begin
+								if (LVar0 == 5) then begin
+									Hex_Number := 21708;
+								end
+								else begin
+									Hex_Number := 20900;
+								end
+							end
+						end
+					end
+				end
+			end
+			if (tile_num(self_obj) != Hex_Number) then begin
+				animate_move_obj_to_tile(self_obj, Hex_Number, ANIMATE_WALK);
+			end
+			else begin
+				if (tile_num(self_obj) == Hex_Number) then begin
+					set_local_var(4, 1);
+				end
+			end
+		end
+		else begin
+			if ((tile_distance_objs(dude_obj, self_obj) > 10) and (tile_distance_objs(dude_obj, self_obj) < 15)) then begin
+				animate_move_obj_to_tile(self_obj, tile_num_in_direction(tile_num(dude_obj), random(0, 5), random(3, 6)), ANIMATE_WALK);
+			end
+			else begin
+				if (tile_distance_objs(dude_obj, self_obj) >= 15) then begin
+					animate_move_obj_to_tile(self_obj, tile_num_in_direction(tile_num(dude_obj), random(0, 5), random(3, 6)), ANIMATE_RUN);
+				end
+				else begin
+					if (random(1, 100) == 1) then begin
+						animate_move_obj_to_tile(self_obj, tile_num_in_direction(tile_num(self_obj), random(0, 5), random(3, 6)), ANIMATE_WALK);
+					end
+				end
+			end
+		end
+		if (local_var(4) == 1) then begin
+			if ((cur_map_index == MAP_CHILDRN1) or (cur_map_index == MAP_CHILDRN2)) then begin
+				if (local_var(0) == 0) then begin
+					float_msg(self_obj, message_str(SCRIPT_BROINVAD, 112), FLOAT_MSG_WHITE);
+					set_local_var(0, 1);
+					party_add(self_obj);
+				end
+			end
+			else begin
+				if (cur_map_index == MAP_MSTRLR12) then begin
+					if (local_var(1) == 0) then begin
+						set_local_var(1, 1);
+						float_msg(self_obj, message_str(SCRIPT_BROINVAD, 113), FLOAT_MSG_WHITE);
+					end
+				end
+				else begin
+					if (cur_map_index == MAP_MSTRLR34) then begin
+						if (local_var(2) == 0) then begin
+							set_local_var(2, 1);
+							float_msg(self_obj, message_str(SCRIPT_BROINVAD, 114), FLOAT_MSG_WHITE);
+						end
+					end
+					else begin
+						if (local_var(3) == 0) then begin
+							set_local_var(3, 1);
+							float_msg(self_obj, message_str(SCRIPT_BROINVAD, 115), FLOAT_MSG_WHITE);
+							party_remove(self_obj);
+							animate_move_obj_to_tile(self_obj, 26000, ANIMATE_WALK);
+							set_global_var(GVAR_BROTHERHOOD_INVASION, 10);
+						end
+					end
+				end
+			end
+		end
+	end
+	else begin
+		if (global_var(GVAR_BROTHERHOOD_INVASION) == 2) then begin
+			if (local_var(4) == 0) then begin
+				set_obj_visibility(self_obj, 0);
+				if (Hex_Number == 0) then begin
+					LVar0 := random(1, 6);
+					if (LVar0 == 1) then begin
+						Hex_Number := 21534;
+					end
+					else begin
+						if (LVar0 == 2) then begin
+							Hex_Number := 22136;
+						end
+						else begin
+							if (LVar0 == 3) then begin
+								Hex_Number := 20932;
+							end
+							else begin
+								if (LVar0 == 4) then begin
+									Hex_Number := 22938;
+								end
+								else begin
+									if (LVar0 == 5) then begin
+										Hex_Number := 21931;
+									end
+									else begin
+										Hex_Number := 22733;
+									end
+								end
+							end
+						end
+					end
+				end
+				if (tile_num(self_obj) != Hex_Number) then begin
+					animate_move_obj_to_tile(self_obj, Hex_Number, ANIMATE_WALK);
+				end
+				else begin
+					set_local_var(4, 1);
+				end
+			end
+			else begin
+				if ((tile_distance_objs(dude_obj, self_obj) > 8) and (tile_distance_objs(dude_obj, self_obj) < 12)) then begin
+					animate_move_obj_to_tile(self_obj, tile_num_in_direction(tile_num(dude_obj), random(0, 5), random(3, 6)), ANIMATE_WALK);
+				end
+				else begin
+					if (tile_distance_objs(dude_obj, self_obj) >= 12) then begin
+						animate_move_obj_to_tile(self_obj, tile_num_in_direction(tile_num(dude_obj), random(0, 5), random(3, 6)), ANIMATE_RUN);
+					end
+					else begin
+						if (random(1, 100) == 1) then begin
+							animate_move_obj_to_tile(self_obj, tile_num_in_direction(tile_num(self_obj), random(0, 5), random(3, 6)), ANIMATE_WALK);
+						end
+					end
+				end
+			end
+		end
+		else begin
+		end
+	end
+end
+
+procedure map_enter_p_proc
+begin
+	if ((global_var(GVAR_BROTHERHOOD_INVASION) == 2) and (cur_map_index != MAP_MBENT)) then begin
+		set_global_var(GVAR_BROTHERHOOD_INVASION, 10);
+	end
+	if ((global_var(GVAR_BROTHERHOOD_INVASION) != 1) and (global_var(GVAR_BROTHERHOOD_INVASION) != 2)) then begin
+		set_obj_visibility(self_obj, 1);
+	end
+end

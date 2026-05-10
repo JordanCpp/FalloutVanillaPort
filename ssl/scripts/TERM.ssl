@@ -1,0 +1,31 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure look_at_p_proc;
+
+
+procedure start
+begin
+	if (script_action == look_at_proc) then begin
+		call look_at_p_proc;
+	end
+	else begin
+		if (script_action == use_proc) then begin
+			display_msg(message_str(SCRIPT_TERM, 101));
+		end
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	display_msg(message_str(SCRIPT_TERM, 100));
+end

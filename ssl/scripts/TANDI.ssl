@@ -1,0 +1,1012 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+variable GVar0;
+variable GVar1;
+variable GVar2;
+variable GVar3;
+variable GVar4;
+variable GVar5;
+variable GVar6;
+variable GVar7;
+variable GVar8;
+variable GVar9;
+variable GVar10;
+variable GVar11 := 1;
+variable GVar12;
+variable GVar13;
+
+procedure start;
+#include <push.h>
+procedure do_dialogue;
+procedure tandi00;
+procedure tandi00_1;
+procedure tandi01;
+procedure tandi01a;
+procedure tandi02;
+procedure tandi03;
+procedure tandi04;
+procedure tandi05;
+procedure tandi06;
+procedure tandi12;
+procedure tandi13;
+procedure tandi14;
+procedure tandi15;
+procedure tandi16;
+procedure tandi20;
+procedure tandi21;
+procedure tandi22;
+procedure tandi23;
+procedure tandi24;
+procedure tandi27;
+procedure tandi28;
+procedure tandi29;
+procedure tandi30;
+procedure tandi35;
+procedure tandi36;
+procedure tandi36a;
+procedure tandi37;
+procedure tandi38;
+procedure tandi38a;
+procedure tandi38b;
+procedure tandi39;
+procedure tandi40;
+procedure tandi41;
+procedure tandi42;
+procedure tandi43;
+procedure tandi43a;
+procedure tandi43b;
+procedure tandi44;
+procedure tandi45;
+procedure tandi46;
+procedure tandi47;
+procedure tandi48;
+procedure tandi49;
+procedure tandi50;
+procedure tandi51;
+procedure tandi52;
+procedure tandi53;
+procedure tandi54;
+procedure tandi55;
+procedure tandi62;
+procedure tandi63;
+procedure tandi64;
+procedure tandi65;
+procedure tandi66;
+procedure tandi67;
+procedure tandi68;
+procedure tandi69;
+procedure tandi70;
+procedure tandi71;
+procedure tandi72;
+procedure tandix;
+procedure tandixx;
+procedure tandix1;
+procedure tandix2;
+procedure tandix3;
+procedure tandix4;
+procedure tandix5;
+procedure tandiend;
+procedure TandiSchedule;
+procedure follow_player;
+procedure Random_Following;
+procedure map_update_p_proc;
+procedure map_enter_p_proc;
+procedure critter_p_proc;
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+
+procedure start
+begin
+if (GVar11) then begin
+    GVar11 := 0;
+    if (global_var(GVAR_TANDI_STATUS) == 5) then begin
+      add_timer_event(self_obj, game_ticks(1), 2);
+    end
+    if ((cur_map_index == MAP_SHADYW) or (cur_map_index == MAP_SHADYE)) then begin
+      critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 2);
+    end
+    else begin
+      critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 0);
+    end
+    critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_CAREFUL);
+  end
+  if (script_action == map_enter_proc) then begin
+    call map_enter_p_proc;
+  end
+  else begin
+    if (script_action == map_update_proc) then begin
+      call map_update_p_proc;
+    end
+    else begin
+      if (script_action == talk_proc) then begin
+        call do_dialogue;
+      end
+      else begin
+        if ((script_action == look_at_proc) or (script_action == description_proc)) then begin
+          script_overrides;
+          display_msg(message_str(SCRIPT_TANDI, 100));
+        end
+        else begin
+          if (script_action == timed_event_proc) then begin
+            if (fixed_param == 1) then begin
+              call follow_player;
+            end
+            else begin
+              if (fixed_param == 2) then begin
+                call Random_Following;
+              end
+            end
+          end
+          else begin
+            if (script_action == critter_proc) then begin
+              call critter_p_proc;
+            end
+            else begin
+              if (script_action == destroy_proc) then begin
+                if (source_obj == dude_obj) then begin
+                  if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+                    set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+                    set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+                  end
+                  if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+                    set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+                    set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+                  end
+                  set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+                  if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+                    set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+                  end
+                end
+                set_global_var(GVAR_TANDI_STATUS, 3);
+              end
+              else begin
+                if (script_action == damage_proc) then begin
+                  if ((source_obj == dude_obj) and ((cur_map_index == MAP_SHADYW) or (cur_map_index == MAP_SHADYE))) then begin
+                    set_global_var(GVAR_ENEMY_SHADY_SANDS, 1);
+                  end
+                end
+                else begin
+                  if (script_action == pickup_proc) then begin
+                    GVar12 := 1;
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+procedure do_dialogue
+begin
+  variable LVar0 := 0;
+  if ((cur_map_index != MAP_RAIDERS) and (cur_map_index != MAP_SHADYW) and (cur_map_index != MAP_SHADYE)) then begin
+    float_msg(self_obj, message_str(SCRIPT_TANDI, random(300, 305)), FLOAT_MSG_YELLOW);
+  end
+  if ((cur_map_index == MAP_RAIDERS) or (cur_map_index == MAP_SHADYW) or (cur_map_index == MAP_SHADYE)) then begin
+    LVar0 := BACKGROUND_SHADY_SANDS;
+    if (cur_map_index == MAP_RAIDERS) then begin
+      LVar0 := BACKGROUND_RAIDERS;
+    end
+    if (global_var(GVAR_TANDI_STATUS) == 5) then begin
+      float_msg(self_obj, message_str(SCRIPT_TANDI, 208), FLOAT_MSG_RED);
+    end
+    else begin
+      start_gdialog(SCRIPT_TANDI, self_obj, 4, HEAD_TANDI, LVar0);
+      call Get_Reaction;
+      gsay_start;
+      if (global_var(GVAR_TANDI_HEREBEFORE) == 1) then begin
+        if (global_var(GVAR_TANDI_STATUS) == 0) then begin
+          if (get_critter_stat(dude_obj, 4) < 4) then begin
+            call tandi06;
+          end
+          else begin
+            call tandi30;
+          end
+        end
+        else begin
+          if (global_var(GVAR_TANDI_STATUS) == 1) then begin
+            set_global_var(GVAR_TALKED_ABOUT_TANDI, 1);
+            call tandi43;
+          end
+          else begin
+            if (global_var(GVAR_TANDI_STATUS) == 2) then begin
+              if (cur_map_index == MAP_RAIDERS) then begin
+                call tandi43b;
+              end
+              else begin
+                call tandi36;
+              end
+            end
+          end
+        end
+      end
+      else begin
+        set_global_var(GVAR_TANDI_HEREBEFORE, 1);
+        if (global_var(GVAR_TANDI_STATUS) == 0) then begin
+          call tandi01;
+        end
+        if (global_var(GVAR_TANDI_STATUS) == 1) then begin
+          call tandi37;
+        end
+      end
+      gsay_end;
+      end_dialogue;
+    end
+  end
+end
+
+procedure tandi00
+begin
+  giq_option(5, SCRIPT_TANDI, 101, tandi15, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_TANDI, 102, tandi00_1, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_TANDI, 103, tandi23, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_TANDI, 104, tandi24, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_TANDI, 105, tandi28, NEUTRAL_REACTION);
+end
+
+procedure tandi00_1
+begin
+  if (global_var(GVAR_RADSCORPION_SEED) == 0) then begin
+    call tandi20;
+  end
+  else begin
+    if (global_var(GVAR_RADSCORPION_SEED) == 2) then begin
+      call tandi21;
+    end
+    else begin
+      call tandi22;
+    end
+  end
+end
+
+procedure tandi01
+begin
+  gsay_reply(SCRIPT_TANDI, 106);
+  giq_option(4, SCRIPT_TANDI, message_str(SCRIPT_TANDI, 107) + proto_data(obj_pid(dude_obj), 1) + message_str(SCRIPT_TANDI, 108), tandi02, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_TANDI, message_str(SCRIPT_TANDI, 109) + proto_data(obj_pid(dude_obj), 1) + message_str(SCRIPT_TANDI, 110), tandi01a, BAD_REACTION);
+  giq_option(-3, SCRIPT_TANDI, 111, tandi29, NEUTRAL_REACTION);
+end
+
+procedure tandi01a
+begin
+  call Down_React;
+  call tandi02;
+end
+
+procedure tandi02
+begin
+  gsay_reply(SCRIPT_TANDI, 112);
+  giq_option(4, SCRIPT_TANDI, 113, tandi03, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_TANDI, 114, tandi14, GOOD_REACTION);
+  giq_option(4, SCRIPT_TANDI, 115, tandi04, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_TANDI, 116, tandi14, GOOD_REACTION);
+end
+
+procedure tandi03
+begin
+  gsay_reply(SCRIPT_TANDI, 117);
+  call tandi00;
+end
+
+procedure tandi04
+begin
+  gsay_reply(SCRIPT_TANDI, 118);
+  giq_option(5, SCRIPT_TANDI, 119, tandi05, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_TANDI, 120, tandi12, BAD_REACTION);
+  giq_option(4, SCRIPT_TANDI, 121, tandi13, NEUTRAL_REACTION);
+end
+
+procedure tandi05
+begin
+  gsay_reply(SCRIPT_TANDI, 122);
+  giq_option(0, SCRIPT_TANDI, 123, tandi03, NEUTRAL_REACTION);
+  giq_option(0, SCRIPT_TANDI, 124, tandi28, NEUTRAL_REACTION);
+end
+
+procedure tandi06
+begin
+  gsay_message(SCRIPT_TANDI, 125, NEUTRAL_REACTION);
+  call tandix2;
+end
+
+procedure tandi12
+begin
+  call Down_React;
+  gsay_reply(SCRIPT_TANDI, 126);
+  call tandi00;
+end
+
+procedure tandi13
+begin
+  gsay_reply(SCRIPT_TANDI, 127);
+  giq_option(5, SCRIPT_TANDI, 128, tandi05, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_TANDI, 129, tandi03, NEUTRAL_REACTION);
+end
+
+procedure tandi14
+begin
+  gsay_reply(SCRIPT_TANDI, 130);
+  giq_option(5, SCRIPT_TANDI, 131, tandi05, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_TANDI, 132, tandi12, BAD_REACTION);
+  giq_option(4, SCRIPT_TANDI, 133, tandi13, NEUTRAL_REACTION);
+end
+
+procedure tandi15
+begin
+  if (local_var(1) > 2) then begin
+    gsay_reply(SCRIPT_TANDI, 134);
+    if (global_var(GVAR_JUNKTOWN) == 0) then begin
+      set_global_var(GVAR_JUNKTOWN, 1);
+    end
+  end
+  else begin
+    gsay_reply(SCRIPT_TANDI, 135);
+  end
+  giq_option(5, SCRIPT_TANDI, 136, tandi16, NEUTRAL_REACTION);
+end
+
+procedure tandi16
+begin
+  gsay_reply(SCRIPT_TANDI, 137);
+  call tandi00;
+end
+
+procedure tandi20
+begin
+  gsay_reply(SCRIPT_TANDI, 138);
+  call tandi00;
+end
+
+procedure tandi21
+begin
+  gsay_reply(SCRIPT_TANDI, 139);
+  call tandi00;
+end
+
+procedure tandi22
+begin
+  gsay_reply(SCRIPT_TANDI, 140);
+  call tandi00;
+end
+
+procedure tandi23
+begin
+  if (local_var(1) > 2) then begin
+    gsay_reply(SCRIPT_TANDI, 141);
+  end
+  else begin
+    gsay_reply(SCRIPT_TANDI, 142);
+  end
+  giq_option(4, SCRIPT_TANDI, 143, tandi16, NEUTRAL_REACTION);
+  if (local_var(1) > 2) then begin
+    giq_option(4, SCRIPT_TANDI, 144, tandi52, NEUTRAL_REACTION);
+  end
+end
+
+procedure tandi24
+begin
+  gsay_reply(SCRIPT_TANDI, 145);
+  giq_option(5, SCRIPT_TANDI, 146, tandi05, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_TANDI, 147, tandi12, BAD_REACTION);
+  giq_option(4, SCRIPT_TANDI, 148, tandi13, NEUTRAL_REACTION);
+end
+
+procedure tandi27
+begin
+  if (dude_is_male) then begin
+    gsay_message(SCRIPT_TANDI, 149, BAD_REACTION);
+  end
+  else begin
+    gsay_message(SCRIPT_TANDI, 150, BAD_REACTION);
+  end
+  call tandix2;
+end
+
+procedure tandi28
+begin
+  if (GVar5 < 1) then begin
+    GVar5 := 1;
+    gsay_reply(SCRIPT_TANDI, 151);
+    giq_option(0, SCRIPT_TANDI, 152, tandix, NEUTRAL_REACTION);
+  end
+  else begin
+    call tandix;
+  end
+end
+
+procedure tandi29
+begin
+  gsay_reply(SCRIPT_TANDI, 153);
+  call tandix2;
+end
+
+procedure tandi30
+begin
+  gsay_reply(SCRIPT_TANDI, 154);
+  giq_option(4, SCRIPT_TANDI, 155, tandi03, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_TANDI, 156, tandi28, NEUTRAL_REACTION);
+end
+
+procedure tandi35
+begin
+  gsay_message(SCRIPT_TANDI, 157, NEUTRAL_REACTION);
+  call tandix;
+end
+
+procedure tandi36
+begin
+  gsay_reply(SCRIPT_TANDI, 158);
+  giq_option(4, SCRIPT_TANDI, 159, tandi03, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_TANDI, 160, tandi36a, BAD_REACTION);
+  giq_option(4, SCRIPT_TANDI, 161, tandi28, NEUTRAL_REACTION);
+  giq_option(-3, SCRIPT_TANDI, 162, tandi35, NEUTRAL_REACTION);
+end
+
+procedure tandi36a
+begin
+  call Bottom_React;
+  call tandi27;
+end
+
+procedure tandi37
+begin
+  gsay_reply(SCRIPT_TANDI, 163);
+  giq_option(4, SCRIPT_TANDI, message_str(SCRIPT_TANDI, 164) + proto_data(obj_pid(dude_obj), 1) + message_str(SCRIPT_TANDI, 165), tandi38, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_TANDI, 166, tandi42, NEUTRAL_REACTION);
+  giq_option(-3, SCRIPT_TANDI, 167, tandi43a, NEUTRAL_REACTION);
+end
+
+procedure tandi38
+begin
+  if (global_var(GVAR_GARL_DEAD) == 1) then begin
+    call tandi38a;
+  end
+  else begin
+    call tandi38b;
+  end
+end
+
+procedure tandi38a
+begin
+  gsay_reply(SCRIPT_TANDI, 168);
+  giq_option(4, SCRIPT_TANDI, 169, tandiend, NEUTRAL_REACTION);
+end
+
+procedure tandi38b
+begin
+  gsay_reply(SCRIPT_TANDI, 168);
+  giq_option(4, SCRIPT_TANDI, 169, tandi39, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_TANDI, 170, tandi42, NEUTRAL_REACTION);
+end
+
+procedure tandi39
+begin
+  gsay_reply(SCRIPT_TANDI, 171);
+  giq_option(4, SCRIPT_TANDI, 172, tandi40, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_TANDI, 173, tandi41, NEUTRAL_REACTION);
+end
+
+procedure tandi40
+begin
+  gsay_message(SCRIPT_TANDI, 174, NEUTRAL_REACTION);
+  call tandix3;
+end
+
+procedure tandi41
+begin
+  gsay_message(SCRIPT_TANDI, 175, NEUTRAL_REACTION);
+  call tandix4;
+end
+
+procedure tandi42
+begin
+  gsay_reply(SCRIPT_TANDI, 176);
+  giq_option(4, SCRIPT_TANDI, 177, tandi40, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_TANDI, 178, tandi41, NEUTRAL_REACTION);
+end
+
+procedure tandi43
+begin
+  gsay_reply(SCRIPT_TANDI, 179);
+  giq_option(4, SCRIPT_TANDI, 180, tandi39, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_TANDI, 181, tandi42, NEUTRAL_REACTION);
+  giq_option(-3, SCRIPT_TANDI, 182, tandi43a, NEUTRAL_REACTION);
+end
+
+procedure tandi43a
+begin
+  gsay_message(SCRIPT_TANDI, 183, NEUTRAL_REACTION);
+  call tandix;
+end
+
+procedure tandi43b
+begin
+  gsay_message(SCRIPT_TANDI, 184, NEUTRAL_REACTION);
+  call tandix;
+end
+
+procedure tandi44
+begin
+  gsay_message(SCRIPT_TANDI, 185, NEUTRAL_REACTION);
+end
+
+procedure tandi45
+begin
+  gsay_message(SCRIPT_TANDI, 186, NEUTRAL_REACTION);
+end
+
+procedure tandi46
+begin
+  gsay_message(SCRIPT_TANDI, 187, NEUTRAL_REACTION);
+end
+
+procedure tandi47
+begin
+  gsay_message(SCRIPT_TANDI, 188, NEUTRAL_REACTION);
+end
+
+procedure tandi48
+begin
+  gsay_message(SCRIPT_TANDI, 189, NEUTRAL_REACTION);
+end
+
+procedure tandi49
+begin
+  gsay_message(SCRIPT_TANDI, 190, NEUTRAL_REACTION);
+end
+
+procedure tandi50
+begin
+  gsay_message(SCRIPT_TANDI, 191, NEUTRAL_REACTION);
+end
+
+procedure tandi51
+begin
+  gsay_message(SCRIPT_TANDI, 192, NEUTRAL_REACTION);
+end
+
+procedure tandi52
+begin
+  gsay_message(SCRIPT_TANDI, 193, NEUTRAL_REACTION);
+end
+
+procedure tandi53
+begin
+  gsay_message(SCRIPT_TANDI, 194, NEUTRAL_REACTION);
+  if (global_var(GVAR_JUNKTOWN) == 0) then begin
+    set_global_var(GVAR_JUNKTOWN, 1);
+  end
+end
+
+procedure tandi54
+begin
+  gsay_message(SCRIPT_TANDI, 195, NEUTRAL_REACTION);
+  if (global_var(GVAR_THE_HUB) == 0) then begin
+    set_global_var(GVAR_THE_HUB, 1);
+  end
+end
+
+procedure tandi55
+begin
+  gsay_message(SCRIPT_TANDI, 196, NEUTRAL_REACTION);
+end
+
+procedure tandi62
+begin
+  gsay_message(SCRIPT_TANDI, 197, NEUTRAL_REACTION);
+end
+
+procedure tandi63
+begin
+  gsay_message(SCRIPT_TANDI, 198, NEUTRAL_REACTION);
+end
+
+procedure tandi64
+begin
+  gsay_message(SCRIPT_TANDI, 199, NEUTRAL_REACTION);
+end
+
+procedure tandi65
+begin
+  float_msg(self_obj, message_str(SCRIPT_TANDI, 200), FLOAT_MSG_RED);
+end
+
+procedure tandi66
+begin
+  float_msg(self_obj, message_str(SCRIPT_TANDI, 201), FLOAT_MSG_RED);
+  call tandix5;
+end
+
+procedure tandi67
+begin
+  gsay_message(SCRIPT_TANDI, 202, BAD_REACTION);
+end
+
+procedure tandi68
+begin
+  gsay_message(SCRIPT_TANDI, 203, BAD_REACTION);
+end
+
+procedure tandi69
+begin
+  gsay_message(SCRIPT_TANDI, 204, NEUTRAL_REACTION);
+end
+
+procedure tandi70
+begin
+  gsay_message(SCRIPT_TANDI, 205, NEUTRAL_REACTION);
+end
+
+procedure tandi71
+begin
+  gsay_message(SCRIPT_TANDI, 206, NEUTRAL_REACTION);
+end
+
+procedure tandi72
+begin
+  gsay_message(SCRIPT_TANDI, 207, NEUTRAL_REACTION);
+end
+
+procedure tandix
+begin
+end
+
+procedure tandixx
+begin
+end
+
+procedure tandix1
+begin
+end
+
+procedure tandix2
+begin
+end
+
+procedure tandix3
+begin
+  critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 0);
+end
+
+procedure tandix4
+begin
+  critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 0);
+end
+
+procedure tandix5
+begin
+  set_local_var(5, 1);
+  critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 0);
+end
+
+procedure tandiend
+begin
+end
+
+procedure TandiSchedule
+begin
+  variable LVar0 := 0;
+  LVar0 := game_time_hour;
+  if (LVar0 == 600) then begin
+    animate_move_obj_to_tile(self_obj, 18709, ANIMATE_WALK);
+  end
+  else begin
+    if (LVar0 == 610) then begin
+      animate_move_obj_to_tile(self_obj, 23232, ANIMATE_WALK);
+    end
+    else begin
+      if (LVar0 == 615) then begin
+        animate_move_obj_to_tile(self_obj, 18492, ANIMATE_WALK);
+      end
+      else begin
+        if (LVar0 == 645) then begin
+          animate_move_obj_to_tile(self_obj, 13565, ANIMATE_WALK);
+        end
+        else begin
+          if (LVar0 == 650) then begin
+            animate_move_obj_to_tile(self_obj, 15683, ANIMATE_WALK);
+          end
+          else begin
+            if (LVar0 == 1000) then begin
+              animate_move_obj_to_tile(self_obj, 18709, ANIMATE_WALK);
+            end
+            else begin
+              if (LVar0 == 1200) then begin
+                animate_move_obj_to_tile(self_obj, 24678, ANIMATE_WALK);
+              end
+              else begin
+                if (LVar0 == 1300) then begin
+                  animate_move_obj_to_tile(self_obj, 23232, ANIMATE_WALK);
+                end
+                else begin
+                  if (LVar0 == 1305) then begin
+                    animate_move_obj_to_tile(self_obj, 23701, ANIMATE_WALK);
+                  end
+                  else begin
+                    if (LVar0 == 1600) then begin
+                      animate_move_obj_to_tile(self_obj, 17279, ANIMATE_WALK);
+                    end
+                    else begin
+                      if (LVar0 == 1900) then begin
+                        animate_move_obj_to_tile(self_obj, 13565, ANIMATE_WALK);
+                      end
+                      else begin
+                        if (LVar0 == 1905) then begin
+                          animate_move_obj_to_tile(self_obj, 18709, ANIMATE_WALK);
+                        end
+                        else begin
+                          if (LVar0 == 2100) then begin
+                            animate_move_obj_to_tile(self_obj, 24678, ANIMATE_WALK);
+                          end
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+procedure follow_player
+begin
+  if (global_var(GVAR_TANDI_STATUS) != 5) then begin
+    set_global_var(GVAR_TANDI_ESCAPE, 1);
+  end
+  if (tile_distance_objs(self_obj, dude_obj) > 8) then begin
+    animate_move_obj_to_tile(self_obj, tile_num_in_direction(tile_num(dude_obj), 1, 2), ANIMATE_RUN);
+  end
+  else begin
+    if (tile_distance_objs(self_obj, dude_obj) > 3) then begin
+      animate_move_obj_to_tile(self_obj, tile_num_in_direction(tile_num(dude_obj), 1, 2), ANIMATE_WALK);
+    end
+  end
+  add_timer_event(self_obj, game_ticks(3), 1);
+end
+
+procedure Random_Following
+begin
+  if (tile_distance_objs(self_obj, dude_obj) > 8) then begin
+    animate_move_obj_to_tile(self_obj, tile_num_in_direction(tile_num(dude_obj), 1, 2), ANIMATE_RUN bwor 16);
+  end
+  else begin
+    if (tile_distance_objs(self_obj, dude_obj) > 3) then begin
+      animate_move_obj_to_tile(self_obj, tile_num_in_direction(tile_num(dude_obj), 1, 2), ANIMATE_WALK bwor 16);
+    end
+  end
+  add_timer_event(self_obj, game_ticks(3), 2);
+end
+
+procedure map_update_p_proc
+begin
+end
+
+procedure map_enter_p_proc
+begin
+end
+
+procedure critter_p_proc
+begin
+  if (cur_map_index == MAP_RAIDERS) then begin
+    if ((map_var(2) != 0) and (local_var(5) == 0)) then begin
+      set_global_var(GVAR_TANDI_STATUS, 5);
+      add_timer_event(self_obj, game_ticks(1), 1);
+      set_local_var(5, 1);
+      if (party_member_obj(16777279) == 0) then begin
+        party_add(self_obj);
+      end
+    end
+  end
+  if ((global_var(GVAR_TANDI_STATUS) == 5) and (local_var(5) == 0)) then begin
+    set_local_var(5, 1);
+    if (party_member_obj(16777279) == 0) then begin
+      party_add(self_obj);
+    end
+  end
+  if (party_member_obj(16777279) != 0) then begin
+    if (tile_distance_objs(self_obj, dude_obj) > 8) then begin
+      animate_move_obj_to_tile(self_obj, tile_num_in_direction(tile_num(dude_obj), random(0, 5), 1), ANIMATE_RUN);
+    end
+    else begin
+      if (tile_distance_objs(self_obj, dude_obj) > 4) then begin
+        animate_move_obj_to_tile(self_obj, tile_num_in_direction(tile_num(dude_obj), random(0, 5), 3), ANIMATE_WALK);
+      end
+    end
+  end
+  if ((cur_map_index == MAP_SHADYW) or (cur_map_index == MAP_SHADYE)) then begin
+    if ((global_var(GVAR_TANDI_STATUS) == 1) and (global_var(GVAR_WATER_CHIP_7) == 0)) then begin
+      party_add(self_obj);
+      set_obj_visibility(self_obj, 1);
+      set_global_var(GVAR_WATER_CHIP_7, 1);
+    end
+    else begin
+      if ((global_var(GVAR_TANDI_STATUS) > 1) and (global_var(GVAR_WATER_CHIP_7) == 3)) then begin
+        party_remove(self_obj);
+        animate_move_obj_to_tile(self_obj, 16710, ANIMATE_WALK);
+        set_obj_visibility(self_obj, 0);
+        set_global_var(GVAR_WATER_CHIP_7, 4);
+      end
+    end
+  end
+  else begin
+    if (cur_map_index == MAP_RAIDERS) then begin
+      if ((global_var(GVAR_TANDI_STATUS) == 1) and (global_var(GVAR_WATER_CHIP_7) == 1)) then begin
+        party_remove(self_obj);
+        critter_attempt_placement(self_obj, 17905, 0);
+        set_obj_visibility(self_obj, 0);
+        set_global_var(GVAR_WATER_CHIP_7, 2);
+      end
+      else begin
+        if ((global_var(GVAR_TANDI_STATUS) == 5) and (global_var(GVAR_WATER_CHIP_7) == 2)) then begin
+          party_add(self_obj);
+          set_global_var(GVAR_WATER_CHIP_7, 3);
+        end
+      end
+    end
+  end
+  if ((global_var(GVAR_TANDI_STATUS) != 1) and (global_var(GVAR_TANDI_STATUS) != 5)) then begin
+    if (obj_can_see_obj(self_obj, dude_obj)) then begin
+      if (global_var(GVAR_ENEMY_SHADY_SANDS) == 1) then begin
+        GVar12 := 1;
+      end
+    end
+    if (GVar12) then begin
+      GVar12 := 0;
+      attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+    end
+    call TandiSchedule;
+    if (random(1, 20) == 1) then begin
+      animate_move_obj_to_tile(self_obj, tile_num_in_direction(tile_num(self_obj), random(0, 5), random(2, 4)), ANIMATE_WALK);
+    end
+  end
+end
+
+procedure Get_Reaction
+begin
+  if (local_var(2) == 0) then begin
+    set_local_var(0, 50);
+    set_local_var(1, 2);
+    set_local_var(2, 1);
+    set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+    set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+    if (has_trait(0, dude_obj, 39)) then begin
+      if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+        set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+      end
+      else begin
+        set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+      end
+    end
+    else begin
+      if (local_var(3) == 1) then begin
+        set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+      end
+      else begin
+        set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+      end
+    end
+    if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+      set_local_var(0, local_var(0) - 30);
+    end
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+      set_local_var(0, local_var(0) + 20);
+    end
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+      set_local_var(0, local_var(0) - 20);
+    end
+    call React_To_Level;
+  end
+end
+
+procedure React_To_Level
+begin
+  if (local_var(0) <= 25) then begin
+    set_local_var(1, 1);
+  end
+  else begin
+    if (local_var(0) <= 75) then begin
+      set_local_var(1, 2);
+    end
+    else begin
+      set_local_var(1, 3);
+    end
+  end
+end
+
+procedure Level_To_React
+begin
+  if (local_var(1) == 1) then begin
+    set_local_var(0, random(1, 25));
+  end
+  else begin
+    if (local_var(1) == 2) then begin
+      set_local_var(0, random(26, 75));
+    end
+    else begin
+      set_local_var(0, random(76, 100));
+    end
+  end
+end
+
+procedure Up_React
+begin
+  set_local_var(0, local_var(0) + 10);
+  call React_To_Level;
+end
+
+procedure Down_React
+begin
+  set_local_var(0, local_var(0) - 10);
+  call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+  set_local_var(1, 1);
+  set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+  set_local_var(0, 100);
+  set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+  set_local_var(0, local_var(0) + 25);
+  call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+  set_local_var(0, local_var(0) - 25);
+  call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+  set_local_var(1, local_var(1) + 1);
+  if (local_var(1) > 3) then begin
+    set_local_var(1, 3);
+  end
+  call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+  set_local_var(1, local_var(1) - 1);
+  if (local_var(1) < 1) then begin
+    set_local_var(1, 1);
+  end
+  call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+  GVar13 := message_str(SCRIPT_MODREACT, random(100, 105));
+end

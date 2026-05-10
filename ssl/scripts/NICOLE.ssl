@@ -1,0 +1,691 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure Start;
+#include <push.h>
+procedure look_at_p_proc;
+procedure description_p_proc;
+procedure talk_p_proc;
+procedure damage_p_proc;
+procedure destroy_p_proc;
+procedure critter_p_proc;
+procedure pickup_p_proc;
+procedure Nicole00;
+procedure Nicole01;
+procedure Nicole02;
+procedure Nicole04;
+procedure Nicole05;
+procedure Nicole06;
+procedure Nicole07;
+procedure Nicole08;
+procedure Nicole08a;
+procedure Nicole09;
+procedure Nicole10;
+procedure Nicole11;
+procedure Nicole12;
+procedure Nicole13;
+procedure Nicole14;
+procedure Nicole15;
+procedure Nicole16;
+procedure Nicole17;
+procedure Nicole18;
+procedure Nicole19;
+procedure Nicole20;
+procedure Nicole21;
+procedure Nicole21a;
+procedure Nicole25;
+procedure Nicole26;
+procedure Nicole27;
+procedure Nicole28;
+procedure Nicole29;
+procedure Nicole30;
+procedure Nicole31;
+procedure Nicole32;
+procedure Nicole33;
+procedure Nicole34;
+procedure Nicole35;
+procedure Nicole36;
+procedure Nicole37;
+procedure Nicole39;
+procedure Nicole41;
+procedure Nicole50;
+procedure Nicole51;
+procedure Nicole52;
+procedure Nicole53;
+procedure Nicole54;
+procedure Nicole55;
+procedure Nicole78;
+procedure NicoleMore;
+procedure NicoleShowOut;
+procedure NicoleEnd;
+
+variable Initialize := 1;
+variable DisplayMessage := 100;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure Start
+begin
+if (Initialize) then begin
+    if (obj_is_carrying_obj_pid(self_obj, 41) == 0) then begin
+      item_caps_adjust(self_obj, random(50, 150));
+    end
+    critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 46);
+    Initialize := 0;
+  end
+end
+
+procedure look_at_p_proc
+begin
+  script_overrides;
+  display_msg(message_str(SCRIPT_NICOLE, 100));
+end
+
+procedure description_p_proc
+begin
+  script_overrides;
+  display_msg(message_str(SCRIPT_NICOLE, 100));
+end
+
+procedure talk_p_proc
+begin
+  if (global_var(GVAR_ENEMY_FOLLOWERS) == 1) then begin
+    float_msg(self_obj, message_str(SCRIPT_ENEMY, random(100, 105)), FLOAT_MSG_RED);
+  end
+  else begin
+    if ((local_var(4) == 1) and (get_critter_stat(dude_obj, 4) < 4)) then begin
+      float_msg(self_obj, message_str(SCRIPT_NICOLE, 286), FLOAT_MSG_NORMAL);
+    end
+    else begin
+      if (local_var(2) == 0) then begin
+        set_local_var(2, 1);
+        set_local_var(1, 3);
+        call Level_To_React;
+      end
+      start_gdialog(SCRIPT_NICOLE, self_obj, 4, HEAD_NICOLE, BACKGROUND_FOLLOWER);
+      gsay_start;
+      if (local_var(4) == 0) then begin
+        call Nicole01;
+      end
+      else begin
+        DisplayMessage := 132;
+        call Nicole00;
+      end
+      gsay_end;
+      end_dialogue;
+      if (local_var(5) == 1) then begin
+        gfade_in(600);
+        set_local_var(5, 0);
+      end
+    end
+  end
+end
+
+procedure damage_p_proc
+begin
+  if (source_obj == dude_obj) then begin
+    set_global_var(GVAR_ENEMY_FOLLOWERS, 1);
+  end
+end
+
+procedure destroy_p_proc
+begin
+  if (source_obj == dude_obj) then begin
+    set_global_var(GVAR_ENEMY_FOLLOWERS, 1);
+    if (source_obj == dude_obj) then begin
+      if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+        set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+        set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+      end
+      if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+        set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+        set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+      end
+      set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+      if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+        set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+      end
+    end
+  end
+end
+
+procedure critter_p_proc
+begin
+  if (obj_can_see_obj(self_obj, dude_obj)) then begin
+    if (global_var(GVAR_ENEMY_FOLLOWERS) == 1) then begin
+      attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+    end
+  end
+end
+
+procedure pickup_p_proc
+begin
+  set_global_var(GVAR_ENEMY_FOLLOWERS, 1);
+end
+
+procedure Nicole00
+begin
+  gsay_reply(SCRIPT_NICOLE, DisplayMessage);
+  gsay_option(SCRIPT_NICOLE, 101, Nicole29, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 102, Nicole02, NEUTRAL_REACTION);
+  if (global_var(GVAR_MASTER_BLOWN) == 0) then begin
+    giq_option(4, SCRIPT_NICOLE, 319, Nicole50, NEUTRAL_REACTION);
+  end
+  gsay_option(SCRIPT_NICOLE, 131, Nicole14, NEUTRAL_REACTION);
+end
+
+procedure Nicole01
+begin
+  gsay_reply(SCRIPT_NICOLE, 105);
+  giq_option(4, SCRIPT_NICOLE, 106, Nicole02, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_NICOLE, 107, Nicole11, BAD_REACTION);
+  giq_option(4, SCRIPT_NICOLE, 108, Nicole09, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_NICOLE, 109, Nicole15, NEUTRAL_REACTION);
+  giq_option(-3, SCRIPT_NICOLE, 110, Nicole78, NEUTRAL_REACTION);
+  set_local_var(4, 1);
+end
+
+procedure Nicole02
+begin
+  gsay_reply(SCRIPT_NICOLE, 111);
+  gsay_option(SCRIPT_NICOLE, 112, Nicole04, NEUTRAL_REACTION);
+end
+
+procedure Nicole04
+begin
+  gsay_reply(SCRIPT_NICOLE, 113);
+  gsay_option(SCRIPT_NICOLE, 114, Nicole05, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 115, Nicole11, BAD_REACTION);
+end
+
+procedure Nicole05
+begin
+  gsay_reply(SCRIPT_NICOLE, 116);
+  gsay_option(SCRIPT_NICOLE, 117, Nicole06, NEUTRAL_REACTION);
+end
+
+procedure Nicole06
+begin
+  gsay_reply(SCRIPT_NICOLE, 118);
+  gsay_option(SCRIPT_NICOLE, 119, Nicole07, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 123, Nicole08, NEUTRAL_REACTION);
+  if (local_var(1) >= 2) then begin
+    gsay_option(SCRIPT_NICOLE, 121, Nicole08a, NEUTRAL_REACTION);
+  end
+  else begin
+    gsay_option(SCRIPT_NICOLE, 121, Nicole11, BAD_REACTION);
+  end
+end
+
+procedure Nicole07
+begin
+  gsay_reply(SCRIPT_NICOLE, 122);
+  gsay_option(SCRIPT_NICOLE, 123, Nicole08, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 124, Nicole28, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 125, Nicole19, GOOD_REACTION);
+  if (local_var(1) >= 2) then begin
+    gsay_option(SCRIPT_NICOLE, 126, Nicole08a, NEUTRAL_REACTION);
+  end
+  else begin
+    gsay_option(SCRIPT_NICOLE, 126, Nicole11, BAD_REACTION);
+  end
+end
+
+procedure Nicole08
+begin
+  gsay_message(SCRIPT_NICOLE, 127, NEUTRAL_REACTION);
+  DisplayMessage := 129;
+  call NicoleMore;
+end
+
+procedure Nicole08a
+begin
+  gsay_message(SCRIPT_NICOLE, 128, NEUTRAL_REACTION);
+  DisplayMessage := 129;
+  call NicoleMore;
+end
+
+procedure Nicole09
+begin
+  DisplayMessage := 132;
+  call Nicole00;
+end
+
+procedure Nicole10
+begin
+  gsay_message(SCRIPT_NICOLE, 133, NEUTRAL_REACTION);
+  call NicoleShowOut;
+end
+
+procedure Nicole11
+begin
+  call Down_React_Level;
+  gsay_reply(SCRIPT_NICOLE, 134);
+  gsay_option(SCRIPT_NICOLE, 135, Nicole12, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 136, Nicole13, NEUTRAL_REACTION);
+end
+
+procedure Nicole12
+begin
+  call Bottom_React;
+  gsay_message(SCRIPT_NICOLE, 137, NEUTRAL_REACTION);
+  call NicoleShowOut;
+end
+
+procedure Nicole13
+begin
+  DisplayMessage := 138;
+  call NicoleMore;
+end
+
+procedure Nicole14
+begin
+  gsay_message(SCRIPT_NICOLE, 141, NEUTRAL_REACTION);
+end
+
+procedure Nicole15
+begin
+  gsay_reply(SCRIPT_NICOLE, 142);
+  gsay_option(SCRIPT_NICOLE, 143, Nicole16, NEUTRAL_REACTION);
+end
+
+procedure Nicole16
+begin
+  gsay_reply(SCRIPT_NICOLE, 144);
+  gsay_option(SCRIPT_NICOLE, 145, Nicole17, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 146, Nicole25, NEUTRAL_REACTION);
+end
+
+procedure Nicole17
+begin
+  gsay_reply(SCRIPT_NICOLE, 147);
+  gsay_option(SCRIPT_NICOLE, 148, Nicole07, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 149, Nicole18, NEUTRAL_REACTION);
+end
+
+procedure Nicole18
+begin
+  gsay_reply(SCRIPT_NICOLE, 151);
+  gsay_option(SCRIPT_NICOLE, 152, Nicole19, GOOD_REACTION);
+  gsay_option(SCRIPT_NICOLE, 153, Nicole20, NEUTRAL_REACTION);
+end
+
+procedure Nicole19
+begin
+  DisplayMessage := 154;
+  call NicoleMore;
+end
+
+procedure Nicole20
+begin
+  gsay_reply(SCRIPT_NICOLE, 157);
+  gsay_option(SCRIPT_NICOLE, 158, Nicole21, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 159, Nicole21a, BAD_REACTION);
+  if (local_var(1) >= 2) then begin
+    gsay_option(SCRIPT_NICOLE, 160, Nicole09, NEUTRAL_REACTION);
+  end
+  else begin
+    gsay_option(SCRIPT_NICOLE, 160, Nicole10, BAD_REACTION);
+  end
+  gsay_option(SCRIPT_NICOLE, 164, Nicole14, NEUTRAL_REACTION);
+end
+
+procedure Nicole21
+begin
+  gsay_reply(SCRIPT_NICOLE, 161);
+  if (local_var(1) >= 2) then begin
+    gsay_option(SCRIPT_NICOLE, 163, Nicole09, NEUTRAL_REACTION);
+  end
+  else begin
+    gsay_option(SCRIPT_NICOLE, 163, Nicole10, BAD_REACTION);
+  end
+  gsay_option(SCRIPT_NICOLE, 164, Nicole14, NEUTRAL_REACTION);
+end
+
+procedure Nicole21a
+begin
+  gsay_reply(SCRIPT_NICOLE, 162);
+  if (local_var(1) >= 2) then begin
+    gsay_option(SCRIPT_NICOLE, 163, Nicole09, NEUTRAL_REACTION);
+  end
+  else begin
+    gsay_option(SCRIPT_NICOLE, 163, Nicole10, BAD_REACTION);
+  end
+  gsay_option(SCRIPT_NICOLE, 164, Nicole14, NEUTRAL_REACTION);
+end
+
+procedure Nicole25
+begin
+  gsay_reply(SCRIPT_NICOLE, 175);
+  gsay_option(SCRIPT_NICOLE, 176, Nicole26, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 177, Nicole11, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 178, Nicole27, NEUTRAL_REACTION);
+end
+
+procedure Nicole26
+begin
+  DisplayMessage := 179;
+  call NicoleMore;
+end
+
+procedure Nicole27
+begin
+  DisplayMessage := 182;
+  call NicoleMore;
+end
+
+procedure Nicole28
+begin
+  gsay_reply(SCRIPT_NICOLE, 185);
+  gsay_option(SCRIPT_NICOLE, 186, Nicole19, GOOD_REACTION);
+  if (local_var(1) >= 2) then begin
+    gsay_option(SCRIPT_NICOLE, 187, Nicole09, NEUTRAL_REACTION);
+  end
+  else begin
+    gsay_option(SCRIPT_NICOLE, 187, Nicole10, BAD_REACTION);
+  end
+  gsay_option(SCRIPT_NICOLE, 188, Nicole14, NEUTRAL_REACTION);
+end
+
+procedure Nicole29
+begin
+  gsay_reply(SCRIPT_NICOLE, 189);
+  gsay_option(SCRIPT_NICOLE, 190, Nicole30, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 191, Nicole31, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 192, Nicole04, NEUTRAL_REACTION);
+end
+
+procedure Nicole30
+begin
+  gsay_reply(SCRIPT_NICOLE, 193);
+  gsay_option(SCRIPT_NICOLE, 194, Nicole31, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 195, Nicole36, NEUTRAL_REACTION);
+end
+
+procedure Nicole31
+begin
+  gsay_reply(SCRIPT_NICOLE, 196);
+  gsay_option(SCRIPT_NICOLE, 197, Nicole39, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 198, Nicole11, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 199, Nicole32, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 195, Nicole36, NEUTRAL_REACTION);
+end
+
+procedure Nicole32
+begin
+  gsay_reply(SCRIPT_NICOLE, 201);
+  gsay_option(SCRIPT_NICOLE, 202, Nicole33, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 195, Nicole36, NEUTRAL_REACTION);
+end
+
+procedure Nicole33
+begin
+  gsay_reply(SCRIPT_NICOLE, 204);
+  gsay_option(SCRIPT_NICOLE, 205, Nicole11, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 206, Nicole34, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 207, Nicole36, NEUTRAL_REACTION);
+end
+
+procedure Nicole34
+begin
+  gsay_reply(SCRIPT_NICOLE, 208);
+  gsay_option(SCRIPT_NICOLE, 209, Nicole36, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 210, Nicole35, NEUTRAL_REACTION);
+  if (local_var(1) >= 2) then begin
+    gsay_option(SCRIPT_NICOLE, 211, Nicole09, NEUTRAL_REACTION);
+  end
+  else begin
+    gsay_option(SCRIPT_NICOLE, 211, Nicole10, BAD_REACTION);
+  end
+  gsay_option(SCRIPT_NICOLE, 212, Nicole14, NEUTRAL_REACTION);
+end
+
+procedure Nicole35
+begin
+  gsay_message(SCRIPT_NICOLE, 213, NEUTRAL_REACTION);
+  call Down_React_Level;
+end
+
+procedure Nicole36
+begin
+  gsay_reply(SCRIPT_NICOLE, 214);
+  gsay_option(SCRIPT_NICOLE, 215, Nicole37, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 216, Nicole41, NEUTRAL_REACTION);
+end
+
+procedure Nicole37
+begin
+  gsay_reply(SCRIPT_NICOLE, 217);
+  gsay_option(SCRIPT_NICOLE, 218, Nicole39, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 219, Nicole41, NEUTRAL_REACTION);
+end
+
+procedure Nicole39
+begin
+  DisplayMessage := 220;
+  call Top_React;
+  call NicoleMore;
+end
+
+procedure Nicole41
+begin
+  DisplayMessage := 223;
+  call NicoleMore;
+end
+
+procedure Nicole50
+begin
+  DisplayMessage := 132;
+  gsay_reply(SCRIPT_NICOLE, 307);
+  gsay_option(SCRIPT_NICOLE, 320, Nicole51, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 321, Nicole00, NEUTRAL_REACTION);
+end
+
+procedure Nicole51
+begin
+  gsay_reply(SCRIPT_NICOLE, DisplayMessage);
+  gsay_option(SCRIPT_NICOLE, 322, Nicole52, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 323, Nicole53, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 324, Nicole54, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 321, Nicole00, NEUTRAL_REACTION);
+  gsay_option(SCRIPT_NICOLE, 326, Nicole14, NEUTRAL_REACTION);
+end
+
+procedure Nicole52
+begin
+  DisplayMessage := 299;
+  call Nicole51;
+end
+
+procedure Nicole53
+begin
+  DisplayMessage := 185;
+  call Nicole51;
+end
+
+procedure Nicole54
+begin
+  gsay_reply(SCRIPT_NICOLE, 251);
+  gsay_option(SCRIPT_NICOLE, 325, Nicole55, NEUTRAL_REACTION);
+  set_global_var(GVAR_FOLLOWER_MACHO_HELP, 1);
+end
+
+procedure Nicole55
+begin
+  set_global_var(GVAR_SHADOW_PASSWORD, 1);
+  gsay_message(SCRIPT_NICOLE, 254, NEUTRAL_REACTION);
+end
+
+procedure Nicole78
+begin
+  gsay_message(SCRIPT_NICOLE, 291, NEUTRAL_REACTION);
+end
+
+procedure NicoleMore
+begin
+  gsay_reply(SCRIPT_NICOLE, DisplayMessage);
+  if (local_var(1) >= 2) then begin
+    gsay_option(SCRIPT_NICOLE, 155, Nicole09, NEUTRAL_REACTION);
+  end
+  else begin
+    gsay_option(SCRIPT_NICOLE, 155, Nicole10, BAD_REACTION);
+  end
+  gsay_option(SCRIPT_NICOLE, 131, Nicole14, NEUTRAL_REACTION);
+end
+
+procedure NicoleShowOut
+begin
+  gfade_out(600);
+  move_to(dude_obj, 23883, 0);
+  set_local_var(5, 1);
+end
+
+procedure NicoleEnd
+begin
+end
+
+procedure Get_Reaction
+begin
+  if (local_var(2) == 0) then begin
+    set_local_var(0, 50);
+    set_local_var(1, 2);
+    set_local_var(2, 1);
+    set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+    set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+    if (has_trait(0, dude_obj, 39)) then begin
+      if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+        set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+      end
+      else begin
+        set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+      end
+    end
+    else begin
+      if (local_var(3) == 1) then begin
+        set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+      end
+      else begin
+        set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+      end
+    end
+    if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+      set_local_var(0, local_var(0) - 30);
+    end
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+      set_local_var(0, local_var(0) + 20);
+    end
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+      set_local_var(0, local_var(0) - 20);
+    end
+    call React_To_Level;
+  end
+end
+
+procedure React_To_Level
+begin
+  if (local_var(0) <= 25) then begin
+    set_local_var(1, 1);
+  end
+  else begin
+    if (local_var(0) <= 75) then begin
+      set_local_var(1, 2);
+    end
+    else begin
+      set_local_var(1, 3);
+    end
+  end
+end
+
+procedure Level_To_React
+begin
+  if (local_var(1) == 1) then begin
+    set_local_var(0, random(1, 25));
+  end
+  else begin
+    if (local_var(1) == 2) then begin
+      set_local_var(0, random(26, 75));
+    end
+    else begin
+      set_local_var(0, random(76, 100));
+    end
+  end
+end
+
+procedure Up_React
+begin
+  set_local_var(0, local_var(0) + 10);
+  call React_To_Level;
+end
+
+procedure Down_React
+begin
+  set_local_var(0, local_var(0) - 10);
+  call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+  set_local_var(1, 1);
+  set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+  set_local_var(0, 100);
+  set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+  set_local_var(0, local_var(0) + 25);
+  call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+  set_local_var(0, local_var(0) - 25);
+  call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+  set_local_var(1, local_var(1) + 1);
+  if (local_var(1) > 3) then begin
+    set_local_var(1, 3);
+  end
+  call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+  set_local_var(1, local_var(1) - 1);
+  if (local_var(1) < 1) then begin
+    set_local_var(1, 1);
+  end
+  call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+  exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

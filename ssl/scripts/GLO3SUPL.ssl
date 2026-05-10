@@ -1,0 +1,34 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+
+
+procedure start
+begin
+	variable LVar0 := 0;
+	variable LVar1 := 0;
+	variable LVar2 := 0;
+	LVar0 := get_critter_stat(dude_obj, 0);
+	LVar1 := get_critter_stat(dude_obj, 5);
+	LVar2 := LVar0 + LVar1;
+	if ((script_action == look_at_proc) and (script_action == description_proc)) then begin
+		script_overrides;
+		display_msg(message_str(SCRIPT_GLO3SUPL, 100));
+	end
+	else begin
+		if (script_action == use_proc) then begin
+			if ((LVar0 < 7) and (LVar2 < 12)) then begin
+				script_overrides;
+				display_msg(message_str(SCRIPT_GLO3SUPL, 101));
+			end
+		end
+	end
+end

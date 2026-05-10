@@ -1,0 +1,1154 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure do_dialogue;
+procedure zark00;
+procedure zark00a;
+procedure zark00b;
+procedure zark00c;
+procedure zark01;
+procedure zark01a;
+procedure zark02;
+procedure zark02a;
+procedure zark03;
+procedure zark03a;
+procedure zark04;
+procedure zark04a;
+procedure zark04b;
+procedure zark05;
+procedure zark05a;
+procedure zark06;
+procedure zark06a;
+procedure zark06b;
+procedure zark07;
+procedure zark07a;
+procedure zark08;
+procedure zark08a;
+procedure zark09;
+procedure zark10;
+procedure zark11;
+procedure zark12;
+procedure zark13;
+procedure zark14;
+procedure zark14a;
+procedure zark15;
+procedure zark15a;
+procedure zark15c;
+procedure zark16;
+procedure zark17;
+procedure zark18;
+procedure zark19;
+procedure zark19a;
+procedure zark20;
+procedure zark21;
+procedure zark22;
+procedure zark23;
+procedure zark24;
+procedure zark25;
+procedure zark26;
+procedure zark27;
+procedure zark28;
+procedure zark28a;
+procedure zark28b;
+procedure zark29;
+procedure zark30;
+procedure zark31;
+procedure zark31a;
+procedure zark31b;
+procedure zark32;
+procedure zark33;
+procedure zark34;
+procedure zark35;
+procedure zark36;
+procedure zark37;
+procedure zark38;
+procedure zark38a;
+procedure zark38b;
+procedure zark38c;
+procedure zark39;
+procedure zark39a;
+procedure zark39b;
+procedure zark40;
+procedure zark40a;
+procedure zark41;
+procedure zark41a;
+procedure zark41b;
+procedure zark41c;
+procedure zark42;
+procedure zark43;
+procedure zark44;
+procedure zark44a;
+procedure zark44b;
+procedure zark45;
+procedure zark46;
+procedure zark47;
+procedure zark47a;
+procedure zark48;
+procedure zark49;
+procedure zarkdone;
+procedure zarkend;
+procedure zarkcombat;
+procedure weapon_check;
+
+variable hostile1;
+variable armed;
+variable GENDER;
+variable LASHERKNOWN;
+variable Only_Once := 1;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	if (Only_Once) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 20);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_CHILDREN_TRUE);
+		Only_Once := 0;
+	end
+	if (script_action == talk_proc) then begin
+		call do_dialogue;
+	end
+	else begin
+		if ((script_action == look_at_proc) or (script_action == description_proc)) then begin
+			script_overrides;
+			display_msg(message_str(SCRIPT_ZARK, 100));
+		end
+		else begin
+			if (script_action == pickup_proc) then begin
+				hostile1 := 1;
+			end
+			else begin
+				if (script_action == destroy_proc) then begin
+					if (source_obj == dude_obj) then begin
+						if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+							set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+							set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+						end
+						if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+							set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+							set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+						end
+						set_global_var(GVAR_BAD_MONSTER, global_var(GVAR_BAD_MONSTER) + 1);
+						if ((global_var(GVAR_BAD_MONSTER) % 6) == 0) then begin
+							set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) + 1);
+						end
+					end
+				end
+				else begin
+					if (script_action == critter_proc) then begin
+						if (hostile1) then begin
+							hostile1 := 0;
+							attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure do_dialogue
+begin
+	call weapon_check;
+	start_gdialog(-1, self_obj, 4, -1, -1);
+	gsay_start;
+	if (obj_pid(critter_inven_obj(dude_obj, 0)) == 113) then begin
+		if (local_var(4) == 0) then begin
+			if (armed == 1) then begin
+				call zark14;
+			end
+			else begin
+				call zark01;
+			end
+		end
+		else begin
+			set_local_var(4, 1);
+			call zark13;
+		end
+	end
+	else begin
+		set_local_var(4, 1);
+		if (global_var(GVAR_CATHEDRAL_ENEMY) == 1) then begin
+			call zark00;
+		end
+		else begin
+			if (armed == 1) then begin
+				if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1)) or (global_var(GVAR_PLAYER_REPUTATION) > 50)) then begin
+					call zark02;
+				end
+				else begin
+					if ((global_var(GVAR_CHILDKILLER_REPUTATION) > 2) or (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) or (global_var(GVAR_PLAYER_REPUTATION) < -50)) then begin
+						call zark45;
+					end
+					else begin
+						call zark03;
+					end
+				end
+			end
+			else begin
+				if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1)) or (global_var(GVAR_PLAYER_REPUTATION) > 50)) then begin
+					call zark02;
+				end
+				else begin
+					if ((global_var(GVAR_CHILDKILLER_REPUTATION) > 2) or (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) or (global_var(GVAR_PLAYER_REPUTATION) < -50)) then begin
+						call zark45;
+					end
+					else begin
+						call zark04;
+					end
+				end
+			end
+		end
+	end
+	gsay_end;
+	end_dialogue;
+end
+
+procedure zark00
+begin
+	if (GENDER == 0) then begin
+		gsay_reply(SCRIPT_ZARK, 101);
+	end
+	else begin
+		gsay_reply(SCRIPT_ZARK, 102);
+	end
+	giq_option(4, SCRIPT_ZARK, 103, zark00a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 104, zark00b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 105, zark11, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 106, zark00c, NEUTRAL_REACTION);
+	end
+	giq_option(-3, SCRIPT_ZARK, 107, zark11, NEUTRAL_REACTION);
+end
+
+procedure zark00a
+begin
+	if (get_critter_stat(dude_obj, 0) > 7) then begin
+		call zark10;
+	end
+	else begin
+		call zark11;
+	end
+end
+
+procedure zark00b
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark10;
+	end
+	else begin
+		call zark11;
+	end
+end
+
+procedure zark00c
+begin
+	if (get_critter_stat(dude_obj, 0) > 7) then begin
+		call zark12;
+	end
+	else begin
+		call zark11;
+	end
+end
+
+procedure zark01
+begin
+	gsay_reply(SCRIPT_ZARK, 108);
+	giq_option(7, SCRIPT_ZARK, 109, zark01a, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_ZARK, 110, zark39, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 111, zark46, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 112, zark08, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 113, zark12, NEUTRAL_REACTION);
+	end
+	giq_option(3, SCRIPT_ZARK, 114, zark18, NEUTRAL_REACTION);
+end
+
+procedure zark01a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark38;
+	end
+	else begin
+		call zark26;
+	end
+end
+
+procedure zark02
+begin
+	gsay_reply(SCRIPT_ZARK, 115);
+	giq_option(7, SCRIPT_ZARK, 116, zark02a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 117, zark25, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 118, zark31, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 119, zark46, NEUTRAL_REACTION);
+	if (global_var(GVAR_ALOCHOL_ADDICT) == 1) then begin
+		giq_option(4, SCRIPT_ZARK, 120, zark30, NEUTRAL_REACTION);
+	end
+	giq_option(3, SCRIPT_ZARK, 121, zark35, NEUTRAL_REACTION);
+end
+
+procedure zark02a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark19;
+	end
+	else begin
+		call zark26;
+	end
+end
+
+procedure zark03
+begin
+	gsay_reply(SCRIPT_ZARK, 122);
+	giq_option(7, SCRIPT_ZARK, 123, zark03a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 124, zark18, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 125, zark26, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 126, zark17, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_ZARK, 127, zark18, NEUTRAL_REACTION);
+end
+
+procedure zark03a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark06;
+	end
+	else begin
+		call zark11;
+	end
+end
+
+procedure zark04
+begin
+	gsay_reply(SCRIPT_ZARK, 128);
+	giq_option(7, SCRIPT_ZARK, 129, zark04a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 130, zark26, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 131, zark04b, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_ZARK, 132, zark18, NEUTRAL_REACTION);
+end
+
+procedure zark04a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark05;
+	end
+	else begin
+		call zark11;
+	end
+end
+
+procedure zark04b
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark31;
+	end
+	else begin
+		call zark26;
+	end
+end
+
+procedure zark05
+begin
+	set_global_var(GVAR_MORPHEUS_KNOWN, 1);
+	LASHERKNOWN := 1;
+	gsay_reply(SCRIPT_ZARK, 133);
+	giq_option(7, SCRIPT_ZARK, 134, zark05a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 135, zark31, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 136, zark07, NEUTRAL_REACTION);
+end
+
+procedure zark05a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark23;
+	end
+	else begin
+		call zark26;
+	end
+end
+
+procedure zark06
+begin
+	gsay_reply(SCRIPT_ZARK, 137);
+	giq_option(7, SCRIPT_ZARK, 138, zark06a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 139, zark06b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 140, zark20, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 141, zark46, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 142, zark11, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark06a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark19;
+	end
+	else begin
+		call zark26;
+	end
+end
+
+procedure zark06b
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark19;
+	end
+	else begin
+		call zark11;
+	end
+end
+
+procedure zark07
+begin
+	LASHERKNOWN := 1;
+	gsay_reply(SCRIPT_ZARK, 143);
+	if (global_var(GVAR_MORPHEUS_KNOWN) == 1) then begin
+		giq_option(7, SCRIPT_ZARK, 144, zark07a, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_ZARK, 145, zark33, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 146, zark36, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark07a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark26;
+	end
+	else begin
+		call zark26;
+	end
+end
+
+procedure zark08
+begin
+	set_global_var(GVAR_MORPHEUS_KNOWN, 1);
+	gsay_reply(SCRIPT_ZARK, 147);
+	giq_option(7, SCRIPT_ZARK, 148, zark08a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 149, zark49, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 150, zark31, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 151, zark18, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark08a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark09;
+	end
+	else begin
+		call zark18;
+	end
+end
+
+procedure zark09
+begin
+	gsay_reply(SCRIPT_ZARK, 152);
+	giq_option(7, SCRIPT_ZARK, 153, zark31, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 154, zark47, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 155, zark29, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 156, zark12, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark10
+begin
+	gsay_message(SCRIPT_ZARK, 157, NEUTRAL_REACTION);
+end
+
+procedure zark11
+begin
+	gsay_message(SCRIPT_ZARK, 158, NEUTRAL_REACTION);
+	call zarkcombat;
+end
+
+procedure zark12
+begin
+	if (GENDER == 0) then begin
+		gsay_reply(SCRIPT_ZARK, 159);
+	end
+	else begin
+		gsay_reply(SCRIPT_ZARK, 160);
+	end
+	giq_option(4, SCRIPT_ZARK, 161, zark21, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 162, zark11, NEUTRAL_REACTION);
+end
+
+procedure zark13
+begin
+	gsay_message(SCRIPT_ZARK, 163, NEUTRAL_REACTION);
+end
+
+procedure zark14
+begin
+	gsay_reply(SCRIPT_ZARK, 164);
+	giq_option(7, SCRIPT_ZARK, 165, zark14a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 166, zark18, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 167, zark16, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 168, zark17, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 169, zark16, NEUTRAL_REACTION);
+	end
+	giq_option(-3, SCRIPT_ZARK, 170, zark18, NEUTRAL_REACTION);
+end
+
+procedure zark14a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark15;
+	end
+	else begin
+		call zark16;
+	end
+end
+
+procedure zark15
+begin
+	gsay_reply(SCRIPT_ZARK, 171);
+	giq_option(7, SCRIPT_ZARK, 172, zark15a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 173, zark15a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 174, zark20, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 175, zark46, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 176, zark15c, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark15a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark19;
+	end
+	else begin
+		call zark16;
+	end
+end
+
+procedure zark15c
+begin
+	if (get_critter_stat(dude_obj, 0) < 7) then begin
+		call zark21;
+	end
+	else begin
+		call zark22;
+	end
+end
+
+procedure zark16
+begin
+	gsay_message(SCRIPT_ZARK, 177, NEUTRAL_REACTION);
+end
+
+procedure zark17
+begin
+	gsay_message(SCRIPT_ZARK, 178, BAD_REACTION);
+	call zarkcombat;
+end
+
+procedure zark18
+begin
+	gsay_message(SCRIPT_ZARK, 179, NEUTRAL_REACTION);
+end
+
+procedure zark19
+begin
+	gsay_reply(SCRIPT_ZARK, 180);
+	giq_option(4, SCRIPT_ZARK, 181, zark19a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 182, zark24, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 183, zark25, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 184, zark24, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 185, zark18, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark19a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark23;
+	end
+	else begin
+		call zark26;
+	end
+end
+
+procedure zark20
+begin
+	set_global_var(GVAR_MORPHEUS_KNOWN, 1);
+	gsay_reply(SCRIPT_ZARK, 186);
+	giq_option(7, SCRIPT_ZARK, 187, zark26, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 188, zark27, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 189, zark28, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 190, zark29, NEUTRAL_REACTION);
+	if (global_var(GVAR_ALOCHOL_ADDICT) == 1) then begin
+		giq_option(4, SCRIPT_ZARK, 191, zark30, NEUTRAL_REACTION);
+	end
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 192, zark21, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark21
+begin
+	gsay_reply(SCRIPT_ZARK, 193);
+end
+
+procedure zark22
+begin
+	gsay_reply(SCRIPT_ZARK, 194);
+	giq_option(4, SCRIPT_ZARK, 195, zark19, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 196, zark20, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 197, zark31, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 198, zark21, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark23
+begin
+	gsay_message(SCRIPT_ZARK, 199, NEUTRAL_REACTION);
+end
+
+procedure zark24
+begin
+	gsay_message(SCRIPT_ZARK, 200, NEUTRAL_REACTION);
+end
+
+procedure zark25
+begin
+	gsay_message(SCRIPT_ZARK, 201, NEUTRAL_REACTION);
+end
+
+procedure zark26
+begin
+	gsay_message(SCRIPT_ZARK, 202, NEUTRAL_REACTION);
+end
+
+procedure zark27
+begin
+	gsay_reply(SCRIPT_ZARK, 203);
+	giq_option(7, SCRIPT_ZARK, 204, zark32, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 205, zark33, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 206, zark34, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 207, zark35, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 208, zark21, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark28
+begin
+	LASHERKNOWN := 1;
+	gsay_reply(SCRIPT_ZARK, 209);
+	if (global_var(GVAR_MORPHEUS_KNOWN) == 1) then begin
+		giq_option(7, SCRIPT_ZARK, 210, zark28a, NEUTRAL_REACTION);
+	end
+	else begin
+		giq_option(7, SCRIPT_ZARK, 211, zark28a, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_ZARK, 212, zark33, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 213, zark36, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark28a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark26;
+	end
+	else begin
+		call zark26;
+	end
+end
+
+procedure zark28b
+begin
+end
+
+procedure zark29
+begin
+	gsay_message(SCRIPT_ZARK, 214, NEUTRAL_REACTION);
+end
+
+procedure zark30
+begin
+	gsay_reply(SCRIPT_ZARK, 215);
+	giq_option(4, SCRIPT_ZARK, 216, zark37, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 217, zark37, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 218, zark21, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark31
+begin
+	set_global_var(GVAR_MORPHEUS_KNOWN, 1);
+	gsay_reply(SCRIPT_ZARK, 219);
+	giq_option(7, SCRIPT_ZARK, 220, zark31a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 221, zark31b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 222, zark28, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 223, zark29, NEUTRAL_REACTION);
+	if (global_var(GVAR_ALOCHOL_ADDICT) == 1) then begin
+		giq_option(4, SCRIPT_ZARK, 224, zark30, NEUTRAL_REACTION);
+	end
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 225, zark21, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark31a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark23;
+	end
+	else begin
+		call zark26;
+	end
+end
+
+procedure zark31b
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark27;
+	end
+	else begin
+		call zark26;
+	end
+end
+
+procedure zark32
+begin
+	gsay_message(SCRIPT_ZARK, 226, NEUTRAL_REACTION);
+end
+
+procedure zark33
+begin
+	gsay_message(SCRIPT_ZARK, 227, NEUTRAL_REACTION);
+end
+
+procedure zark34
+begin
+	set_global_var(GVAR_MORPHEUS_KNOWN, 1);
+	gsay_message(SCRIPT_ZARK, 228, NEUTRAL_REACTION);
+end
+
+procedure zark35
+begin
+	gsay_message(SCRIPT_ZARK, 229, NEUTRAL_REACTION);
+end
+
+procedure zark36
+begin
+	gsay_message(SCRIPT_ZARK, 230, NEUTRAL_REACTION);
+end
+
+procedure zark37
+begin
+	LASHERKNOWN := 1;
+	gsay_message(SCRIPT_ZARK, 231, NEUTRAL_REACTION);
+end
+
+procedure zark38
+begin
+	gsay_reply(SCRIPT_ZARK, 232);
+	giq_option(7, SCRIPT_ZARK, 233, zark38a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 234, zark38b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 235, zark20, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 236, zark11, NEUTRAL_REACTION);
+	if (global_var(GVAR_ALOCHOL_ADDICT) == 1) then begin
+		giq_option(4, SCRIPT_ZARK, 237, zark30, NEUTRAL_REACTION);
+	end
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 238, zark38c, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark38a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark19;
+	end
+	else begin
+		call zark16;
+	end
+end
+
+procedure zark38b
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark19;
+	end
+	else begin
+		call zark26;
+	end
+end
+
+procedure zark38c
+begin
+	if (get_critter_stat(dude_obj, 0) < 7) then begin
+		call zark21;
+	end
+	else begin
+		call zark22;
+	end
+end
+
+procedure zark39
+begin
+	gsay_reply(SCRIPT_ZARK, 239);
+	giq_option(7, SCRIPT_ZARK, 240, zark39a, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_ZARK, 241, zark39b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 242, zark40, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 243, zark29, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 244, zark18, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark39a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark38;
+	end
+	else begin
+		call zark26;
+	end
+end
+
+procedure zark39b
+begin
+	if (obj_pid(critter_inven_obj(dude_obj, 0)) == 113) then begin
+		call zark16;
+	end
+	else begin
+		call zark25;
+	end
+end
+
+procedure zark40
+begin
+	gsay_reply(SCRIPT_ZARK, 245);
+	giq_option(7, SCRIPT_ZARK, 246, zark40a, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_ZARK, 247, zark41, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 248, zark42, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 249, zark43, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 250, zark42, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark40a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark19;
+	end
+	else begin
+		call zark26;
+	end
+end
+
+procedure zark41
+begin
+	gsay_reply(SCRIPT_ZARK, 251);
+	giq_option(7, SCRIPT_ZARK, 252, zark25, NEUTRAL_REACTION);
+	if (GENDER != 0) then begin
+		giq_option(7, SCRIPT_ZARK, 253, zark41a, NEUTRAL_REACTION);
+	end
+	else begin
+		giq_option(7, SCRIPT_ZARK, 254, zark41a, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_ZARK, 255, zark41b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 256, zark47, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_ZARK, 257, zarkcombat, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark41a
+begin
+	if (obj_pid(critter_inven_obj(dude_obj, 0)) == 113) then begin
+		call zark42;
+	end
+	else begin
+		call zark45;
+	end
+end
+
+procedure zark41b
+begin
+	if (obj_pid(critter_inven_obj(dude_obj, 0)) == 113) then begin
+		call zark42;
+	end
+	else begin
+		call zark45;
+	end
+end
+
+procedure zark41c
+begin
+	call zarkcombat;
+end
+
+procedure zark42
+begin
+	gsay_message(SCRIPT_ZARK, 258, NEUTRAL_REACTION);
+end
+
+procedure zark43
+begin
+	gsay_message(SCRIPT_ZARK, 259, NEUTRAL_REACTION);
+end
+
+procedure zark44
+begin
+	gsay_reply(SCRIPT_ZARK, 260);
+	giq_option(7, SCRIPT_ZARK, 261, zark44a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 262, zark44b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 263, zark31, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 264, zark46, NEUTRAL_REACTION);
+	if (global_var(GVAR_ALOCHOL_ADDICT) == 1) then begin
+		giq_option(4, SCRIPT_ZARK, 265, zark30, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark44a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark19;
+	end
+	else begin
+		call zark16;
+	end
+end
+
+procedure zark44b
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark19;
+	end
+	else begin
+		call zark26;
+	end
+end
+
+procedure zark45
+begin
+	if (GENDER == 0) then begin
+		gsay_message(SCRIPT_ZARK, 266, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_ZARK, 267, NEUTRAL_REACTION);
+	end
+end
+
+procedure zark46
+begin
+	gsay_message(SCRIPT_ZARK, 268, NEUTRAL_REACTION);
+end
+
+procedure zark47
+begin
+	gsay_reply(SCRIPT_ZARK, 269);
+	giq_option(7, SCRIPT_ZARK, 270, zark47a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 271, zark48, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 272, zarkend, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ZARK, 273, zarkcombat, NEUTRAL_REACTION);
+end
+
+procedure zark47a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call zark26;
+	end
+	else begin
+		call zark26;
+	end
+end
+
+procedure zark48
+begin
+	gsay_message(SCRIPT_ZARK, 274, NEUTRAL_REACTION);
+	call zarkcombat;
+end
+
+procedure zark49
+begin
+	gsay_message(SCRIPT_ZARK, 275, NEUTRAL_REACTION);
+end
+
+procedure zarkdone
+begin
+	gsay_option(SCRIPT_ZARK, 276, zarkend, NEUTRAL_REACTION);
+end
+
+procedure zarkend
+begin
+end
+
+procedure zarkcombat
+begin
+	set_global_var(GVAR_CATHEDRAL_ENEMY, 1);
+	hostile1 := 1;
+end
+
+procedure weapon_check
+begin
+	if ((obj_item_subtype(critter_inven_obj(dude_obj, 1)) == 3) or (obj_item_subtype(critter_inven_obj(dude_obj, 2)) == 3)) then begin
+		armed := 1;
+	end
+	else begin
+		armed := 0;
+	end
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

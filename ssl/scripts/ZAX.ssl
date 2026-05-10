@@ -1,0 +1,871 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure talk_p_proc;
+procedure Zax01;
+procedure Zax02;
+procedure Zax03;
+procedure Zax04;
+procedure Zax05;
+procedure Zax06;
+procedure Zax07;
+procedure Zax08;
+procedure Zax09;
+procedure Zax10;
+procedure Zax11;
+procedure Zax12;
+procedure Zax13;
+procedure Zax14;
+procedure Zax15;
+procedure Zax16;
+procedure Zax17;
+procedure Zax18;
+procedure Zax19;
+procedure Zax20;
+procedure Zax21;
+procedure Zax22;
+procedure Zax23;
+procedure Zax24;
+procedure Zax25;
+procedure ZaxClearance;
+procedure Term01;
+procedure Term02;
+procedure Term03;
+procedure Term03a;
+procedure Term04;
+procedure Term05;
+procedure Term06;
+procedure Term06a;
+procedure Term07;
+procedure Term08;
+procedure Term09;
+procedure Term09a;
+procedure Term10;
+procedure Term11;
+procedure Term11a;
+procedure Term12;
+procedure Term13;
+procedure Term14;
+procedure Term14a;
+procedure Term15;
+procedure TermEnd;
+procedure TermStart;
+procedure Mainframe00;
+procedure Mainframe01;
+procedure Mainframe02;
+procedure Mainframe03;
+procedure Mainframe04;
+procedure Mainframe04a;
+procedure Mainframe05;
+procedure Mainframe05a;
+procedure Mainframe05b;
+procedure Mainframe05c;
+procedure Mainframe06;
+procedure Mainframe06a;
+procedure Mainframe07;
+procedure Mainframe07a;
+procedure Mainframe08;
+procedure Mainframe08a;
+procedure Mainframe09;
+procedure Mainframe10;
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	if (script_action == talk_proc) then begin
+		call talk_p_proc;
+	end
+	else begin
+		if (script_action == use_proc) then begin
+			dialogue_system_enter;
+		end
+		else begin
+			if ((script_action == look_at_proc) or (script_action == description_proc)) then begin
+				script_overrides;
+				if (local_var(4) == 1) then begin
+					display_msg(message_str(SCRIPT_ZAX, 100));
+				end
+				else begin
+					display_msg(message_str(SCRIPT_ZAX, 101));
+				end
+			end
+		end
+	end
+end
+
+procedure talk_p_proc
+begin
+	script_overrides;
+	start_gdialog(SCRIPT_ZAX, self_obj, 4, -1, -1);
+	gsay_start;
+	call Zax01;
+	gsay_end;
+	end_dialogue;
+end
+
+procedure Zax01
+begin
+	gsay_reply(SCRIPT_ZAX, 102);
+	if (local_var(4) == 0) then begin
+		giq_option(5, SCRIPT_ZAX, 103, Zax02, NEUTRAL_REACTION);
+	end
+	giq_option(5, SCRIPT_ZAX, 105, Zax04, NEUTRAL_REACTION);
+	if (local_var(6) == 0) then begin
+		giq_option(5, SCRIPT_ZAX, 106, Zax12, NEUTRAL_REACTION);
+	end
+	giq_option(5, SCRIPT_GPWRTERM, 200, Mainframe00, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 108, Zax13, NEUTRAL_REACTION);
+	giq_option(-4, SCRIPT_ZAX, 109, Zax05, NEUTRAL_REACTION);
+end
+
+procedure Zax02
+begin
+	set_local_var(4, 1);
+	gsay_reply(SCRIPT_ZAX, 110);
+	giq_option(5, SCRIPT_ZAX, 111, Zax06, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 112, Zax04, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 113, Zax07, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_ZAX, 114, Zax08, NEUTRAL_REACTION);
+	giq_option(0, SCRIPT_ZAX, 115, Zax13, NEUTRAL_REACTION);
+end
+
+procedure Zax03
+begin
+	gsay_message(SCRIPT_ZAX, 116, NEUTRAL_REACTION);
+	set_local_var(5, 1);
+	call Zax01;
+end
+
+procedure Zax04
+begin
+	call ZaxClearance;
+	gsay_reply(SCRIPT_GPWRTERM, message_str(SCRIPT_GPWRTERM, 211) + message_str(SCRIPT_GPWRTERM, 241) + message_str(SCRIPT_GPWRTERM, 242) + message_str(SCRIPT_GPWRTERM, 243));
+	giq_option(7, SCRIPT_ZAX, 119, Zax21, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_ZAX, 120, Zax15, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 121, Zax13, NEUTRAL_REACTION);
+end
+
+procedure Zax05
+begin
+	gsay_message(SCRIPT_ZAX, 122, NEUTRAL_REACTION);
+end
+
+procedure Zax06
+begin
+	call ZaxClearance;
+	gsay_reply(SCRIPT_ZAX, 123);
+	giq_option(5, SCRIPT_ZAX, 124, Zax14, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_ZAX, 125, Zax15, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 126, Zax07, NEUTRAL_REACTION);
+end
+
+procedure Zax07
+begin
+	gsay_reply(SCRIPT_ZAX, 127);
+	giq_option(7, SCRIPT_ZAX, 128, Zax08, NEUTRAL_REACTION);
+end
+
+procedure Zax08
+begin
+	gsay_message(SCRIPT_ZAX, 129, NEUTRAL_REACTION);
+	gsay_reply(SCRIPT_ZAX, 130);
+	giq_option(5, SCRIPT_ZAX, 131, Zax01, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_ZAX, 132, Zax09, NEUTRAL_REACTION);
+	giq_option(9, SCRIPT_ZAX, 133, Zax11, NEUTRAL_REACTION);
+end
+
+procedure Zax09
+begin
+	gsay_message(SCRIPT_ZAX, 134, NEUTRAL_REACTION);
+	gsay_reply(SCRIPT_ZAX, 135);
+	giq_option(7, SCRIPT_ZAX, 136, Zax10, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_ZAX, 137, Zax01, NEUTRAL_REACTION);
+	giq_option(9, SCRIPT_ZAX, 138, Zax11, NEUTRAL_REACTION);
+end
+
+procedure Zax10
+begin
+	gsay_message(SCRIPT_ZAX, 139, NEUTRAL_REACTION);
+	gsay_reply(SCRIPT_ZAX, 140);
+	giq_option(7, SCRIPT_ZAX, 141, Zax01, NEUTRAL_REACTION);
+	giq_option(9, SCRIPT_ZAX, 142, Zax11, NEUTRAL_REACTION);
+end
+
+procedure Zax11
+begin
+	gsay_message(SCRIPT_ZAX, 143, NEUTRAL_REACTION);
+	gsay_message(SCRIPT_ZAX, 144, NEUTRAL_REACTION);
+	gsay_reply(SCRIPT_ZAX, 145);
+	giq_option(5, SCRIPT_ZAX, 146, Zax01, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 147, Zax13, NEUTRAL_REACTION);
+end
+
+procedure Zax12
+begin
+	variable LVar0 := 0;
+	gsay_message(SCRIPT_ZAX, 148, NEUTRAL_REACTION);
+	gfade_out(600);
+	game_time_advance(game_ticks(7200));
+	LVar0 := do_check(dude_obj, 4, 0);
+	gfade_in(600);
+	if (is_success(LVar0)) then begin
+		if (is_critical(LVar0)) then begin
+			gsay_reply(SCRIPT_ZAX, 149);
+			set_local_var(6, 1);
+			give_exp_points(700);
+		end
+		else begin
+			gsay_reply(SCRIPT_ZAX, 150);
+		end
+	end
+	else begin
+		gsay_reply(SCRIPT_ZAX, 150);
+	end
+	giq_option(5, SCRIPT_ZAX, 151, Zax12, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 152, Zax01, NEUTRAL_REACTION);
+end
+
+procedure Zax13
+begin
+	gsay_message(SCRIPT_ZAX, 153, NEUTRAL_REACTION);
+end
+
+procedure Zax14
+begin
+	gsay_reply(SCRIPT_ZAX, 154);
+	giq_option(5, SCRIPT_ZAX, 155, Zax13, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 156, Zax01, NEUTRAL_REACTION);
+end
+
+procedure Zax15
+begin
+	gsay_message(SCRIPT_ZAX, 157, NEUTRAL_REACTION);
+	gsay_reply(SCRIPT_ZAX, 158);
+	giq_option(5, SCRIPT_ZAX, 159, Zax16, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_ZAX, 160, Zax17, NEUTRAL_REACTION);
+	giq_option(9, SCRIPT_ZAX, 161, Zax18, NEUTRAL_REACTION);
+end
+
+procedure Zax16
+begin
+	gsay_reply(SCRIPT_ZAX, 162);
+	giq_option(5, SCRIPT_ZAX, 163, Zax01, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_ZAX, 164, Zax17, NEUTRAL_REACTION);
+	giq_option(9, SCRIPT_ZAX, 165, Zax18, NEUTRAL_REACTION);
+end
+
+procedure Zax17
+begin
+	gsay_reply(SCRIPT_ZAX, 166);
+	giq_option(5, SCRIPT_ZAX, 167, Zax01, NEUTRAL_REACTION);
+	giq_option(9, SCRIPT_ZAX, 168, Zax18, NEUTRAL_REACTION);
+end
+
+procedure Zax18
+begin
+	gsay_message(SCRIPT_ZAX, 169, NEUTRAL_REACTION);
+	gsay_message(SCRIPT_ZAX, 170, NEUTRAL_REACTION);
+	gsay_message(SCRIPT_ZAX, 171, NEUTRAL_REACTION);
+	gsay_message(SCRIPT_ZAX, 172, NEUTRAL_REACTION);
+	gsay_reply(SCRIPT_ZAX, 173);
+	giq_option(9, SCRIPT_ZAX, 174, Zax19, NEUTRAL_REACTION);
+	giq_option(10, SCRIPT_ZAX, 175, Zax20, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 176, Zax01, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 177, Zax13, NEUTRAL_REACTION);
+end
+
+procedure Zax19
+begin
+	gsay_message(SCRIPT_ZAX, 178, NEUTRAL_REACTION);
+	gsay_message(SCRIPT_ZAX, 179, NEUTRAL_REACTION);
+	gsay_reply(SCRIPT_ZAX, 180);
+	giq_option(10, SCRIPT_ZAX, 181, Zax20, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 182, Zax01, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 183, Zax13, NEUTRAL_REACTION);
+end
+
+procedure Zax20
+begin
+	gsay_reply(SCRIPT_ZAX, 184);
+	giq_option(9, SCRIPT_ZAX, 185, Zax19, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 186, Zax01, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 187, Zax13, NEUTRAL_REACTION);
+end
+
+procedure Zax21
+begin
+	gsay_reply(SCRIPT_ZAX, 188);
+	giq_option(5, SCRIPT_ZAX, 189, Zax22, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 190, Zax23, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 191, Zax24, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 192, Zax01, NEUTRAL_REACTION);
+end
+
+procedure Zax22
+begin
+	gsay_reply(SCRIPT_ZAX, 193);
+	giq_option(5, SCRIPT_ZAX, 194, Zax23, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 195, Zax24, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 196, Zax01, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 197, Zax13, NEUTRAL_REACTION);
+end
+
+procedure Zax23
+begin
+	gsay_reply(SCRIPT_ZAX, 198);
+	giq_option(5, SCRIPT_ZAX, 199, Zax22, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 200, Zax24, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 201, Zax01, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 202, Zax13, NEUTRAL_REACTION);
+end
+
+procedure Zax24
+begin
+	gsay_reply(SCRIPT_ZAX, 203);
+	giq_option(5, SCRIPT_ZAX, 204, Zax22, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 205, Zax23, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 206, Zax01, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_ZAX, 207, Zax13, NEUTRAL_REACTION);
+end
+
+procedure Zax25
+begin
+	gsay_message(SCRIPT_ZAX, 208, NEUTRAL_REACTION);
+	if (global_var(GVAR_WEAPON_LOCKER) == 1) then begin
+		gsay_message(SCRIPT_ZAX, 209, NEUTRAL_REACTION);
+		set_global_var(GVAR_WEAPON_LOCKER, 2);
+	end
+end
+
+procedure ZaxClearance
+begin
+	if (global_var(GVAR_WEAPONS_ARMED)) then begin
+		gsay_message(SCRIPT_ZAX, 210, NEUTRAL_REACTION);
+		gsay_message(SCRIPT_ZAX, 211, NEUTRAL_REACTION);
+		set_global_var(GVAR_WEAPONS_ARMED, 0);
+	end
+end
+
+procedure Term01
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 100);
+	giq_option(4, SCRIPT_GPWRTERM, 101, Term02, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_GPWRTERM, 102, Term10, NEUTRAL_REACTION);
+	giq_option(0, SCRIPT_GPWRTERM, 103, Mainframe02, NEUTRAL_REACTION);
+end
+
+procedure Term02
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 104);
+	giq_option(4, SCRIPT_GPWRTERM, 105, Term03, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 106, Term06, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 107, Term01, NEUTRAL_REACTION);
+end
+
+procedure Term03
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 108);
+	giq_option(4, SCRIPT_GPWRTERM, 109, Term03a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 110, Term02, NEUTRAL_REACTION);
+end
+
+procedure Term03a
+begin
+	if (global_var(GVAR_START_POWER) != 2) then begin
+		call Term04;
+	end
+	else begin
+		set_global_var(GVAR_GLOW_POWER, 2);
+	end
+end
+
+procedure Term04
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 111);
+	giq_option(8, SCRIPT_GPWRTERM, 112, Term05, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 113, Term02, NEUTRAL_REACTION);
+end
+
+procedure Term05
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 114);
+	giq_option(4, SCRIPT_GPWRTERM, 115, Term02, NEUTRAL_REACTION);
+end
+
+procedure Term06
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 116);
+	giq_option(4, SCRIPT_GPWRTERM, 117, Term06a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 118, Term02, NEUTRAL_REACTION);
+end
+
+procedure Term06a
+begin
+	set_global_var(GVAR_GLOW_POWER, 0);
+end
+
+procedure Term07
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 119);
+	giq_option(4, SCRIPT_GPWRTERM, 120, Term08, NEUTRAL_REACTION);
+	giq_option(0, SCRIPT_GPWRTERM, 121, Mainframe02, NEUTRAL_REACTION);
+end
+
+procedure Term08
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 122);
+	giq_option(4, SCRIPT_GPWRTERM, 123, Term09a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 124, Term07, NEUTRAL_REACTION);
+end
+
+procedure Term09
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 125);
+	giq_option(-3, SCRIPT_GPWRTERM, 126, Term09a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 127, Term09a, NEUTRAL_REACTION);
+	giq_option(0, SCRIPT_GPWRTERM, 128, Mainframe02, NEUTRAL_REACTION);
+end
+
+procedure Term09a
+begin
+	set_global_var(GVAR_GLOW_POWER, 1);
+end
+
+procedure Term10
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 129);
+	giq_option(-3, SCRIPT_GPWRTERM, 130, Term11, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_GPWRTERM, 131, Term13, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_GPWRTERM, 132, Term01, NEUTRAL_REACTION);
+end
+
+procedure Term11
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 133);
+	giq_option(-3, SCRIPT_GPWRTERM, 134, Term11a, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_GPWRTERM, 135, Term10, NEUTRAL_REACTION);
+end
+
+procedure Term11a
+begin
+	if (global_var(GVAR_START_POWER) != 2) then begin
+		call Term12;
+	end
+	else begin
+		set_global_var(GVAR_GLOW_POWER, 2);
+	end
+end
+
+procedure Term12
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 136);
+	giq_option(-3, SCRIPT_GPWRTERM, 137, Term10, NEUTRAL_REACTION);
+end
+
+procedure Term13
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 138);
+	giq_option(-3, SCRIPT_GPWRTERM, 148, Term06a, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_GPWRTERM, 137, Term10, NEUTRAL_REACTION);
+end
+
+procedure Term14
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 139);
+	giq_option(4, SCRIPT_GPWRTERM, 140, Term14a, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_GPWRTERM, 141, Term15, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_GPWRTERM, 142, Term15, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_GPWRTERM, 143, Term14a, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_GPWRTERM, 144, Term15, NEUTRAL_REACTION);
+	giq_option(0, SCRIPT_GPWRTERM, 145, Mainframe02, NEUTRAL_REACTION);
+end
+
+procedure Term14a
+begin
+	set_global_var(GVAR_GLOW_POWER, 1);
+	if (global_var(GVAR_START_POWER) == 2) then begin
+		call Term01;
+	end
+end
+
+procedure Term15
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 146);
+	giq_option(0, SCRIPT_GPWRTERM, 147, Mainframe02, NEUTRAL_REACTION);
+end
+
+procedure TermEnd
+begin
+end
+
+procedure TermStart
+begin
+	if (global_var(GVAR_GLOW_POWER) == 0) then begin
+		call Term14;
+	end
+	else begin
+		if (global_var(GVAR_GLOW_POWER) == 1) then begin
+			call Term01;
+		end
+		else begin
+			call Term09;
+		end
+	end
+end
+
+procedure Mainframe00
+begin
+	if (has_skill(dude_obj, 12) >= 25) then begin
+		set_local_var(8, 0);
+	end
+	if (local_var(8) == 0) then begin
+		if (local_var(7) == 1) then begin
+			call Mainframe01;
+		end
+		else begin
+			if (is_success(roll_vs_skill(dude_obj, 12, -10))) then begin
+				set_local_var(7, 1);
+				call Mainframe01;
+			end
+			else begin
+				if (has_skill(dude_obj, 12) < 25) then begin
+					set_local_var(8, 1);
+				end
+				gsay_message(SCRIPT_GPWRTERM, 201, NEUTRAL_REACTION);
+			end
+		end
+	end
+	else begin
+		gsay_message(SCRIPT_GPWRTERM, 201, NEUTRAL_REACTION);
+		display_msg(message_str(SCRIPT_ZAX, 300));
+	end
+end
+
+procedure Mainframe01
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 202);
+	giq_option(4, SCRIPT_GPWRTERM, 203, Mainframe02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 204, Zax01, NEUTRAL_REACTION);
+end
+
+procedure Mainframe02
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 206);
+	giq_option(4, SCRIPT_GPWRTERM, 207, Mainframe03, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 208, Mainframe04, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 209, Mainframe05, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 210, TermStart, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 204, Zax01, NEUTRAL_REACTION);
+end
+
+procedure Mainframe03
+begin
+	gsay_reply(SCRIPT_GPWRTERM, message_str(SCRIPT_GPWRTERM, 211) + message_str(SCRIPT_GPWRTERM, 241) + message_str(SCRIPT_GPWRTERM, 242) + message_str(SCRIPT_GPWRTERM, 243));
+	giq_option(4, SCRIPT_GPWRTERM, 203, Mainframe02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 205, TermEnd, NEUTRAL_REACTION);
+end
+
+procedure Mainframe04
+begin
+	if ((global_var(GVAR_WEAPONS_ARMED) == 0) and (global_var(GVAR_GLOW_POWER) == 2)) then begin
+		gsay_reply(SCRIPT_GPWRTERM, 212);
+	end
+	else begin
+		gsay_reply(SCRIPT_GPWRTERM, 213);
+	end
+	if (global_var(GVAR_GLOW_POWER) == 2) then begin
+		if (global_var(GVAR_WEAPONS_ARMED) == 0) then begin
+			giq_option(4, SCRIPT_GPWRTERM, 214, Mainframe04a, NEUTRAL_REACTION);
+		end
+		else begin
+			giq_option(4, SCRIPT_GPWRTERM, 215, Mainframe04a, NEUTRAL_REACTION);
+		end
+	end
+	giq_option(4, SCRIPT_GPWRTERM, 203, Mainframe02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 205, TermEnd, NEUTRAL_REACTION);
+end
+
+procedure Mainframe04a
+begin
+	game_time_advance(game_ticks(600));
+	if (has_skill(dude_obj, 12) >= 40) then begin
+		set_local_var(9, 0);
+	end
+	if (global_var(GVAR_SECURITY_DISK) == 1) then begin
+		if (global_var(GVAR_WEAPONS_ARMED) == 0) then begin
+			set_global_var(GVAR_WEAPONS_ARMED, 1);
+		end
+		else begin
+			set_global_var(GVAR_WEAPONS_ARMED, 0);
+		end
+		give_exp_points(100);
+		call Mainframe09;
+	end
+	if (local_var(9) == 0) then begin
+		if (is_success(roll_vs_skill(dude_obj, 12, -25))) then begin
+			if (global_var(GVAR_WEAPONS_ARMED) == 0) then begin
+				set_global_var(GVAR_WEAPONS_ARMED, 1);
+			end
+			else begin
+				set_global_var(GVAR_WEAPONS_ARMED, 0);
+			end
+			give_exp_points(100);
+			call Mainframe09;
+		end
+		else begin
+			if (has_skill(dude_obj, 12) < 40) then begin
+				set_local_var(9, 1);
+			end
+			call Mainframe10;
+		end
+	end
+	else begin
+		if (local_var(9) == 1) then begin
+			display_msg(message_str(SCRIPT_ZAX, 300));
+			call Mainframe10;
+		end
+		else begin
+			call Mainframe10;
+		end
+	end
+end
+
+procedure Mainframe05
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 216);
+	giq_option(4, SCRIPT_GPWRTERM, 217, Mainframe05a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 218, Mainframe05b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 219, Mainframe05c, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 203, Mainframe02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 205, TermEnd, NEUTRAL_REACTION);
+end
+
+procedure Mainframe05a
+begin
+	call Mainframe06;
+end
+
+procedure Mainframe05b
+begin
+	call Mainframe07;
+end
+
+procedure Mainframe05c
+begin
+	call Mainframe08;
+end
+
+procedure Mainframe06
+begin
+	gsay_message(SCRIPT_GPWRTERM, 220, NEUTRAL_REACTION);
+	gsay_message(SCRIPT_GPWRTERM, 221, NEUTRAL_REACTION);
+	gsay_message(SCRIPT_GPWRTERM, 222, NEUTRAL_REACTION);
+	gsay_message(SCRIPT_GPWRTERM, 223, NEUTRAL_REACTION);
+	gsay_message(SCRIPT_GPWRTERM, 224, NEUTRAL_REACTION);
+	gsay_message(SCRIPT_GPWRTERM, 225, NEUTRAL_REACTION);
+	gsay_message(SCRIPT_GPWRTERM, 226, NEUTRAL_REACTION);
+	gsay_message(SCRIPT_GPWRTERM, 227, NEUTRAL_REACTION);
+	gsay_reply(SCRIPT_GPWRTERM, 228);
+	giq_option(4, SCRIPT_GPWRTERM, 229, Mainframe06a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 230, Mainframe05, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 205, TermEnd, NEUTRAL_REACTION);
+end
+
+procedure Mainframe06a
+begin
+	set_global_var(GVAR_WATER_CHIP_3, 1);
+	call Mainframe05;
+end
+
+procedure Mainframe07
+begin
+	gsay_reply(SCRIPT_GPWRTERM, message_str(SCRIPT_GPWRTERM, 231) + message_str(SCRIPT_GPWRTERM, 250) + message_str(SCRIPT_GPWRTERM, 251) + message_str(SCRIPT_GPWRTERM, 252));
+	giq_option(4, SCRIPT_GPWRTERM, 229, Mainframe07a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 230, Mainframe05, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 205, TermEnd, NEUTRAL_REACTION);
+end
+
+procedure Mainframe07a
+begin
+	set_global_var(GVAR_WATER_CHIP_2, 1);
+	call Mainframe05;
+end
+
+procedure Mainframe08
+begin
+	gsay_message(SCRIPT_GPWRTERM, message_str(SCRIPT_GPWRTERM, 232) + message_str(SCRIPT_GPWRTERM, 233), NEUTRAL_REACTION);
+	gsay_message(SCRIPT_GPWRTERM, message_str(SCRIPT_GPWRTERM, 234) + message_str(SCRIPT_GPWRTERM, 235), NEUTRAL_REACTION);
+	gsay_reply(SCRIPT_GPWRTERM, message_str(SCRIPT_GPWRTERM, 236) + message_str(SCRIPT_GPWRTERM, 237) + message_str(SCRIPT_GPWRTERM, 238));
+	giq_option(4, SCRIPT_GPWRTERM, 229, Mainframe08a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 230, Mainframe05, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 205, TermEnd, NEUTRAL_REACTION);
+end
+
+procedure Mainframe08a
+begin
+	set_global_var(GVAR_WATER_CHIP_1, 1);
+	call Mainframe05;
+end
+
+procedure Mainframe09
+begin
+	gsay_reply(SCRIPT_GPWRTERM, 239);
+	giq_option(4, SCRIPT_GPWRTERM, 203, Mainframe02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 205, TermEnd, NEUTRAL_REACTION);
+end
+
+procedure Mainframe10
+begin
+	game_time_advance(game_ticks(18000));
+	gsay_reply(SCRIPT_GPWRTERM, 240);
+	giq_option(4, SCRIPT_GPWRTERM, 203, Mainframe02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GPWRTERM, 205, TermEnd, NEUTRAL_REACTION);
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

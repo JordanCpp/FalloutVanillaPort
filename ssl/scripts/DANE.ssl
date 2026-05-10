@@ -1,0 +1,690 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure do_dialogue;
+procedure social_skills;
+procedure dane00;
+procedure dane01;
+procedure dane02;
+procedure dane03;
+procedure dane04;
+procedure dane05;
+procedure dane06;
+procedure dane07;
+procedure dane08;
+procedure dane09;
+procedure dane10;
+procedure dane11;
+procedure dane12;
+procedure dane13;
+procedure dane14;
+procedure dane15;
+procedure dane16;
+procedure dane17;
+procedure dane18;
+procedure dane19;
+procedure dane20;
+procedure dane21;
+procedure dane22;
+procedure dane23;
+procedure dane24;
+procedure danemore;
+procedure danereturn;
+
+variable hostile1;
+variable Only_Once := 1;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	if (Only_Once) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 20);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_CHILDREN_TRUE);
+		Only_Once := 0;
+	end
+	if (script_action == talk_proc) then begin
+		call do_dialogue;
+	end
+	else begin
+		if ((script_action == look_at_proc) or (script_action == description_proc)) then begin
+			script_overrides;
+			display_msg(message_str(SCRIPT_DANE, 100));
+		end
+		else begin
+			if (script_action == pickup_proc) then begin
+				hostile1 := 1;
+			end
+			else begin
+				if (script_action == destroy_proc) then begin
+					if (source_obj == dude_obj) then begin
+						if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+							set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+							set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+						end
+						if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+							set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+							set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+						end
+						set_global_var(GVAR_BAD_MONSTER, global_var(GVAR_BAD_MONSTER) + 1);
+						if ((global_var(GVAR_BAD_MONSTER) % 6) == 0) then begin
+							set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) + 1);
+						end
+					end
+				end
+				else begin
+					if (script_action == critter_proc) then begin
+						if (hostile1) then begin
+							hostile1 := 0;
+							attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure do_dialogue
+begin
+	call Get_Reaction;
+	start_gdialog(SCRIPT_DANE, self_obj, 4, -1, -1);
+	gsay_start;
+	if (local_var(6) == 0) then begin
+		call dane00;
+	end
+	else begin
+		if (local_var(7) == 0) then begin
+			call dane01;
+		end
+		else begin
+			if (local_var(8) == 0) then begin
+				call dane02;
+			end
+			else begin
+				if (local_var(9) == 0) then begin
+					call dane03;
+				end
+				else begin
+					if (local_var(10) == 0) then begin
+						call dane04;
+					end
+					else begin
+						if (local_var(11) == 0) then begin
+							call dane05;
+						end
+						else begin
+							if (local_var(12) == 0) then begin
+								call dane06;
+							end
+							else begin
+								if (local_var(13) == 0) then begin
+									call dane07;
+								end
+								else begin
+									if (local_var(14) == 0) then begin
+										call dane08;
+									end
+									else begin
+										if (local_var(15) == 0) then begin
+											call dane09;
+										end
+										else begin
+											if (local_var(16) == 0) then begin
+												call dane10;
+											end
+											else begin
+												if (local_var(17) == 0) then begin
+													call dane11;
+												end
+												else begin
+													if (local_var(18) == 0) then begin
+														call dane12;
+													end
+													else begin
+														if (local_var(19) == 0) then begin
+															call dane13;
+														end
+														else begin
+															if (local_var(20) == 0) then begin
+																call dane14;
+															end
+															else begin
+																if (local_var(21) == 0) then begin
+																	call dane15;
+																end
+																else begin
+																	if (local_var(22) == 0) then begin
+																		call dane16;
+																	end
+																	else begin
+																		if (local_var(23) == 0) then begin
+																			call dane17;
+																		end
+																		else begin
+																			if (local_var(24) == 0) then begin
+																				call dane18;
+																			end
+																			else begin
+																				if (local_var(25) == 0) then begin
+																					call dane19;
+																				end
+																				else begin
+																					if (local_var(26) == 0) then begin
+																						call dane20;
+																					end
+																					else begin
+																						if (local_var(5) == 1) then begin
+																							call dane24;
+																						end
+																					end
+																				end
+																			end
+																		end
+																	end
+																end
+															end
+														end
+													end
+												end
+											end
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	gsay_end;
+	end_dialogue;
+end
+
+procedure social_skills
+begin
+	script_overrides;
+	call Get_Reaction;
+	call do_dialogue;
+end
+
+procedure dane00
+begin
+	set_local_var(6, 1);
+	gsay_reply(SCRIPT_DANE, 101);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 102);
+	call danemore;
+	gsay_message(SCRIPT_DANE, 103, NEUTRAL_REACTION);
+end
+
+procedure dane01
+begin
+	set_local_var(7, 1);
+	gsay_reply(SCRIPT_DANE, 104);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 105);
+	call danemore;
+	gsay_message(SCRIPT_DANE, 106, NEUTRAL_REACTION);
+end
+
+procedure dane02
+begin
+	set_local_var(8, 1);
+	gsay_reply(SCRIPT_DANE, 107);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 108);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 109);
+	call danemore;
+	gsay_message(SCRIPT_DANE, 110, NEUTRAL_REACTION);
+end
+
+procedure dane03
+begin
+	set_local_var(9, 1);
+	gsay_reply(SCRIPT_DANE, 111);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 112);
+	call danemore;
+	gsay_message(SCRIPT_DANE, 113, NEUTRAL_REACTION);
+end
+
+procedure dane04
+begin
+	set_local_var(10, 1);
+	gsay_reply(SCRIPT_DANE, 114);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 115);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 116);
+	call danemore;
+	gsay_message(SCRIPT_DANE, 117, NEUTRAL_REACTION);
+end
+
+procedure dane05
+begin
+	set_local_var(11, 1);
+	gsay_reply(SCRIPT_DANE, 118);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 119);
+	call danemore;
+	gsay_message(SCRIPT_DANE, 120, NEUTRAL_REACTION);
+end
+
+procedure dane06
+begin
+	set_local_var(12, 1);
+	gsay_reply(SCRIPT_DANE, 121);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 122);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 123);
+	call danemore;
+	gsay_message(SCRIPT_DANE, 124, NEUTRAL_REACTION);
+end
+
+procedure dane07
+begin
+	set_local_var(13, 1);
+	gsay_reply(SCRIPT_DANE, 125);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 126);
+	call danemore;
+	gsay_message(SCRIPT_DANE, 127, NEUTRAL_REACTION);
+end
+
+procedure dane08
+begin
+	set_local_var(14, 1);
+	gsay_reply(SCRIPT_DANE, 128);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 129);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 130);
+	call danemore;
+	gsay_message(SCRIPT_DANE, 131, NEUTRAL_REACTION);
+end
+
+procedure dane09
+begin
+	set_local_var(15, 1);
+	gsay_reply(SCRIPT_DANE, 132);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 133);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 134);
+	call danemore;
+	gsay_message(SCRIPT_DANE, 135, NEUTRAL_REACTION);
+end
+
+procedure dane10
+begin
+	set_local_var(16, 1);
+	gsay_reply(SCRIPT_DANE, 136);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 137);
+	call danemore;
+	gsay_message(SCRIPT_DANE, 138, NEUTRAL_REACTION);
+end
+
+procedure dane11
+begin
+	set_local_var(17, 1);
+	gsay_reply(SCRIPT_DANE, 139);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 140);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 141);
+	call danemore;
+	gsay_message(SCRIPT_DANE, 142, NEUTRAL_REACTION);
+end
+
+procedure dane12
+begin
+	set_local_var(18, 1);
+	gsay_reply(SCRIPT_DANE, 143);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 144);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 145);
+	call danemore;
+	gsay_message(SCRIPT_DANE, 146, NEUTRAL_REACTION);
+end
+
+procedure dane13
+begin
+	set_local_var(19, 1);
+	gsay_reply(SCRIPT_DANE, 147);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 148);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 149);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 150);
+	call danemore;
+	gsay_message(SCRIPT_DANE, 151, NEUTRAL_REACTION);
+end
+
+procedure dane14
+begin
+	set_local_var(20, 1);
+	gsay_reply(SCRIPT_DANE, 152);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 153);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 154);
+	call danemore;
+	gsay_message(SCRIPT_DANE, 155, NEUTRAL_REACTION);
+end
+
+procedure dane15
+begin
+	set_local_var(21, 1);
+	gsay_reply(SCRIPT_DANE, 156);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 157);
+	call danemore;
+	gsay_message(SCRIPT_DANE, 158, NEUTRAL_REACTION);
+end
+
+procedure dane16
+begin
+	gsay_reply(SCRIPT_DANE, 159);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 160);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 161);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 162);
+	giq_option(7, SCRIPT_DANE, 163, dane17, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_DANE, 164, dane18, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_DANE, 165, dane19, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_DANE, 166, dane20, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_DANE, 167, dane21, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_DANE, 168, dane22, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_DANE, 169, dane23, NEUTRAL_REACTION);
+end
+
+procedure dane17
+begin
+	gsay_reply(SCRIPT_DANE, 170);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 171);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 172);
+	if (local_var(4) == 0) then begin
+		set_local_var(4, 1);
+		gsay_reply(SCRIPT_DANE, 173);
+		giq_option(7, SCRIPT_DANE, 174, dane18, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 175, dane19, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 176, dane20, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 177, dane21, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 178, dane22, NEUTRAL_REACTION);
+	end
+	else begin
+		call danemore;
+		gsay_message(SCRIPT_DANE, 179, NEUTRAL_REACTION);
+	end
+end
+
+procedure dane18
+begin
+	gsay_reply(SCRIPT_DANE, 180);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 181);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 182);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 183);
+	if (local_var(4) == 0) then begin
+		set_local_var(4, 1);
+		gsay_reply(SCRIPT_DANE, 184);
+		giq_option(7, SCRIPT_DANE, 185, dane18, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 186, dane19, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 187, dane20, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 188, dane21, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 189, dane22, NEUTRAL_REACTION);
+	end
+	else begin
+		call danemore;
+		gsay_message(SCRIPT_DANE, 190, NEUTRAL_REACTION);
+	end
+end
+
+procedure dane19
+begin
+	if (local_var(4) == 0) then begin
+		set_local_var(4, 1);
+		gsay_reply(SCRIPT_DANE, 191);
+		giq_option(7, SCRIPT_DANE, 192, dane18, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 193, dane19, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 194, dane20, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 195, dane21, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 196, dane22, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_DANE, 197, NEUTRAL_REACTION);
+	end
+end
+
+procedure dane20
+begin
+	gsay_reply(SCRIPT_DANE, 198);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 199);
+	if (local_var(4) == 0) then begin
+		set_local_var(4, 1);
+		giq_option(7, SCRIPT_DANE, 200, dane19, NEUTRAL_REACTION);
+		giq_option(7, SCRIPT_DANE, 201, dane18, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 202, dane19, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 203, dane21, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 204, dane22, NEUTRAL_REACTION);
+		giq_option(-3, SCRIPT_DANE, 205, dane23, NEUTRAL_REACTION);
+	end
+	else begin
+		call danemore;
+		gsay_message(SCRIPT_DANE, 206, NEUTRAL_REACTION);
+	end
+end
+
+procedure dane21
+begin
+	gsay_reply(SCRIPT_DANE, 207);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 208);
+	if (local_var(4) == 0) then begin
+		set_local_var(4, 1);
+		giq_option(7, SCRIPT_DANE, 209, dane19, NEUTRAL_REACTION);
+		giq_option(7, SCRIPT_DANE, 210, dane18, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 211, dane19, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 212, dane20, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_DANE, 213, dane22, NEUTRAL_REACTION);
+		giq_option(-3, SCRIPT_DANE, 214, dane23, NEUTRAL_REACTION);
+	end
+	else begin
+		call danemore;
+		gsay_message(SCRIPT_DANE, 215, NEUTRAL_REACTION);
+	end
+end
+
+procedure dane22
+begin
+	set_local_var(5, 1);
+	gsay_reply(SCRIPT_DANE, 216);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 217);
+	call danemore;
+	gsay_reply(SCRIPT_DANE, 218);
+	call danemore;
+	gsay_message(SCRIPT_DANE, 219, NEUTRAL_REACTION);
+end
+
+procedure dane23
+begin
+	set_local_var(5, 1);
+	gsay_message(SCRIPT_DANE, 220, NEUTRAL_REACTION);
+end
+
+procedure dane24
+begin
+	gsay_message(SCRIPT_DANE, 221, NEUTRAL_REACTION);
+end
+
+procedure danemore
+begin
+	gsay_option(SCRIPT_DANE, 222, danereturn, NEUTRAL_REACTION);
+end
+
+procedure danereturn
+begin
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

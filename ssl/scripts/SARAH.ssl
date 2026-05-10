@@ -1,0 +1,328 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure critter_p_proc;
+procedure destroy_p_proc;
+procedure talk_p_proc;
+procedure Sarah00;
+procedure Sarah01;
+procedure sarah02;
+procedure Sarah03;
+procedure Sarah04;
+procedure Sarah05;
+procedure Sarah06;
+procedure Sarah07;
+procedure Sarah08;
+procedure Sarah09;
+procedure Sarah10;
+procedure SarahEnd;
+
+variable initialized1;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	if (not(initialized1)) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 34);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_BRAINWASHED_CHILDREN);
+		initialized1 := 1;
+	end
+	else begin
+		if (script_action == critter_proc) then begin
+			call critter_p_proc;
+		end
+		else begin
+			if (script_action == destroy_proc) then begin
+				call destroy_p_proc;
+			end
+			else begin
+				if (script_action == talk_proc) then begin
+					call talk_p_proc;
+				end
+			end
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (map_var(8) == 3) then begin
+		if (local_var(4) == 0) then begin
+			if (tile_distance_objs(self_obj, dude_obj) < 12) then begin
+				if (obj_can_see_obj(self_obj, dude_obj)) then begin
+					dialogue_system_enter;
+				end
+			end
+		end
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+		if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+		end
+	end
+end
+
+procedure talk_p_proc
+begin
+	if (local_var(4)) then begin
+		if (map_var(8) == 3) then begin
+			float_msg(self_obj, message_str(SCRIPT_SARAH, 105), FLOAT_MSG_NORMAL);
+		end
+		else begin
+			if (get_critter_stat(dude_obj, 4) < 4) then begin
+				float_msg(self_obj, message_str(SCRIPT_SARAH, 117), FLOAT_MSG_NORMAL);
+			end
+			else begin
+				call Sarah10;
+			end
+		end
+	end
+	else begin
+		set_local_var(4, 1);
+		start_gdialog(SCRIPT_SARAH, self_obj, 4, -1, -1);
+		gsay_start;
+		if (map_var(8) == 3) then begin
+			call Sarah00;
+		end
+		else begin
+			call Sarah05;
+		end
+		gsay_end;
+		end_dialogue;
+	end
+end
+
+procedure Sarah00
+begin
+	gsay_reply(SCRIPT_SARAH, 100);
+	giq_option(-3, SCRIPT_SARAH, 101, Sarah01, BAD_REACTION);
+	giq_option(4, SCRIPT_SARAH, 102, SarahEnd, BAD_REACTION);
+	giq_option(5, SCRIPT_SARAH, 103, Sarah01, BAD_REACTION);
+	giq_option(7, SCRIPT_SARAH, 104, sarah02, BAD_REACTION);
+end
+
+procedure Sarah01
+begin
+	gsay_message(SCRIPT_SARAH, 105, BAD_REACTION);
+end
+
+procedure sarah02
+begin
+	gsay_reply(SCRIPT_SARAH, 106);
+	giq_option(7, SCRIPT_SARAH, 107, Sarah03, BAD_REACTION);
+	giq_option(7, SCRIPT_SARAH, 108, Sarah04, BAD_REACTION);
+end
+
+procedure Sarah03
+begin
+	gsay_reply(SCRIPT_SARAH, 109);
+	giq_option(7, SCRIPT_SARAH, 110, Sarah01, BAD_REACTION);
+	giq_option(7, SCRIPT_SARAH, 111, Sarah04, BAD_REACTION);
+end
+
+procedure Sarah04
+begin
+	gsay_message(SCRIPT_SARAH, 112, BAD_REACTION);
+end
+
+procedure Sarah05
+begin
+	gsay_reply(SCRIPT_SARAH, 113);
+	giq_option(-3, SCRIPT_SARAH, 114, Sarah06, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_SARAH, 115, Sarah07, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_SARAH, 116, Sarah09, NEUTRAL_REACTION);
+end
+
+procedure Sarah06
+begin
+	gsay_message(SCRIPT_SARAH, 117, NEUTRAL_REACTION);
+end
+
+procedure Sarah07
+begin
+	gsay_reply(SCRIPT_SARAH, 118);
+	giq_option(4, SCRIPT_SARAH, 119, SarahEnd, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_SARAH, 120, Sarah08, NEUTRAL_REACTION);
+end
+
+procedure Sarah08
+begin
+	gsay_reply(SCRIPT_SARAH, 121);
+	giq_option(4, SCRIPT_SARAH, 119, SarahEnd, BAD_REACTION);
+end
+
+procedure Sarah09
+begin
+	gsay_message(SCRIPT_SARAH, 122, NEUTRAL_REACTION);
+end
+
+procedure Sarah10
+begin
+	float_msg(self_obj, message_str(SCRIPT_SARAH, 123), FLOAT_MSG_NORMAL);
+end
+
+procedure SarahEnd
+begin
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

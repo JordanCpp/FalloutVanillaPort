@@ -1,0 +1,22 @@
+#include <define.h>
+#include <updatmap.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+
+procedure start;
+#include <push.h>
+procedure map_enter_p_proc;
+procedure map_update_p_proc;
+
+procedure start begin
+end
+
+procedure map_enter_p_proc begin
+   Lighting;
+end
+
+procedure map_update_p_proc begin
+   Lighting;
+end

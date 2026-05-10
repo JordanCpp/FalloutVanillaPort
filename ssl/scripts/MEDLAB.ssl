@@ -1,0 +1,24 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+
+
+procedure start
+begin
+	if (script_action == spatial_proc) then begin
+		if (source_obj == dude_obj) then begin
+			if (local_var(0) == 0) then begin
+				display_msg(message_str(SCRIPT_MEDLAB, 100));
+				set_local_var(0, 1);
+			end
+		end
+	end
+end

@@ -1,0 +1,52 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure dead00;
+
+variable success_level;
+
+
+procedure start
+begin
+	if (script_action == description_proc) then begin
+		script_overrides;
+		if (success_level == 0) then begin
+			success_level := roll_vs_skill(dude_obj, 7, 0);
+		end
+		call dead00;
+	end
+	else begin
+		if (script_action == look_at_proc) then begin
+			script_overrides;
+			display_msg(message_str(SCRIPT_GLWALIEN, 100));
+		end
+	end
+end
+
+procedure dead00
+begin
+	if (is_success(success_level)) then begin
+		if (is_critical(success_level)) then begin
+			display_msg(message_str(SCRIPT_GLWALIEN, 101));
+		end
+		else begin
+			display_msg(message_str(SCRIPT_GLWALIEN, 102));
+		end
+	end
+	else begin
+		if (is_critical(success_level)) then begin
+			display_msg(message_str(SCRIPT_GLWALIEN, 103));
+		end
+		else begin
+			display_msg(message_str(SCRIPT_GLWALIEN, 104));
+		end
+	end
+end

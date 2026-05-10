@@ -1,0 +1,20 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+
+
+procedure start
+begin
+	if (script_action == description_proc) then begin
+		script_overrides;
+		display_msg(message_str(SCRIPT_GLOWCAGE, 100));
+	end
+end

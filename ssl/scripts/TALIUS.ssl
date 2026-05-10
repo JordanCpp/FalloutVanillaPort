@@ -1,0 +1,523 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure critter_p_proc;
+procedure description_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure Talius00;
+procedure Talius01;
+procedure Talius02;
+procedure Talius03;
+procedure Talius04;
+procedure Talius05;
+procedure Talius06;
+procedure Talius07;
+procedure Talius08;
+procedure Talius09;
+procedure Talius10;
+procedure Talius11;
+procedure Talius12;
+procedure Talius13;
+procedure Talius14;
+procedure Talius15;
+procedure Talius16;
+procedure Talius17;
+procedure Talius18;
+procedure Talius19;
+procedure Talius20;
+procedure Talius21;
+procedure Talius22;
+procedure Talius23;
+procedure Talius24;
+procedure Talius25;
+procedure Talius26;
+procedure Talius27;
+procedure Talius28;
+procedure Talius29;
+procedure Talius29a;
+procedure Talius30;
+procedure Talius31;
+procedure Talius32;
+procedure Talius33;
+procedure Talius34;
+procedure Talius35;
+procedure Talius36;
+procedure Talius37;
+procedure Talius38;
+procedure Talius39;
+procedure Talius40;
+procedure Talius41;
+procedure TaliusEnd;
+procedure combat;
+
+variable hostile1;
+variable initialized1;
+
+
+procedure start
+begin
+	if (not(initialized1)) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 46);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_FOLLOWER_GUARD);
+		initialized1 := 1;
+		if (global_var(GVAR_DESTROY_FOLLOWERS) == 2) then begin
+			if (random(0, 1)) then begin
+				kill_critter(self_obj, 59);
+			end
+			else begin
+				kill_critter(self_obj, 57);
+			end
+		end
+	end
+	else begin
+		if (script_action == critter_proc) then begin
+			call critter_p_proc;
+		end
+		else begin
+			if (script_action == description_proc) then begin
+				call description_p_proc;
+			end
+			else begin
+				if (script_action == destroy_proc) then begin
+					call destroy_p_proc;
+				end
+				else begin
+					if (script_action == look_at_proc) then begin
+						call look_at_p_proc;
+					end
+					else begin
+						if (script_action == pickup_proc) then begin
+							call pickup_p_proc;
+						end
+						else begin
+							if (script_action == talk_proc) then begin
+								call talk_p_proc;
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (hostile1) then begin
+		hostile1 := 0;
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+end
+
+procedure description_p_proc
+begin
+	if (is_success(do_check(dude_obj, 1, has_trait(0, dude_obj, 0)))) then begin
+		display_msg(message_str(SCRIPT_TALIUS, 231));
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+		if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+		end
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	if (local_var(4)) then begin
+		display_msg(message_str(SCRIPT_TALIUS, 100));
+	end
+	else begin
+		display_msg(message_str(SCRIPT_TALIUS, 230));
+	end
+end
+
+procedure pickup_p_proc
+begin
+	hostile1 := 1;
+end
+
+procedure talk_p_proc
+begin
+	script_overrides;
+	if (global_var(GVAR_FIND_AGENT) == 2) then begin
+		call Talius41;
+	end
+	else begin
+		if (global_var(GVAR_FIND_AGENT) == 1) then begin
+			call Talius40;
+		end
+		else begin
+			if ((game_time_hour < 600) or (game_time_hour > 1800)) then begin
+				call Talius00;
+			end
+			else begin
+				start_gdialog(SCRIPT_TALIUS, self_obj, 4, -1, -1);
+				gsay_start;
+				call Talius01;
+				gsay_end;
+				end_dialogue;
+			end
+		end
+	end
+end
+
+procedure Talius00
+begin
+	float_msg(self_obj, message_str(SCRIPT_TALIUS, 101), FLOAT_MSG_NORMAL);
+end
+
+procedure Talius01
+begin
+	if (dude_is_female) then begin
+		gsay_reply(SCRIPT_TALIUS, 102);
+	end
+	else begin
+		gsay_reply(SCRIPT_TALIUS, 103);
+	end
+	giq_option(-3, SCRIPT_TALIUS, 104, Talius02, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_TALIUS, message_str(SCRIPT_TALIUS, 105) + proto_data(obj_pid(dude_obj), 1) + message_str(SCRIPT_TALIUS, 106) + proto_data(obj_pid(dude_obj), 1) + message_str(SCRIPT_TALIUS, 107), Talius05, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, message_str(SCRIPT_TALIUS, 108) + proto_data(obj_pid(dude_obj), 1) + message_str(SCRIPT_TALIUS, 109), Talius06, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 110, combat, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 111, Talius36, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_TALIUS, message_str(SCRIPT_TALIUS, 112) + proto_data(obj_pid(dude_obj), 1) + message_str(SCRIPT_TALIUS, 113), Talius37, NEUTRAL_REACTION);
+	giq_option(8, SCRIPT_TALIUS, 114, Talius37, NEUTRAL_REACTION);
+end
+
+procedure Talius02
+begin
+	gsay_reply(SCRIPT_TALIUS, 115);
+	giq_option(-3, SCRIPT_TALIUS, 116, Talius03, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_TALIUS, 117, combat, NEUTRAL_REACTION);
+end
+
+procedure Talius03
+begin
+	gsay_reply(SCRIPT_TALIUS, 118);
+	giq_option(-3, SCRIPT_TALIUS, 119, combat, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_TALIUS, 120, Talius04, NEUTRAL_REACTION);
+end
+
+procedure Talius04
+begin
+	variable LVar0 := 0;
+	if (local_var(5) == 0) then begin
+		LVar0 := create_object_sid(53, 0, 0, -1);
+		add_mult_objs_to_inven(dude_obj, LVar0, 3);
+		set_local_var(5, 1);
+		gsay_message(SCRIPT_TALIUS, 121, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_TALIUS, 232, NEUTRAL_REACTION);
+	end
+end
+
+procedure Talius05
+begin
+	gsay_reply(SCRIPT_TALIUS, message_str(SCRIPT_TALIUS, 122) + proto_data(obj_pid(dude_obj), 1) + message_str(SCRIPT_TALIUS, 123));
+	giq_option(-3, SCRIPT_TALIUS, 124, Talius02, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_TALIUS, 125, combat, NEUTRAL_REACTION);
+end
+
+procedure Talius06
+begin
+	gsay_reply(SCRIPT_TALIUS, 126);
+	giq_option(4, SCRIPT_TALIUS, 127, Talius07, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 128, Talius31, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 129, Talius32, NEUTRAL_REACTION);
+end
+
+procedure Talius07
+begin
+	gsay_reply(SCRIPT_TALIUS, 130);
+	giq_option(4, SCRIPT_TALIUS, 131, Talius08, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 132, Talius29, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 133, Talius30, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 134, combat, NEUTRAL_REACTION);
+end
+
+procedure Talius08
+begin
+	gsay_reply(SCRIPT_TALIUS, 135);
+	giq_option(4, SCRIPT_TALIUS, 136, TaliusEnd, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 137, Talius09, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 138, Talius09, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 139, combat, NEUTRAL_REACTION);
+end
+
+procedure Talius09
+begin
+	gsay_reply(SCRIPT_TALIUS, 140);
+	giq_option(4, SCRIPT_TALIUS, 141, Talius10, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 142, Talius15, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_TALIUS, 143, Talius16, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_TALIUS, 144, Talius17, NEUTRAL_REACTION);
+end
+
+procedure Talius10
+begin
+	gsay_reply(SCRIPT_TALIUS, 145);
+	giq_option(4, SCRIPT_TALIUS, 146, Talius11, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 147, TaliusEnd, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 148, Talius15, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 149, Talius16, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 150, Talius17, NEUTRAL_REACTION);
+end
+
+procedure Talius11
+begin
+	gsay_reply(SCRIPT_TALIUS, 151);
+	giq_option(4, SCRIPT_TALIUS, 152, Talius12, NEUTRAL_REACTION);
+end
+
+procedure Talius12
+begin
+	gsay_reply(SCRIPT_TALIUS, 153);
+	if (local_var(6) == 0) then begin
+		giq_option(4, SCRIPT_TALIUS, 154, Talius13, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_TALIUS, 155, Talius14, NEUTRAL_REACTION);
+end
+
+procedure Talius13
+begin
+	variable LVar0 := 0;
+	set_local_var(6, 1);
+	gsay_message(SCRIPT_TALIUS, 156, NEUTRAL_REACTION);
+	LVar0 := create_object_sid(32, 0, 0, -1);
+	add_obj_to_inven(dude_obj, LVar0);
+	LVar0 := create_object_sid(32, 0, 0, -1);
+	add_obj_to_inven(dude_obj, LVar0);
+	LVar0 := create_object_sid(11, 0, 0, -1);
+	add_obj_to_inven(dude_obj, LVar0);
+end
+
+procedure Talius14
+begin
+	gsay_message(SCRIPT_TALIUS, 157, NEUTRAL_REACTION);
+end
+
+procedure Talius15
+begin
+	gsay_reply(SCRIPT_TALIUS, 158);
+	giq_option(4, SCRIPT_TALIUS, 159, Talius16, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 160, Talius17, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 161, Talius22, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 162, TaliusEnd, NEUTRAL_REACTION);
+end
+
+procedure Talius16
+begin
+	gsay_reply(SCRIPT_TALIUS, message_str(SCRIPT_TALIUS, 163) + " " + message_str(SCRIPT_TALIUS, 164));
+	giq_option(4, SCRIPT_TALIUS, 165, Talius17, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 166, Talius22, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 167, TaliusEnd, NEUTRAL_REACTION);
+end
+
+procedure Talius17
+begin
+	gsay_message(SCRIPT_TALIUS, 168, NEUTRAL_REACTION);
+	gsay_reply(SCRIPT_TALIUS, 169);
+	giq_option(4, SCRIPT_TALIUS, 170, Talius18, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 171, Talius19, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 172, Talius21, NEUTRAL_REACTION);
+end
+
+procedure Talius18
+begin
+	gsay_message(SCRIPT_TALIUS, 173, NEUTRAL_REACTION);
+	gsay_reply(SCRIPT_TALIUS, 174);
+	giq_option(4, SCRIPT_TALIUS, 175, TaliusEnd, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 176, TaliusEnd, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 177, Talius12, NEUTRAL_REACTION);
+end
+
+procedure Talius19
+begin
+	gsay_message(SCRIPT_TALIUS, 178, NEUTRAL_REACTION);
+	gsay_reply(SCRIPT_TALIUS, 179);
+	giq_option(4, SCRIPT_TALIUS, 180, TaliusEnd, NEUTRAL_REACTION);
+	if ((global_var(GVAR_NECROP_MUTANTS_KILLED) == 2) and (local_var(6) == 0)) then begin
+		giq_option(4, SCRIPT_TALIUS, 181, Talius20, NEUTRAL_REACTION);
+	end
+end
+
+procedure Talius20
+begin
+	variable LVar0 := 0;
+	set_local_var(6, 1);
+	gsay_message(SCRIPT_TALIUS, 182, NEUTRAL_REACTION);
+	LVar0 := create_object_sid(11, 0, 0, -1);
+	add_obj_to_inven(dude_obj, LVar0);
+end
+
+procedure Talius21
+begin
+	gsay_message(SCRIPT_TALIUS, 183, NEUTRAL_REACTION);
+end
+
+procedure Talius22
+begin
+	gsay_reply(SCRIPT_TALIUS, 184);
+	giq_option(4, SCRIPT_TALIUS, 185, Talius23, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 186, Talius26, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 187, Talius27, NEUTRAL_REACTION);
+end
+
+procedure Talius23
+begin
+	gsay_reply(SCRIPT_TALIUS, 188);
+	giq_option(4, SCRIPT_TALIUS, 189, Talius24, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 190, Talius24, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 191, Talius25, NEUTRAL_REACTION);
+end
+
+procedure Talius24
+begin
+	gsay_message(SCRIPT_TALIUS, 192, NEUTRAL_REACTION);
+end
+
+procedure Talius25
+begin
+	gsay_message(SCRIPT_TALIUS, 193, NEUTRAL_REACTION);
+end
+
+procedure Talius26
+begin
+	gsay_message(SCRIPT_TALIUS, 194, NEUTRAL_REACTION);
+end
+
+procedure Talius27
+begin
+	gsay_reply(SCRIPT_TALIUS, 195);
+	giq_option(4, SCRIPT_TALIUS, 196, combat, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 197, Talius28, NEUTRAL_REACTION);
+end
+
+procedure Talius28
+begin
+	gsay_message(SCRIPT_TALIUS, 198, NEUTRAL_REACTION);
+	call combat;
+end
+
+procedure Talius29
+begin
+	gsay_reply(SCRIPT_TALIUS, 199);
+	giq_option(4, SCRIPT_TALIUS, 200, Talius29a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 201, combat, NEUTRAL_REACTION);
+end
+
+procedure Talius29a
+begin
+	set_global_var(GVAR_FIND_AGENT, 1);
+end
+
+procedure Talius30
+begin
+	gsay_message(SCRIPT_TALIUS, 202, NEUTRAL_REACTION);
+	call combat;
+end
+
+procedure Talius31
+begin
+	gsay_message(SCRIPT_TALIUS, 203, NEUTRAL_REACTION);
+	gsay_reply(SCRIPT_TALIUS, 204);
+	giq_option(4, SCRIPT_TALIUS, 205, TaliusEnd, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 206, Talius09, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 207, Talius09, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 208, combat, NEUTRAL_REACTION);
+end
+
+procedure Talius32
+begin
+	gsay_reply(SCRIPT_TALIUS, 209);
+	giq_option(4, SCRIPT_TALIUS, 210, TaliusEnd, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_TALIUS, 211, Talius33, NEUTRAL_REACTION);
+end
+
+procedure Talius33
+begin
+	gsay_reply(SCRIPT_TALIUS, 212);
+	giq_option(4, SCRIPT_TALIUS, 213, TaliusEnd, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_TALIUS, 214, Talius34, NEUTRAL_REACTION);
+end
+
+procedure Talius34
+begin
+	gsay_reply(SCRIPT_TALIUS, 215);
+	giq_option(6, SCRIPT_TALIUS, 216, TaliusEnd, NEUTRAL_REACTION);
+	giq_option(8, SCRIPT_TALIUS, 217, Talius35, NEUTRAL_REACTION);
+end
+
+procedure Talius35
+begin
+	gsay_reply(SCRIPT_TALIUS, 218);
+	giq_option(8, SCRIPT_TALIUS, 219, TaliusEnd, NEUTRAL_REACTION);
+end
+
+procedure Talius36
+begin
+	gsay_message(SCRIPT_TALIUS, 220, NEUTRAL_REACTION);
+end
+
+procedure Talius37
+begin
+	gsay_reply(SCRIPT_TALIUS, 221);
+	giq_option(6, SCRIPT_TALIUS, 222, Talius38, NEUTRAL_REACTION);
+end
+
+procedure Talius38
+begin
+	gsay_reply(SCRIPT_TALIUS, 223);
+	giq_option(6, SCRIPT_TALIUS, 224, Talius39, NEUTRAL_REACTION);
+end
+
+procedure Talius39
+begin
+	gsay_reply(SCRIPT_TALIUS, 225);
+	giq_option(6, SCRIPT_TALIUS, 226, TaliusEnd, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_TALIUS, 227, TaliusEnd, NEUTRAL_REACTION);
+end
+
+procedure Talius40
+begin
+	float_msg(self_obj, message_str(SCRIPT_TALIUS, 228), FLOAT_MSG_NORMAL);
+end
+
+procedure Talius41
+begin
+	float_msg(self_obj, message_str(SCRIPT_TALIUS, 229), FLOAT_MSG_NORMAL);
+end
+
+procedure TaliusEnd
+begin
+end
+
+procedure combat
+begin
+	hostile1 := 1;
+end

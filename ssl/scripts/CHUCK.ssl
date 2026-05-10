@@ -1,0 +1,515 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure damage_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure talk_p_proc;
+procedure critter_p_proc;
+procedure pickup_p_proc;
+procedure Chuck01;
+procedure Chuck02;
+procedure Chuck03;
+procedure Chuck04;
+procedure Chuck05;
+procedure Chuck06;
+procedure Chuck07;
+procedure Chuck08;
+procedure Chuck09;
+procedure Chuck10;
+procedure Chuck11;
+procedure Chuck12;
+procedure Chuck13;
+procedure Chuck14;
+procedure Chuck15;
+procedure Chuck16;
+procedure Chuck17;
+procedure Chuck18;
+procedure Chuck19;
+procedure Chuck20;
+procedure Chuck21;
+procedure Chuck22;
+procedure Chuck23;
+procedure ChuckCards;
+procedure ChuckCards2;
+procedure ChuckBye;
+procedure ChuckEnd;
+
+variable initialized1;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	variable LVar0 := 0;
+	if (not(initialized1)) then begin
+		if (obj_is_carrying_obj_pid(self_obj, 41) == 0) then begin
+			LVar0 := create_object_sid(41, 0, 0, -1);
+			add_mult_objs_to_inven(self_obj, LVar0, random(0, 20));
+			if ((global_var(GVAR_BLADES) == 9103) or (global_var(GVAR_BLADES) == 9102)) then begin
+				critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 0);
+			end
+			else begin
+				critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 49);
+			end
+		end
+		initialized1 := 1;
+	end
+	else begin
+		if (script_action == destroy_proc) then begin
+			call destroy_p_proc;
+		end
+		else begin
+			if (script_action == look_at_proc) then begin
+				call look_at_p_proc;
+			end
+			else begin
+				if (script_action == talk_proc) then begin
+					call talk_p_proc;
+				end
+			end
+		end
+	end
+end
+
+procedure damage_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		set_global_var(GVAR_ENEMY_ADYTUM, 1);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 49);
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		set_global_var(GVAR_ENEMY_ADYTUM, 1);
+		if (source_obj == dude_obj) then begin
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+				set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+			end
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+				set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+			end
+			set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+			if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+				set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+			end
+		end
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 49);
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	if (local_var(4)) then begin
+		display_msg(message_str(SCRIPT_CHUCK, 101));
+	end
+	else begin
+		display_msg(message_str(SCRIPT_CHUCK, 100));
+	end
+end
+
+procedure talk_p_proc
+begin
+	call Get_Reaction;
+	start_gdialog(SCRIPT_CHUCK, self_obj, 4, -1, -1);
+	gsay_start;
+	if (local_var(4)) then begin
+		call Chuck22;
+	end
+	else begin
+		call Chuck01;
+	end
+	gsay_end;
+	end_dialogue;
+end
+
+procedure critter_p_proc
+begin
+	if (obj_can_see_obj(self_obj, dude_obj)) then begin
+		if (global_var(GVAR_ENEMY_ADYTUM) == 1) then begin
+			attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+		end
+	end
+end
+
+procedure pickup_p_proc
+begin
+	set_global_var(GVAR_ENEMY_ADYTUM, 1);
+end
+
+procedure Chuck01
+begin
+	set_local_var(4, 1);
+	gsay_reply(SCRIPT_CHUCK, 102);
+	giq_option(-3, SCRIPT_CHUCK, 103, Chuck02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 104, Chuck03, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 105, Chuck04, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_CHUCK, 106, Chuck05, NEUTRAL_REACTION);
+end
+
+procedure Chuck02
+begin
+	gsay_message(SCRIPT_CHUCK, 107, NEUTRAL_REACTION);
+end
+
+procedure Chuck03
+begin
+	gsay_reply(SCRIPT_CHUCK, 108);
+	giq_option(4, SCRIPT_CHUCK, 109, Chuck09, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 110, Chuck14, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_CHUCK, 111, Chuck15, GOOD_REACTION);
+end
+
+procedure Chuck04
+begin
+	gsay_reply(SCRIPT_CHUCK, 112);
+	giq_option(4, SCRIPT_CHUCK, 113, Chuck14, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 114, Chuck18, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 115, ChuckBye, NEUTRAL_REACTION);
+end
+
+procedure Chuck05
+begin
+	gsay_reply(SCRIPT_CHUCK, 117);
+	giq_option(4, SCRIPT_CHUCK, 118, ChuckBye, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 119, ChuckCards, NEUTRAL_REACTION);
+end
+
+procedure Chuck06
+begin
+	call Down_React;
+	gsay_reply(SCRIPT_CHUCK, 128);
+	giq_option(4, SCRIPT_CHUCK, 129, Chuck07, BAD_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 130, Chuck08, NEUTRAL_REACTION);
+end
+
+procedure Chuck07
+begin
+	call Down_React;
+	set_local_var(5, 4);
+	gsay_message(SCRIPT_CHUCK, 131, BAD_REACTION);
+end
+
+procedure Chuck08
+begin
+	call Up_React;
+	gsay_message(SCRIPT_CHUCK, 132, NEUTRAL_REACTION);
+end
+
+procedure Chuck09
+begin
+	gsay_reply(SCRIPT_CHUCK, 133);
+	giq_option(4, SCRIPT_CHUCK, 134, ChuckBye, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 135, Chuck10, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_CHUCK, 136, Chuck19, NEUTRAL_REACTION);
+end
+
+procedure Chuck10
+begin
+	gsay_reply(SCRIPT_CHUCK, 137);
+	giq_option(4, SCRIPT_CHUCK, 138, ChuckBye, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 139, Chuck11, NEUTRAL_REACTION);
+end
+
+procedure Chuck11
+begin
+	gsay_reply(SCRIPT_CHUCK, 140);
+	giq_option(4, SCRIPT_CHUCK, 134, ChuckBye, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 141, Chuck12, BAD_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 142, Chuck13, NEUTRAL_REACTION);
+end
+
+procedure Chuck12
+begin
+	gsay_reply(SCRIPT_CHUCK, 143);
+	giq_option(4, SCRIPT_CHUCK, 144, Chuck07, BAD_REACTION);
+	giq_option(5, SCRIPT_CHUCK, 145, Up_React, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 146, ChuckBye, NEUTRAL_REACTION);
+end
+
+procedure Chuck13
+begin
+	gsay_reply(SCRIPT_CHUCK, 147);
+	giq_option(4, SCRIPT_CHUCK, 148, ChuckCards, GOOD_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 144, Chuck07, BAD_REACTION);
+end
+
+procedure Chuck14
+begin
+	gsay_reply(SCRIPT_CHUCK, 149);
+	giq_option(4, SCRIPT_CHUCK, 150, ChuckEnd, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 151, Chuck10, NEUTRAL_REACTION);
+end
+
+procedure Chuck15
+begin
+	gsay_reply(SCRIPT_CHUCK, 152);
+	giq_option(4, SCRIPT_CHUCK, 153, ChuckBye, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 150, ChuckEnd, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_CHUCK, 154, Chuck16, NEUTRAL_REACTION);
+end
+
+procedure Chuck16
+begin
+	gsay_reply(SCRIPT_CHUCK, 155);
+	giq_option(4, SCRIPT_CHUCK, 156, ChuckBye, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_CHUCK, 157, Chuck17, NEUTRAL_REACTION);
+end
+
+procedure Chuck17
+begin
+	gsay_reply(SCRIPT_CHUCK, 158);
+	giq_option(4, SCRIPT_CHUCK, 159, ChuckBye, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 150, Down_React, BAD_REACTION);
+end
+
+procedure Chuck18
+begin
+	set_local_var(6, 1);
+	gsay_reply(SCRIPT_CHUCK, 160);
+	giq_option(4, SCRIPT_CHUCK, 146, ChuckBye, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 161, ChuckCards, NEUTRAL_REACTION);
+end
+
+procedure Chuck19
+begin
+	gsay_reply(SCRIPT_CHUCK, 162);
+	giq_option(4, SCRIPT_CHUCK, 146, ChuckBye, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_CHUCK, 163, Chuck20, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_CHUCK, 164, Chuck21, NEUTRAL_REACTION);
+end
+
+procedure Chuck20
+begin
+	gsay_reply(SCRIPT_CHUCK, 165);
+	giq_option(4, SCRIPT_CHUCK, 146, ChuckBye, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_CHUCK, 164, Chuck21, NEUTRAL_REACTION);
+end
+
+procedure Chuck21
+begin
+	gsay_reply(SCRIPT_CHUCK, 166);
+	giq_option(0, SCRIPT_CHUCK, 125, ChuckBye, NEUTRAL_REACTION);
+end
+
+procedure Chuck22
+begin
+	gsay_reply(SCRIPT_CHUCK, random(167, 169));
+	giq_option(-3, SCRIPT_CHUCK, 103, Chuck02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 170, Chuck23, NEUTRAL_REACTION);
+	if (local_var(5) < 4) then begin
+		giq_option(4, SCRIPT_CHUCK, 171, ChuckCards, NEUTRAL_REACTION);
+	end
+	if (local_var(6) == 0) then begin
+		giq_option(4, SCRIPT_CHUCK, 172, Chuck18, NEUTRAL_REACTION);
+	end
+end
+
+procedure Chuck23
+begin
+	gsay_reply(SCRIPT_CHUCK, 173);
+	giq_option(0, SCRIPT_CHUCK, 125, ChuckBye, NEUTRAL_REACTION);
+end
+
+procedure ChuckCards
+begin
+	gsay_reply(SCRIPT_CHUCK, 120);
+	giq_option(0, SCRIPT_CHUCK, 125, ChuckCards2, NEUTRAL_REACTION);
+end
+
+procedure ChuckCards2
+begin
+	if (local_var(5) == 0) then begin
+		if (global_var(GVAR_BROTHERHOOD_OF_STEEL) < 1) then begin
+			gsay_reply(SCRIPT_CHUCK, 121);
+		end
+		else begin
+			set_local_var(5, 1);
+		end
+	end
+	if (local_var(5) == 1) then begin
+		if (global_var(GVAR_THE_VATS) < 1) then begin
+			gsay_reply(SCRIPT_CHUCK, 122);
+		end
+		else begin
+			set_local_var(5, 2);
+		end
+	end
+	if (local_var(5) == 2) then begin
+		if (global_var(GVAR_MASTERS_LAIR) < 1) then begin
+			gsay_reply(SCRIPT_CHUCK, 123);
+		end
+		else begin
+			set_local_var(5, 3);
+		end
+	end
+	if (local_var(5) >= 3) then begin
+		gsay_reply(SCRIPT_CHUCK, 124);
+		set_critter_stat(dude_obj, 6, 1);
+	end
+	set_local_var(5, local_var(5) + 1);
+	giq_option(4, SCRIPT_CHUCK, 126, ChuckBye, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHUCK, 127, Chuck06, NEUTRAL_REACTION);
+end
+
+procedure ChuckBye
+begin
+	gsay_message(SCRIPT_CHUCK, 116, NEUTRAL_REACTION);
+end
+
+procedure ChuckEnd
+begin
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

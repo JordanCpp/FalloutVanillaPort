@@ -1,0 +1,1024 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure do_dialogue;
+procedure rhombus01;
+procedure rhombus02;
+procedure rhombus03;
+procedure rhombus03_01;
+procedure rhombus04;
+procedure rhombus05;
+procedure rhombus06;
+procedure rhombus06a;
+procedure rhombus07;
+procedure rhombus08;
+procedure rhombus09;
+procedure rhombus09_1;
+procedure rhombus10;
+procedure rhombus11;
+procedure rhombus12;
+procedure rhombus13;
+procedure rhombus14;
+procedure rhombus15;
+procedure rhombus16;
+procedure rhombus17;
+procedure rhombus18;
+procedure rhombus19;
+procedure rhombus20;
+procedure rhombus21;
+procedure rhombus22;
+procedure rhombus22a;
+procedure rhombus23;
+procedure rhombus24;
+procedure rhombus25;
+procedure rhombus26;
+procedure rhombus27;
+procedure rhombus27_1;
+procedure rhombus28;
+procedure rhombus28_1;
+procedure rhombus28_2;
+procedure rhombus29;
+procedure rhombus30;
+procedure rhombus31;
+procedure rhombus32;
+procedure rhombus33;
+procedure rhombus35;
+procedure rhombus37;
+procedure rhombus38;
+procedure rhombus39;
+procedure rhombus40;
+procedure rhombus41;
+procedure rhombus42;
+procedure rhombus43;
+procedure rhombus44;
+procedure rhombus45;
+procedure rhombus46;
+procedure rhombus47;
+procedure rhombus48;
+procedure rhombus51;
+procedure rhombus51a;
+procedure rhombus52;
+procedure rhombus53;
+procedure rhombus54;
+procedure rhombus55;
+procedure rhombus56;
+procedure rhombusx;
+procedure rhombusx1;
+procedure rhombusx2;
+procedure rhombusok;
+procedure anger;
+procedure annoyed;
+procedure combat;
+procedure critter_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure timeforwhat;
+procedure kickout;
+procedure Remove_Player;
+
+import variable locker_ptr;
+
+variable MAD;
+variable Q1;
+variable Q2;
+variable Q4;
+variable rndx;
+variable rndy;
+variable rndz;
+variable VATS;
+variable MALE;
+variable HOSTILE;
+variable ILLEGAL;
+variable Only_Once := 1;
+variable here;
+variable conmod;
+variable loot;
+variable sense;
+variable denounce;
+variable Test;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+procedure rhombus00;
+procedure rhombus34;
+procedure rhombus39_1;
+procedure rhombus49;
+
+
+procedure start
+begin
+if (Only_Once) then begin
+    Only_Once := 0;
+    critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 44);
+    critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_BOS_RHOMBUS);
+  end
+  if (script_action == timed_event_proc) then begin
+    call timeforwhat;
+  end
+  if (script_action == look_at_proc) then begin
+    call look_at_p_proc;
+  end
+  else begin
+    if (script_action == pickup_proc) then begin
+      call pickup_p_proc;
+    end
+    else begin
+      if (script_action == talk_proc) then begin
+        call talk_p_proc;
+      end
+      else begin
+        if (script_action == critter_proc) then begin
+          call critter_p_proc;
+        end
+        else begin
+          if (script_action == destroy_proc) then begin
+            call destroy_p_proc;
+          end
+        end
+      end
+    end
+  end
+end
+
+procedure do_dialogue
+begin
+  start_gdialog(SCRIPT_RHOMBUS, self_obj, 4, HEAD_RHOMBUS, BACKGROUND_BROTHERHOOD);
+  call Get_Reaction;
+  gsay_start;
+  MALE := dude_is_male;
+  if (ILLEGAL) then begin
+    ILLEGAL := 0;
+    conmod := (get_critter_stat(dude_obj, 3) - 5) * 10;
+    if (local_var(5) == 1) then begin
+      call rhombus51;
+    end
+    else begin
+      call rhombus55;
+    end
+  end
+  else begin
+    if (MAD) then begin
+      if (MAD < 3) then begin
+        call anger;
+      end
+      else begin
+        call rhombus05;
+      end
+    end
+    else begin
+      call rhombus01;
+    end
+  end
+  gsay_end;
+  end_dialogue;
+  if (denounce == 1) then begin
+    call Remove_Player;
+  end
+end
+
+procedure rhombus01
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 105);
+  giq_option(4, SCRIPT_RHOMBUS, 106, rhombus02, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 107, rhombus03, BAD_REACTION);
+  giq_option(-3, SCRIPT_RHOMBUS, 108, rhombus32, NEUTRAL_REACTION);
+end
+
+procedure rhombus02
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 109);
+  call rhombus00;
+end
+
+procedure rhombus03
+begin
+  call Down_React;
+  gsay_reply(SCRIPT_RHOMBUS, 110);
+  giq_option(4, SCRIPT_RHOMBUS, 111, rhombus03_01, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 112, rhombus05, BAD_REACTION);
+end
+
+procedure rhombus03_01
+begin
+  if (is_success(roll_vs_skill(dude_obj, 14, -10))) then begin
+    call rhombus04;
+  end
+  else begin
+    call rhombus06;
+  end
+end
+
+procedure rhombus04
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 113);
+  giq_option(4, SCRIPT_RHOMBUS, 114, rhombus02, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 115, rhombus05, BAD_REACTION);
+end
+
+procedure rhombus05
+begin
+  gsay_message(SCRIPT_RHOMBUS, 116, BAD_REACTION);
+  call rhombusx1;
+end
+
+procedure rhombus06
+begin
+  call anger;
+end
+
+procedure rhombus06a
+begin
+  call Down_React;
+  call rhombus06;
+end
+
+procedure rhombus07
+begin
+  Q1 := Q1 + 1;
+  if (Q1 > 4) then begin
+    call anger;
+  end
+  else begin
+    if (Q1 > 3) then begin
+      call annoyed;
+    end
+    else begin
+      if (Q1 > 1) then begin
+        gsay_message(SCRIPT_RHOMBUS, 179, NEUTRAL_REACTION);
+      end
+      gsay_reply(SCRIPT_RHOMBUS, 118);
+      giq_option(4, SCRIPT_RHOMBUS, 119, rhombus08, NEUTRAL_REACTION);
+      giq_option(4, SCRIPT_RHOMBUS, 120, rhombus12, NEUTRAL_REACTION);
+      giq_option(6, SCRIPT_RHOMBUS, 121, rhombus19, NEUTRAL_REACTION);
+    end
+  end
+end
+
+procedure rhombus08
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 122);
+  giq_option(5, SCRIPT_RHOMBUS, 123, rhombus09, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_RHOMBUS, 124, rhombus17, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 125, rhombus18, BAD_REACTION);
+end
+
+procedure rhombus09
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 126);
+  giq_option(5, SCRIPT_RHOMBUS, 127, rhombus09_1, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_RHOMBUS, 128, rhombus04, NEUTRAL_REACTION);
+end
+
+procedure rhombus09_1
+begin
+  if (MALE) then begin
+    call rhombus11;
+  end
+  else begin
+    if (is_success(do_check(dude_obj, 3, -1))) then begin
+      call rhombus10;
+    end
+    else begin
+      call rhombus11;
+    end
+  end
+end
+
+procedure rhombus10
+begin
+  set_local_var(6, 1);
+  gsay_reply(SCRIPT_RHOMBUS, 129);
+  giq_option(5, SCRIPT_RHOMBUS, 130, rhombus06a, BAD_REACTION);
+  giq_option(5, SCRIPT_RHOMBUS, 131, rhombus02, NEUTRAL_REACTION);
+end
+
+procedure rhombus11
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 132);
+  giq_option(5, SCRIPT_RHOMBUS, 133, rhombus06a, BAD_REACTION);
+  giq_option(5, SCRIPT_RHOMBUS, 134, rhombus02, NEUTRAL_REACTION);
+end
+
+procedure rhombus12
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 135);
+  giq_option(4, SCRIPT_RHOMBUS, 136, rhombus03, BAD_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 137, rhombus13, NEUTRAL_REACTION);
+end
+
+procedure rhombus13
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 138);
+  giq_option(5, SCRIPT_RHOMBUS, 139, rhombus14, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 140, rhombus03, BAD_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 141, rhombus02, NEUTRAL_REACTION);
+end
+
+procedure rhombus14
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 142);
+  giq_option(5, SCRIPT_RHOMBUS, 143, rhombus15, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_RHOMBUS, 144, rhombus03, BAD_REACTION);
+end
+
+procedure rhombus15
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 145);
+  giq_option(5, SCRIPT_RHOMBUS, 146, rhombus02, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_RHOMBUS, 147, rhombus16, NEUTRAL_REACTION);
+end
+
+procedure rhombus16
+begin
+  gsay_message(SCRIPT_RHOMBUS, 148, NEUTRAL_REACTION);
+end
+
+procedure rhombus17
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 149);
+  giq_option(4, SCRIPT_RHOMBUS, 150, rhombus03, BAD_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 151, rhombus12, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 152, rhombus02, NEUTRAL_REACTION);
+end
+
+procedure rhombus18
+begin
+  gsay_message(SCRIPT_RHOMBUS, 153, NEUTRAL_REACTION);
+  call rhombusx1;
+end
+
+procedure rhombus19
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 154);
+  giq_option(5, SCRIPT_RHOMBUS, 155, rhombus20, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 156, rhombus13, NEUTRAL_REACTION);
+end
+
+procedure rhombus20
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 157);
+  giq_option(5, SCRIPT_RHOMBUS, 158, rhombus02, NEUTRAL_REACTION);
+end
+
+procedure rhombus21
+begin
+  Q2 := Q2 + 1;
+  if (Q2 > 4) then begin
+    call anger;
+  end
+  else begin
+    if (Q2 > 3) then begin
+      call annoyed;
+    end
+    else begin
+      if (Q2 == 2) then begin
+        gsay_message(SCRIPT_RHOMBUS, 180, NEUTRAL_REACTION);
+      end
+      else begin
+        if (Q2 == 3) then begin
+          gsay_message(SCRIPT_RHOMBUS, 179, NEUTRAL_REACTION);
+        end
+      end
+      gsay_message(SCRIPT_RHOMBUS, 159, NEUTRAL_REACTION);
+      call rhombus00;
+    end
+  end
+end
+
+procedure rhombus22
+begin
+  if (local_var(6) == 0) then begin
+    call rhombus22a;
+  end
+  else begin
+    call annoyed;
+  end
+end
+
+procedure rhombus22a
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 160);
+  giq_option(4, SCRIPT_RHOMBUS, 161, rhombus09_1, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 162, rhombus00, NEUTRAL_REACTION);
+end
+
+procedure rhombus23
+begin
+  Q4 := Q4 + 1;
+  if (Q4 > 4) then begin
+    call anger;
+  end
+  else begin
+    if (Q4 > 3) then begin
+      call annoyed;
+    end
+    else begin
+      if (global_var(GVAR_THE_HUB) == 0) then begin
+        set_global_var(GVAR_THE_HUB, 1);
+      end
+      if (global_var(GVAR_ANGELS_BONEYARD) == 0) then begin
+        set_global_var(GVAR_ANGELS_BONEYARD, 1);
+      end
+      if (Q4 == 2) then begin
+        gsay_message(SCRIPT_RHOMBUS, 180, NEUTRAL_REACTION);
+      end
+      else begin
+        if (Q4 == 3) then begin
+          gsay_message(SCRIPT_RHOMBUS, 179, NEUTRAL_REACTION);
+        end
+      end
+      gsay_message(SCRIPT_RHOMBUS, 163, NEUTRAL_REACTION);
+      call rhombus00;
+    end
+  end
+end
+
+procedure rhombus24
+begin
+  call Down_React;
+  gsay_message(SCRIPT_RHOMBUS, 164, NEUTRAL_REACTION);
+end
+
+procedure rhombus25
+begin
+  call Down_React;
+  gsay_message(SCRIPT_RHOMBUS, 165, NEUTRAL_REACTION);
+  call rhombusx1;
+end
+
+procedure rhombus26
+begin
+  call Down_React;
+  gsay_message(SCRIPT_RHOMBUS, 166, NEUTRAL_REACTION);
+end
+
+procedure rhombus27
+begin
+  call Down_React;
+  gsay_reply(SCRIPT_RHOMBUS, 167);
+  giq_option(4, SCRIPT_RHOMBUS, 168, rhombus27_1, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 169, rhombusx1, NEUTRAL_REACTION);
+end
+
+procedure rhombus27_1
+begin
+  if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+    call rhombus28;
+  end
+  else begin
+    call rhombus30;
+  end
+end
+
+procedure rhombus28
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 170);
+  giq_option(4, SCRIPT_RHOMBUS, 171, rhombus28_1, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 172, rhombus28_2, NEUTRAL_REACTION);
+end
+
+procedure rhombus28_1
+begin
+  if (is_success(roll_vs_skill(dude_obj, 14, -25))) then begin
+    call rhombus29;
+  end
+  else begin
+    call rhombus30;
+  end
+end
+
+procedure rhombus28_2
+begin
+  if (is_success(roll_vs_skill(dude_obj, 14, -15))) then begin
+    call rhombus29;
+  end
+  else begin
+    call rhombus30;
+  end
+end
+
+procedure rhombus29
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 173);
+  giq_option(4, SCRIPT_RHOMBUS, 174, rhombusx2, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 175, rhombus05, BAD_REACTION);
+end
+
+procedure rhombus30
+begin
+  gsay_message(SCRIPT_RHOMBUS, 176, NEUTRAL_REACTION);
+  call rhombusx1;
+end
+
+procedure rhombus31
+begin
+  call rhombusx1;
+end
+
+procedure rhombus32
+begin
+  gsay_message(SCRIPT_RHOMBUS, 177, NEUTRAL_REACTION);
+end
+
+procedure rhombus33
+begin
+  gsay_message(SCRIPT_RHOMBUS, 178, NEUTRAL_REACTION);
+end
+
+procedure rhombus35
+begin
+  gsay_message(SCRIPT_RHOMBUS, 180, NEUTRAL_REACTION);
+end
+
+procedure rhombus37
+begin
+  gsay_message(SCRIPT_RHOMBUS, 182, NEUTRAL_REACTION);
+end
+
+procedure rhombus38
+begin
+  gsay_message(SCRIPT_RHOMBUS, 183, NEUTRAL_REACTION);
+end
+
+procedure rhombus39
+begin
+  gsay_message(SCRIPT_RHOMBUS, 184, NEUTRAL_REACTION);
+end
+
+procedure rhombus40
+begin
+  gsay_message(SCRIPT_RHOMBUS, 186, NEUTRAL_REACTION);
+end
+
+procedure rhombus41
+begin
+  gsay_message(SCRIPT_RHOMBUS, 187, NEUTRAL_REACTION);
+end
+
+procedure rhombus42
+begin
+  gsay_message(SCRIPT_RHOMBUS, 188, NEUTRAL_REACTION);
+end
+
+procedure rhombus43
+begin
+  gsay_message(SCRIPT_RHOMBUS, 189, NEUTRAL_REACTION);
+end
+
+procedure rhombus44
+begin
+  gsay_message(SCRIPT_RHOMBUS, 190, NEUTRAL_REACTION);
+end
+
+procedure rhombus45
+begin
+  gsay_message(SCRIPT_RHOMBUS, 191, NEUTRAL_REACTION);
+end
+
+procedure rhombus46
+begin
+  gsay_message(SCRIPT_RHOMBUS, 192, NEUTRAL_REACTION);
+end
+
+procedure rhombus47
+begin
+  gsay_message(SCRIPT_RHOMBUS, 193, NEUTRAL_REACTION);
+end
+
+procedure rhombus48
+begin
+  gsay_message(SCRIPT_RHOMBUS, 194, NEUTRAL_REACTION);
+end
+
+procedure rhombus51
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 170);
+  giq_option(4, SCRIPT_RHOMBUS, 172, rhombus51a, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 201, rhombus54, BAD_REACTION);
+  giq_option(7, SCRIPT_RHOMBUS, 200, rhombus52, GOOD_REACTION);
+end
+
+procedure rhombus51a
+begin
+  Test := roll_vs_skill(dude_obj, 14, conmod);
+  if (is_success(Test)) then begin
+    call rhombus52;
+  end
+  else begin
+    call rhombus53;
+  end
+end
+
+procedure rhombus52
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 173);
+  giq_option(4, SCRIPT_RHOMBUS, 202, rhombusok, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 203, rhombus54, BAD_REACTION);
+end
+
+procedure rhombus53
+begin
+  gsay_message(SCRIPT_RHOMBUS, 176, BAD_REACTION);
+  call kickout;
+end
+
+procedure rhombus54
+begin
+  gsay_message(SCRIPT_RHOMBUS, 165, BAD_REACTION);
+  call kickout;
+end
+
+procedure rhombus55
+begin
+  gsay_reply(SCRIPT_RHOMBUS, 167);
+  giq_option(4, SCRIPT_RHOMBUS, 168, rhombus56, BAD_REACTION);
+end
+
+procedure rhombus56
+begin
+  Test := roll_vs_skill(dude_obj, 14, conmod);
+  if (is_critical(Test)) then begin
+    call combat;
+  end
+  else begin
+    call kickout;
+  end
+end
+
+procedure rhombusx
+begin
+end
+
+procedure rhombusx1
+begin
+  call combat;
+end
+
+procedure rhombusx2
+begin
+end
+
+procedure rhombusok
+begin
+  critter_attempt_placement(dude_obj, 22123, 0);
+end
+
+procedure anger
+begin
+  call Down_React;
+  MAD := MAD + 1;
+  if (MAD == 1) then begin
+    gsay_message(SCRIPT_RHOMBUS, 182, BAD_REACTION);
+  end
+  else begin
+    if (MAD == 2) then begin
+      gsay_message(SCRIPT_RHOMBUS, 117, BAD_REACTION);
+    end
+    else begin
+      if (MAD == 3) then begin
+        gsay_message(SCRIPT_RHOMBUS, 177, BAD_REACTION);
+        call kickout;
+      end
+    end
+  end
+end
+
+procedure annoyed
+begin
+  call Down_React;
+  gsay_message(SCRIPT_RHOMBUS, 181, BAD_REACTION);
+end
+
+procedure combat
+begin
+  HOSTILE := 1;
+end
+
+procedure critter_p_proc
+begin
+  if (global_var(GVAR_ENEMY_BROTHERHOOD)) then begin
+    HOSTILE := 1;
+  end
+  if (tile_distance_objs(self_obj, dude_obj) > 12) then begin
+    HOSTILE := 0;
+  end
+  if (HOSTILE) then begin
+    set_global_var(GVAR_ENEMY_BROTHERHOOD, 1);
+    HOSTILE := 0;
+    attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+  end
+  else begin
+    if (obj_can_see_obj(self_obj, dude_obj) and (ILLEGAL == 0)) then begin
+      here := tile_num(dude_obj);
+      if (tile_distance(here, 24130) < 6) then begin
+        ILLEGAL := 1;
+      end
+      else begin
+        if (tile_distance(here, 24322) < 6) then begin
+          ILLEGAL := 1;
+        end
+      end
+      if (map_var(19) > 0) then begin
+        ILLEGAL := 1;
+        set_map_var(19, 0);
+      end
+      else begin
+        if ((tile_num(self_obj) == 22123) and (tile_distance(here, 22930) < 3)) then begin
+          float_msg(self_obj, message_str(SCRIPT_RHOMBUS, 209), FLOAT_MSG_GREEN);
+        end
+      end
+      if (ILLEGAL) then begin
+        loot := 0;
+        loot := obj_carrying_pid_obj(dude_obj, 229);
+        if (loot) then begin
+          rm_obj_from_inven(dude_obj, loot);
+          add_obj_to_inven(locker_ptr, loot);
+          display_msg(message_str(SCRIPT_RHOMBUS, 207));
+        end
+        set_local_var(5, local_var(5) + 1);
+        dialogue_system_enter;
+      end
+    end
+    else begin
+      if ((local_var(7) == 1) and (tile_num(self_obj) != 22123)) then begin
+        animate_move_obj_to_tile(self_obj, 22123, ANIMATE_WALK);
+      end
+      else begin
+        if ((local_var(7) == 2) and (tile_num(self_obj) != 23928)) then begin
+          animate_move_obj_to_tile(self_obj, 23928, ANIMATE_WALK);
+        end
+        else begin
+          if (local_var(7) == 3) then begin
+            if (local_var(5) > 0) then begin
+              sense := 0;
+            end
+            else begin
+              sense := 1;
+            end
+            if (map_var(19) > sense) then begin
+              float_msg(self_obj, message_str(SCRIPT_RHOMBUS, 206), FLOAT_MSG_GREEN);
+              set_map_var(19, 0);
+              set_local_var(7, 2);
+              add_timer_event(self_obj, game_ticks(30), 1);
+            end
+            else begin
+              if (tile_num(self_obj) != 23920) then begin
+                animate_move_obj_to_tile(self_obj, 23920, ANIMATE_WALK);
+              end
+            end
+          end
+          else begin
+            if ((game_time_hour >= 1900) or (game_time_hour < 600)) then begin
+              if (local_var(8) == 0) then begin
+                set_local_var(8, 1);
+                set_local_var(7, 3);
+              end
+            end
+            else begin
+              set_local_var(8, 0);
+              set_local_var(7, 1);
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+procedure pickup_p_proc
+begin
+  if (source_obj == dude_obj) then begin
+    HOSTILE := 1;
+  end
+end
+
+procedure talk_p_proc
+begin
+  call do_dialogue;
+end
+
+procedure destroy_p_proc
+begin
+  set_global_var(GVAR_ENEMY_BROTHERHOOD, 1);
+  rm_timer_event(self_obj);
+  if (source_obj == dude_obj) then begin
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+      set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+      set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+    end
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+      set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+      set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+    end
+    set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+    if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+      set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+    end
+  end
+end
+
+procedure look_at_p_proc
+begin
+  script_overrides;
+  display_msg(message_str(SCRIPT_RHOMBUS, 100));
+end
+
+procedure timeforwhat
+begin
+  if ((game_time_hour >= 1900) or (game_time_hour < 600)) then begin
+    if (local_var(7) == 2) then begin
+      set_local_var(7, 3);
+    end
+  end
+end
+
+procedure kickout
+begin
+  denounce := 1;
+end
+
+procedure Remove_Player
+begin
+  set_global_var(GVAR_BECOME_AN_INITIATE, 5);
+  set_global_var(GVAR_MARK_BROTHER_2, 0);
+  set_global_var(GVAR_MARK_BROTHER_3, 0);
+  set_global_var(GVAR_MARK_BROTHER_4, 0);
+  set_global_var(GVAR_MARK_BROTHER_5, 0);
+  load_map(13, 1);
+end
+
+procedure Get_Reaction
+begin
+  if (local_var(2) == 0) then begin
+    set_local_var(0, 50);
+    set_local_var(1, 2);
+    set_local_var(2, 1);
+    set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+    set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+    if (has_trait(0, dude_obj, 39)) then begin
+      if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+        set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+      end
+      else begin
+        set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+      end
+    end
+    else begin
+      if (local_var(3) == 1) then begin
+        set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+      end
+      else begin
+        set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+      end
+    end
+    if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+      set_local_var(0, local_var(0) - 30);
+    end
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+      set_local_var(0, local_var(0) + 20);
+    end
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+      set_local_var(0, local_var(0) - 20);
+    end
+    call React_To_Level;
+  end
+end
+
+procedure React_To_Level
+begin
+  if (local_var(0) <= 25) then begin
+    set_local_var(1, 1);
+  end
+  else begin
+    if (local_var(0) <= 75) then begin
+      set_local_var(1, 2);
+    end
+    else begin
+      set_local_var(1, 3);
+    end
+  end
+end
+
+procedure Level_To_React
+begin
+  if (local_var(1) == 1) then begin
+    set_local_var(0, random(1, 25));
+  end
+  else begin
+    if (local_var(1) == 2) then begin
+      set_local_var(0, random(26, 75));
+    end
+    else begin
+      set_local_var(0, random(76, 100));
+    end
+  end
+end
+
+procedure Up_React
+begin
+  set_local_var(0, local_var(0) + 10);
+  call React_To_Level;
+end
+
+procedure Down_React
+begin
+  set_local_var(0, local_var(0) - 10);
+  call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+  set_local_var(1, 1);
+  set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+  set_local_var(0, 100);
+  set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+  set_local_var(0, local_var(0) + 25);
+  call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+  set_local_var(0, local_var(0) - 25);
+  call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+  set_local_var(1, local_var(1) + 1);
+  if (local_var(1) > 3) then begin
+    set_local_var(1, 3);
+  end
+  call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+  set_local_var(1, local_var(1) - 1);
+  if (local_var(1) < 1) then begin
+    set_local_var(1, 1);
+  end
+  call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+  exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end
+
+procedure rhombus00
+begin
+  gsay_reply(0, 0);
+  giq_option(4, SCRIPT_RHOMBUS, 101, rhombus07, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 102, rhombus21, NEUTRAL_REACTION);
+  if (local_var(6) == 0) then begin
+    giq_option(4, SCRIPT_RHOMBUS, 103, rhombus22, NEUTRAL_REACTION);
+  end
+  giq_option(4, SCRIPT_RHOMBUS, 104, rhombus23, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_RHOMBUS, 174, rhombusx, NEUTRAL_REACTION);
+end
+
+procedure rhombus34
+begin
+  gsay_message(SCRIPT_RHOMBUS, 179, NEUTRAL_REACTION);
+end
+
+procedure rhombus39_1
+begin
+  gsay_message(SCRIPT_RHOMBUS, 185, NEUTRAL_REACTION);
+end
+
+procedure rhombus49
+begin
+  gsay_message(SCRIPT_RHOMBUS, 195, NEUTRAL_REACTION);
+end

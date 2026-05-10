@@ -1,0 +1,431 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure critter_p_proc;
+procedure description_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure talk_p_proc;
+procedure timed_event_p_proc;
+procedure Agatha00;
+procedure Agatha01;
+procedure Agatha02;
+procedure Agatha03;
+procedure Agatha04;
+procedure Agatha05;
+procedure Agatha06;
+procedure Agatha07;
+procedure Agatha08;
+procedure Agatha09;
+procedure Agatha10;
+procedure Agatha11;
+procedure Agatha12;
+procedure Agatha13;
+procedure Agatha14;
+procedure Agatha15;
+procedure Agatha16;
+procedure Agatha17;
+procedure Agatha18;
+procedure Agatha19;
+procedure Agatha20;
+procedure AgathaEnd;
+
+variable initialized1;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	if (not(initialized1)) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 2);
+		initialized1 := 1;
+	end
+	else begin
+		if (script_action == critter_proc) then begin
+			call critter_p_proc;
+		end
+		else begin
+			if (script_action == description_proc) then begin
+				call description_p_proc;
+			end
+			else begin
+				if (script_action == destroy_proc) then begin
+					call destroy_p_proc;
+				end
+				else begin
+					if (script_action == look_at_proc) then begin
+						call look_at_p_proc;
+					end
+					else begin
+						if (script_action == talk_proc) then begin
+							call talk_p_proc;
+						end
+						else begin
+							if (script_action == timed_event_proc) then begin
+								call timed_event_p_proc;
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+end
+
+procedure description_p_proc
+begin
+	if (is_success(do_check(dude_obj, 1, has_trait(0, dude_obj, 0)))) then begin
+		script_overrides;
+		display_msg(message_str(SCRIPT_AGATHA, 102));
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+		if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+		end
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	if (local_var(4)) then begin
+		display_msg(message_str(SCRIPT_AGATHA, 101));
+	end
+	else begin
+		display_msg(message_str(SCRIPT_AGATHA, 100));
+	end
+end
+
+procedure talk_p_proc
+begin
+	start_gdialog(SCRIPT_AGATHA, self_obj, 4, -1, -1);
+	gsay_start;
+	if (local_var(4)) then begin
+		if (local_var(5)) then begin
+			call Agatha14;
+		end
+		else begin
+			if (local_var(1) > 1) then begin
+				call Agatha16;
+			end
+			else begin
+				call AgathaEnd;
+			end
+		end
+	end
+	else begin
+		call Agatha08;
+	end
+	gsay_end;
+	end_dialogue;
+end
+
+procedure timed_event_p_proc
+begin
+end
+
+procedure Agatha00
+begin
+	float_msg(self_obj, message_str(SCRIPT_AGATHA, 103), FLOAT_MSG_NORMAL);
+end
+
+procedure Agatha01
+begin
+	gsay_reply(SCRIPT_AGATHA, 104);
+	giq_option(-3, SCRIPT_AGATHA, 105, Agatha02, GOOD_REACTION);
+	giq_option(4, SCRIPT_AGATHA, 106, AgathaEnd, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_AGATHA, 107, Agatha03, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_AGATHA, 108, Agatha04, NEUTRAL_REACTION);
+end
+
+procedure Agatha02
+begin
+	gsay_message(SCRIPT_AGATHA, 109, GOOD_REACTION);
+end
+
+procedure Agatha03
+begin
+	gsay_reply(SCRIPT_AGATHA, 110);
+	giq_option(5, SCRIPT_AGATHA, 111, AgathaEnd, GOOD_REACTION);
+	giq_option(6, SCRIPT_AGATHA, 112, Agatha04, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_AGATHA, 113, AgathaEnd, NEUTRAL_REACTION);
+end
+
+procedure Agatha04
+begin
+	gsay_reply(SCRIPT_AGATHA, 114);
+	giq_option(5, SCRIPT_AGATHA, 115, AgathaEnd, GOOD_REACTION);
+end
+
+procedure Agatha05
+begin
+	gsay_message(SCRIPT_AGATHA, 116, NEUTRAL_REACTION);
+end
+
+procedure Agatha06
+begin
+	call Up_React;
+	gsay_message(SCRIPT_AGATHA, 117, GOOD_REACTION);
+end
+
+procedure Agatha07
+begin
+	gsay_message(SCRIPT_AGATHA, 118, NEUTRAL_REACTION);
+end
+
+procedure Agatha08
+begin
+	gsay_reply(SCRIPT_AGATHA, 119);
+	giq_option(-3, SCRIPT_AGATHA, 120, Agatha09, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_AGATHA, 121, Agatha10, NEUTRAL_REACTION);
+	if (dude_is_female) then begin
+		giq_option(5, SCRIPT_AGATHA, 122, Agatha13, NEUTRAL_REACTION);
+	end
+	else begin
+		giq_option(7, SCRIPT_AGATHA, 123, Agatha13, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_AGATHA, 124, Agatha09, BAD_REACTION);
+end
+
+procedure Agatha09
+begin
+	gsay_message(SCRIPT_AGATHA, 125, NEUTRAL_REACTION);
+end
+
+procedure Agatha10
+begin
+	gsay_reply(SCRIPT_AGATHA, 126);
+	giq_option(4, SCRIPT_AGATHA, 127, Agatha11, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_AGATHA, 128, AgathaEnd, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_AGATHA, 129, Agatha12, GOOD_REACTION);
+end
+
+procedure Agatha11
+begin
+	gsay_message(SCRIPT_AGATHA, 130, NEUTRAL_REACTION);
+end
+
+procedure Agatha12
+begin
+	call Up_React;
+	gsay_message(SCRIPT_AGATHA, 131, NEUTRAL_REACTION);
+end
+
+procedure Agatha13
+begin
+	gsay_message(SCRIPT_AGATHA, 132, NEUTRAL_REACTION);
+end
+
+procedure Agatha14
+begin
+	gsay_reply(SCRIPT_AGATHA, 133);
+	giq_option(-3, SCRIPT_AGATHA, 134, AgathaEnd, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_AGATHA, 135, AgathaEnd, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_AGATHA, 136, Agatha15, NEUTRAL_REACTION);
+end
+
+procedure Agatha15
+begin
+	gsay_message(SCRIPT_AGATHA, 137, NEUTRAL_REACTION);
+end
+
+procedure Agatha16
+begin
+	gsay_reply(SCRIPT_AGATHA, 138);
+	giq_option(-3, SCRIPT_AGATHA, 139, Agatha17, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_AGATHA, 140, Agatha20, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_AGATHA, 141, Agatha18, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_AGATHA, 142, AgathaEnd, NEUTRAL_REACTION);
+end
+
+procedure Agatha17
+begin
+	gsay_message(SCRIPT_AGATHA, 143, NEUTRAL_REACTION);
+end
+
+procedure Agatha18
+begin
+	gsay_reply(SCRIPT_AGATHA, 144);
+	giq_option(5, SCRIPT_AGATHA, 145, Agatha20, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_AGATHA, 146, Agatha19, BAD_REACTION);
+end
+
+procedure Agatha19
+begin
+	call Down_React_Level;
+	call Down_React_Level;
+	gsay_message(SCRIPT_AGATHA, 147, BAD_REACTION);
+end
+
+procedure Agatha20
+begin
+end
+
+procedure AgathaEnd
+begin
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

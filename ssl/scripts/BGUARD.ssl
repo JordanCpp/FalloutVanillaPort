@@ -1,0 +1,70 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure do_dialogue;
+
+variable rndx;
+variable hostile1;
+
+
+procedure start
+begin
+	if (script_action == talk_proc) then begin
+		call do_dialogue;
+	end
+	else begin
+		if (script_action == critter_proc) then begin
+			if (hostile1) then begin
+				hostile1 := 0;
+				attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+			end
+		end
+		else begin
+			if (script_action == pickup_proc) then begin
+				hostile1 := 1;
+			end
+			else begin
+				if ((script_action == look_at_proc) or (script_action == description_proc)) then begin
+					script_overrides;
+					display_msg(message_str(SCRIPT_BGUARD, 100));
+				end
+			end
+		end
+	end
+end
+
+procedure do_dialogue
+begin
+	variable LVar0 := 0;
+	rndx := random(0, 6);
+	if (rndx == 0) then begin
+		LVar0 := message_str(SCRIPT_BGUARD, 101);
+	end
+	if (rndx == 1) then begin
+		LVar0 := message_str(SCRIPT_BGUARD, 102);
+	end
+	if (rndx == 2) then begin
+		LVar0 := message_str(SCRIPT_BGUARD, 103);
+	end
+	if (rndx == 3) then begin
+		LVar0 := message_str(SCRIPT_BGUARD, 104);
+	end
+	if (rndx == 4) then begin
+		LVar0 := message_str(SCRIPT_BGUARD, 105);
+	end
+	if (rndx == 5) then begin
+		LVar0 := message_str(SCRIPT_BGUARD, 106);
+	end
+	if (rndx == 6) then begin
+		LVar0 := message_str(SCRIPT_BGUARD, 107);
+	end
+	float_msg(self_obj, LVar0, FLOAT_MSG_NORMAL);
+end

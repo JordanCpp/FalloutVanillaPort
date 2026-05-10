@@ -1,0 +1,25 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure use_p_proc;
+
+
+procedure start
+begin
+	if (script_action == use_proc) then begin
+		call use_p_proc;
+	end
+end
+
+procedure use_p_proc
+begin
+	move_to(dude_obj, 25929, 1);
+end

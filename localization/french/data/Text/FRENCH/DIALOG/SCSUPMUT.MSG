@@ -1,0 +1,12 @@
+{100}{}{Voici un mutant éclaireur.}
+{101}{}{Qu'est ce qu'on a là ? Un normal ! Je crois qur tu vas venir avec moi.}
+{102}{}{Uhh.}
+{103}{}{Ok.}
+{104}{}{Et pourquoi je devrais ?}
+{105}{}{Aucune chance ! [Attaquer]}
+{106}{}{C'est assez simple : Si tu viens avec moi, je t'aide.}
+{107}{}{OK. Alors je viens..}
+{108}{}{Dis moi plutôt où se trouve ton chef.}
+{109}{}{Pas question !}
+{110}{}{Certainement. Cherche Uthern. Il va s'occuper de toi.}
+{111}{}{Uthern veut te voir. On dirait qu'il a déjà entendu parler de toi.}

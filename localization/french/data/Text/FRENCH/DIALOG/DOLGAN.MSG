@@ -1,0 +1,26 @@
+{100}{}{Voici Snake.}
+{101}{}{Voici Dolgan.}
+{102}{}{}
+{103}{}{}
+{104}{}{Tu vois un membre des Ecorcheurs.}
+{105}{}{Tu vois un membre des Ecorcheurs.}
+{106}{}{Tu penses que ça pourrait être Books.}
+{107}{}{Tu penses que ça pourrait être Scars.}
+{108}{}{Tu penses que ça pourrait être Gunner.}
+{109}{}{Tu penses que ça pourrait être Twitch.}
+{110}{}{Tu penses que ça pourrait être Hammer.}
+{111}{}{Tu penses que ça pourrait être Razor.}
+{112}{}{Laisse tomber ! C'est seulement pour les vrais guérriers.}
+{113}{}{Alors comme ça, tu penses être capable de d'attaquer aux lâches Régulateurs ? J'vais t'apprendre à te servir de cette lame.}
+{114}{}{On dirait que tu t'es amélioré. Maintenant, va t'occuper de ces Régulateurs.}
+{115}{}{T'as fait du bon boulot. Qu'est ce que je peux faire pour toi ?}
+{116}{}{Tu peux m'aider à m'améliorer avec les lames ?}
+{117}{}{Comment est-ce que je peux passer les Contrebandiers ?}
+{118}{}{Rien, merci.}
+{119}{}{Certainement. Mais ça te prendra une grosse partie de la journée pour un petit progrès. Ca t'interesse toujours ?}
+{120}{}{Oui.}
+{121}{}{Non.}
+{122}{}{Et voilà. T'as fait des progrès. Bonne chance.}
+{123}{}{Bien. Reviens quand tu voudras t'entrainer.}
+{124}{}{Hmm.. Si tu veux t'introduire chez eux, il y a une brêche dans leurs douves. Cherche la et cours comme un déjanté. Tu réussiras peut être à traverser.}
+{125}{}{Merci.}

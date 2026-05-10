@@ -1,0 +1,770 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure look_at_p_proc;
+procedure description_p_proc;
+procedure talk_p_proc;
+procedure damage_p_proc;
+procedure destroy_p_proc;
+procedure critter_p_proc;
+procedure pickup_p_proc;
+procedure map_update_p_proc;
+procedure Razor01;
+procedure Razor02;
+procedure Razor03;
+procedure Razor04;
+procedure Razor04a;
+procedure Razor05;
+procedure Razor06;
+procedure Razor07;
+procedure Razor08;
+procedure Razor09;
+procedure Razor10;
+procedure Razor11;
+procedure Razor12;
+procedure Razor13;
+procedure Razor14;
+procedure Razor15;
+procedure Razor16;
+procedure Razor17;
+procedure Razor18;
+procedure Razor19;
+procedure Razor20;
+procedure Razor21;
+procedure Razor22;
+procedure Razor22a;
+procedure Razor23;
+procedure Razor24;
+procedure Razor25;
+procedure Razor26;
+procedure Razor27;
+procedure Razor28;
+procedure Razor29;
+procedure Razor30;
+procedure Razor31;
+procedure Razor32;
+procedure Razor33;
+procedure Razor34;
+procedure Razor35;
+procedure Razor36;
+procedure Razor37;
+procedure Razor38;
+procedure Razor41;
+procedure Razor42;
+procedure Razor43;
+procedure Razor44;
+procedure Razor45;
+procedure Razor46;
+procedure Razor46a;
+procedure Razor47;
+procedure Razor47a;
+procedure Razor48;
+procedure RazorFin;
+procedure RazorReg;
+procedure RazorEnd;
+procedure RemoveBlades;
+
+import variable RazorPtr;
+
+variable Initialize := 1;
+variable DisplayMessage := 100;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure Start
+begin
+	if (Initialize) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 47);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_BLADES);
+		RazorPtr := self_obj;
+		if (global_var(GVAR_MAKE_ANTIDOTE_3) == 1) then begin
+			set_local_var(4, 1);
+		end
+		Initialize := 0;
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	if (local_var(4) == 1) then begin
+		display_msg(message_str(SCRIPT_RAZOR, 220));
+	end
+	else begin
+		display_msg(message_str(SCRIPT_RAZOR, 221));
+	end
+end
+
+procedure description_p_proc
+begin
+	script_overrides;
+	if (local_var(4) == 1) then begin
+		display_msg(message_str(SCRIPT_RAZOR, 220));
+	end
+	else begin
+		display_msg(message_str(SCRIPT_RAZOR, 221));
+	end
+end
+
+procedure talk_p_proc
+begin
+	if (global_var(GVAR_ENEMY_BLADES) == 1) then begin
+		float_msg(self_obj, message_str(SCRIPT_ENEMY, random(100, 105)), FLOAT_MSG_RED);
+	end
+	else begin
+		if ((global_var(GVAR_BLADES) == 2) and (local_var(6) == 1)) then begin
+			float_msg(self_obj, message_str(SCRIPT_RAZOR, random(215, 217)), FLOAT_MSG_NORMAL);
+		end
+		else begin
+			if ((local_var(4) == 1) and (get_critter_stat(dude_obj, 4) < 4)) then begin
+				float_msg(self_obj, message_str(SCRIPT_RAZOR, 222), FLOAT_MSG_NORMAL);
+			end
+			else begin
+				call Get_Reaction;
+				start_gdialog(SCRIPT_RAZOR, self_obj, 4, -1, -1);
+				gsay_start;
+				if (global_var(GVAR_BLADES) == 2) then begin
+					if (global_var(GVAR_MAKE_ANTIDOTE_1) == 1) then begin
+						if (global_var(GVAR_MAKE_ANTIDOTE_4) == 1) then begin
+							call Razor45;
+						end
+						else begin
+							if (local_var(4) == 0) then begin
+								call Razor42;
+							end
+							else begin
+								call Razor48;
+							end
+						end
+					end
+					else begin
+						call RazorFin;
+					end
+					set_local_var(6, 1);
+				end
+				else begin
+					if (global_var(GVAR_GUN_RUNNER) == 9202) then begin
+						call Razor33;
+					end
+					else begin
+						if (global_var(GVAR_ZIMMERMAN) == 9001) then begin
+							call Razor20;
+						end
+						else begin
+							if (obj_is_carrying_obj_pid(dude_obj, 238) and (global_var(GVAR_WATER_CHIP_8) != 2)) then begin
+								call Razor26;
+							end
+							else begin
+								if (global_var(GVAR_ZIMMERMAN) == 9003) then begin
+									call Razor30;
+								end
+								else begin
+									if (global_var(GVAR_MAKE_ANTIDOTE_4) == 1) then begin
+										call Razor46;
+									end
+									else begin
+										if (global_var(GVAR_ZIMMERMAN) == 0) then begin
+											call Razor01;
+										end
+										else begin
+											call Razor37;
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+				gsay_end;
+				end_dialogue;
+			end
+		end
+	end
+end
+
+procedure damage_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		set_global_var(GVAR_ENEMY_BLADES, 1);
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		set_global_var(GVAR_ENEMY_BLADES, 1);
+		if (source_obj == dude_obj) then begin
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+				set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+			end
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+				set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+			end
+			set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+			if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+				set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+			end
+		end
+	end
+	set_global_var(GVAR_ZIMMERMAN, 9002);
+end
+
+procedure critter_p_proc
+begin
+	if (global_var(GVAR_MAKE_ANTIDOTE_3) == 1) then begin
+		set_local_var(4, 1);
+	end
+	if (local_var(5) == 1) then begin
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+		set_local_var(5, 0);
+		set_global_var(GVAR_ENEMY_BLADES, 1);
+	end
+end
+
+procedure pickup_p_proc
+begin
+	set_global_var(GVAR_ENEMY_BLADES, 1);
+end
+
+procedure map_update_p_proc
+begin
+	if (global_var(GVAR_MAKE_ANTIDOTE_3) == 1) then begin
+		set_local_var(4, 1);
+	end
+end
+
+procedure Razor01
+begin
+	gsay_reply(SCRIPT_RAZOR, 100);
+	giq_option(4, SCRIPT_RAZOR, 101, Razor02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RAZOR, 102, Razor03, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RAZOR, 103, RazorEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_RAZOR, 104, Razor41, NEUTRAL_REACTION);
+end
+
+procedure Razor02
+begin
+	gsay_reply(SCRIPT_RAZOR, 105);
+	gsay_option(SCRIPT_RAZOR, 106, Razor03, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 107, Razor04, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 108, Razor05, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 109, RazorEnd, NEUTRAL_REACTION);
+	set_local_var(4, 1);
+end
+
+procedure Razor03
+begin
+	gsay_reply(SCRIPT_RAZOR, 110);
+	gsay_option(SCRIPT_RAZOR, 111, Razor06, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 112, Razor07, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 113, RazorEnd, NEUTRAL_REACTION);
+end
+
+procedure Razor04
+begin
+	gsay_reply(SCRIPT_RAZOR, 114);
+	gsay_option(SCRIPT_RAZOR, 115, Razor09, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 116, Razor04a, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 238, RazorReg, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 117, RazorEnd, NEUTRAL_REACTION);
+end
+
+procedure Razor04a
+begin
+	call Bottom_React;
+end
+
+procedure Razor05
+begin
+	gsay_reply(SCRIPT_RAZOR, 118);
+	gsay_option(SCRIPT_RAZOR, 119, Razor08, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 120, Razor08, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 121, RazorEnd, NEUTRAL_REACTION);
+end
+
+procedure Razor06
+begin
+	gsay_reply(SCRIPT_RAZOR, 122);
+	gsay_option(SCRIPT_RAZOR, 123, Razor09, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 124, Razor10, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 125, Razor19, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 126, RazorEnd, NEUTRAL_REACTION);
+end
+
+procedure Razor07
+begin
+	gsay_reply(SCRIPT_RAZOR, 127);
+	gsay_option(SCRIPT_RAZOR, 128, Razor09, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 129, Razor19, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 130, Razor19, NEUTRAL_REACTION);
+end
+
+procedure Razor08
+begin
+	gsay_reply(SCRIPT_RAZOR, 131);
+	gsay_option(SCRIPT_RAZOR, 132, Razor04, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 133, Razor03, NEUTRAL_REACTION);
+end
+
+procedure Razor09
+begin
+	gsay_reply(SCRIPT_RAZOR, 134);
+	gsay_option(SCRIPT_RAZOR, 135, Razor11, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 136, RazorEnd, NEUTRAL_REACTION);
+	set_global_var(GVAR_BLADES, 9101);
+end
+
+procedure Razor10
+begin
+	gsay_reply(SCRIPT_RAZOR, 137);
+	gsay_option(SCRIPT_RAZOR, 138, Razor12, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 139, Razor14, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 238, RazorReg, NEUTRAL_REACTION);
+end
+
+procedure Razor11
+begin
+	gsay_reply(SCRIPT_RAZOR, 140);
+	gsay_option(SCRIPT_RAZOR, 141, Razor18, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 238, RazorReg, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 142, RazorEnd, NEUTRAL_REACTION);
+end
+
+procedure Razor12
+begin
+	gsay_reply(SCRIPT_RAZOR, 143);
+	gsay_option(SCRIPT_RAZOR, 144, Razor13, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 145, RazorEnd, NEUTRAL_REACTION);
+end
+
+procedure Razor13
+begin
+	gsay_reply(SCRIPT_RAZOR, 146);
+	gsay_option(SCRIPT_RAZOR, 147, Razor14, NEUTRAL_REACTION);
+end
+
+procedure Razor14
+begin
+	gsay_reply(SCRIPT_RAZOR, 148);
+	gsay_option(SCRIPT_RAZOR, 149, Razor15, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 150, Razor09, NEUTRAL_REACTION);
+end
+
+procedure Razor15
+begin
+	gsay_reply(SCRIPT_RAZOR, 151);
+	gsay_option(SCRIPT_RAZOR, 152, Razor27, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 153, Razor17, NEUTRAL_REACTION);
+end
+
+procedure Razor16
+begin
+	variable LVar0 := 0;
+	gsay_reply(SCRIPT_RAZOR, 154);
+	gsay_option(SCRIPT_RAZOR, 155, RazorEnd, NEUTRAL_REACTION);
+	LVar0 := create_object_sid(238, 0, 0, -1);
+	add_obj_to_inven(dude_obj, LVar0);
+end
+
+procedure Razor17
+begin
+	gsay_reply(SCRIPT_RAZOR, 156);
+	gsay_option(SCRIPT_RAZOR, 157, RazorEnd, NEUTRAL_REACTION);
+end
+
+procedure Razor18
+begin
+	gsay_reply(SCRIPT_RAZOR, 158);
+	gsay_option(SCRIPT_RAZOR, 159, RazorEnd, NEUTRAL_REACTION);
+	set_global_var(GVAR_BLADES, 9101);
+end
+
+procedure Razor19
+begin
+	gsay_reply(SCRIPT_RAZOR, 160);
+	gsay_option(SCRIPT_RAZOR, 161, RazorEnd, NEUTRAL_REACTION);
+end
+
+procedure Razor20
+begin
+	gsay_reply(SCRIPT_RAZOR, 162);
+	giq_option(4, SCRIPT_RAZOR, 163, Razor21, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RAZOR, 164, RazorEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_RAZOR, 165, Razor41, NEUTRAL_REACTION);
+end
+
+procedure Razor21
+begin
+	gsay_reply(SCRIPT_RAZOR, 166);
+	gsay_option(SCRIPT_RAZOR, 167, Razor22, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 168, Razor07, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 169, RazorEnd, NEUTRAL_REACTION);
+end
+
+procedure Razor22
+begin
+	gsay_reply(SCRIPT_RAZOR, 170);
+	gsay_option(SCRIPT_RAZOR, 171, Razor22a, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 172, Razor23, NEUTRAL_REACTION);
+end
+
+procedure Razor22a
+begin
+	set_local_var(5, 1);
+end
+
+procedure Razor23
+begin
+	gsay_reply(SCRIPT_RAZOR, 173);
+	gsay_option(SCRIPT_RAZOR, 174, Razor22a, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 175, Razor24, NEUTRAL_REACTION);
+end
+
+procedure Razor24
+begin
+	gsay_reply(SCRIPT_RAZOR, 176);
+	gsay_option(SCRIPT_RAZOR, 177, Razor22a, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 178, Razor25, NEUTRAL_REACTION);
+end
+
+procedure Razor25
+begin
+	gsay_reply(SCRIPT_RAZOR, 179);
+	gsay_option(SCRIPT_RAZOR, 180, Razor13, NEUTRAL_REACTION);
+end
+
+procedure Razor26
+begin
+	gsay_reply(SCRIPT_RAZOR, 181);
+	giq_option(4, SCRIPT_RAZOR, 182, Razor29, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_RAZOR, 183, Razor41, NEUTRAL_REACTION);
+end
+
+procedure Razor27
+begin
+	gsay_reply(SCRIPT_RAZOR, 184);
+	gsay_option(SCRIPT_RAZOR, 185, Razor28, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 238, RazorReg, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 186, RazorEnd, NEUTRAL_REACTION);
+end
+
+procedure Razor28
+begin
+	gsay_reply(SCRIPT_RAZOR, 187);
+	gsay_option(SCRIPT_RAZOR, 188, Razor16, NEUTRAL_REACTION);
+	set_global_var(GVAR_BLADES, 9101);
+end
+
+procedure Razor29
+begin
+	gsay_message(SCRIPT_RAZOR, 189, NEUTRAL_REACTION);
+end
+
+procedure Razor30
+begin
+	gsay_reply(SCRIPT_RAZOR, 190);
+	giq_option(4, SCRIPT_RAZOR, 191, Razor31, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_RAZOR, 192, Razor41, NEUTRAL_REACTION);
+end
+
+procedure Razor31
+begin
+	gsay_reply(SCRIPT_RAZOR, 193);
+	gsay_option(SCRIPT_RAZOR, 194, Razor32, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 195, Razor19, NEUTRAL_REACTION);
+end
+
+procedure Razor32
+begin
+	gsay_message(SCRIPT_RAZOR, 196, NEUTRAL_REACTION);
+	set_global_var(GVAR_BLADES, 9101);
+end
+
+procedure Razor33
+begin
+	gsay_reply(SCRIPT_RAZOR, 197);
+	giq_option(4, SCRIPT_RAZOR, 198, Razor34, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RAZOR, 199, Razor35, NEUTRAL_REACTION);
+	if (global_var(GVAR_ZIMMERMAN) != 9003) then begin
+		giq_option(4, SCRIPT_RAZOR, 201, Razor36, NEUTRAL_REACTION);
+	end
+	giq_option(-3, SCRIPT_RAZOR, 200, Razor41, NEUTRAL_REACTION);
+end
+
+procedure Razor34
+begin
+	gsay_message(SCRIPT_RAZOR, 202, NEUTRAL_REACTION);
+	call Top_React;
+	set_global_var(GVAR_BLADES, 9104);
+	gfade_out(600);
+	game_time_advance(10 * 60 * 60 * 8);
+end
+
+procedure Razor35
+begin
+	gsay_message(SCRIPT_RAZOR, 203, NEUTRAL_REACTION);
+	call Top_React;
+	set_global_var(GVAR_BLADES, 9103);
+	gfade_out(600);
+	game_time_advance(10 * 60 * 60 * 24);
+	load_map("laadytum.map", 1);
+end
+
+procedure Razor36
+begin
+	gsay_message(SCRIPT_RAZOR, 204, NEUTRAL_REACTION);
+	set_global_var(GVAR_BLADES, 9102);
+end
+
+procedure Razor37
+begin
+	gsay_reply(SCRIPT_RAZOR, 205);
+	giq_option(4, SCRIPT_RAZOR, 206, RazorEnd, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RAZOR, 207, RazorEnd, NEUTRAL_REACTION);
+	if (obj_is_carrying_obj_pid(dude_obj, 238)) then begin
+		giq_option(4, SCRIPT_RAZOR, 208, Razor38, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_RAZOR, 209, Razor22a, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_RAZOR, 210, Razor41, NEUTRAL_REACTION);
+end
+
+procedure Razor38
+begin
+	gsay_message(SCRIPT_RAZOR, 211, NEUTRAL_REACTION);
+end
+
+procedure Razor41
+begin
+	gsay_message(SCRIPT_RAZOR, 218, NEUTRAL_REACTION);
+end
+
+procedure Razor42
+begin
+	gsay_reply(SCRIPT_RAZOR, 224);
+	giq_option(4, SCRIPT_RAZOR, 225, Razor43, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_RAZOR, 226, Razor41, NEUTRAL_REACTION);
+end
+
+procedure Razor43
+begin
+	gsay_reply(SCRIPT_RAZOR, 227);
+	gsay_option(SCRIPT_RAZOR, 228, Razor44, NEUTRAL_REACTION);
+end
+
+procedure Razor44
+begin
+	gsay_message(SCRIPT_RAZOR, 229, NEUTRAL_REACTION);
+	set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) + 2);
+	display_msg(message_str(SCRIPT_GENCHAT, 103) + 500 + message_str(SCRIPT_GENCHAT, 104));
+	give_exp_points(500);
+end
+
+procedure Razor45
+begin
+	gsay_message(SCRIPT_RAZOR, 230, NEUTRAL_REACTION);
+	set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) + 2);
+	display_msg(message_str(SCRIPT_GENCHAT, 103) + 500 + message_str(SCRIPT_GENCHAT, 104));
+	give_exp_points(500);
+end
+
+procedure Razor46
+begin
+	gsay_reply(SCRIPT_RAZOR, 231);
+	gsay_option(SCRIPT_RAZOR, 232, Razor46a, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 233, Razor47, NEUTRAL_REACTION);
+end
+
+procedure Razor46a
+begin
+	gsay_message(SCRIPT_RAZOR, 215, NEUTRAL_REACTION);
+end
+
+procedure Razor47
+begin
+	gsay_reply(SCRIPT_RAZOR, 234);
+	gsay_option(SCRIPT_RAZOR, 235, Razor47a, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_RAZOR, 236, RazorEnd, NEUTRAL_REACTION);
+end
+
+procedure Razor47a
+begin
+	gsay_message(SCRIPT_RAZOR, 215, NEUTRAL_REACTION);
+	set_global_var(GVAR_BLADES, 9101);
+end
+
+procedure Razor48
+begin
+	gsay_message(SCRIPT_RAZOR, 237, NEUTRAL_REACTION);
+	set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) + 2);
+	display_msg(message_str(SCRIPT_GENCHAT, 103) + 500 + message_str(SCRIPT_GENCHAT, 104));
+	give_exp_points(500);
+end
+
+procedure RazorFin
+begin
+	gsay_message(SCRIPT_RAZOR, 223, NEUTRAL_REACTION);
+end
+
+procedure RazorReg
+begin
+	gsay_message(SCRIPT_RAZOR, 239, NEUTRAL_REACTION);
+	set_global_var(GVAR_MAKE_ANTIDOTE_4, 1);
+end
+
+procedure RazorEnd
+begin
+end
+
+procedure RemoveBlades
+begin
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

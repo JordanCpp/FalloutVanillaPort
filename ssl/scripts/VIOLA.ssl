@@ -1,0 +1,1024 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure do_dialogue;
+procedure viola00;
+procedure viola01;
+procedure viola02;
+procedure viola03;
+procedure viola04;
+procedure viola05;
+procedure viola05a;
+procedure viola06;
+procedure viola06a;
+procedure viola07;
+procedure viola07a;
+procedure viola08;
+procedure viola08a;
+procedure viola09;
+procedure viola10;
+procedure viola11;
+procedure viola12;
+procedure viola13;
+procedure viola14;
+procedure viola15;
+procedure viola16;
+procedure viola17;
+procedure viola18;
+procedure viola19;
+procedure viola20;
+procedure viola21;
+procedure viola22;
+procedure viola23;
+procedure viola24;
+procedure viola25;
+procedure viola26;
+procedure viola27;
+procedure viola28;
+procedure viola29;
+procedure viola30;
+procedure viola31;
+procedure viola32;
+procedure viola33;
+procedure viola34;
+procedure viola35;
+procedure viola36;
+procedure viola37;
+procedure viola38;
+procedure viola39;
+procedure viola40;
+procedure viola41;
+procedure viola42;
+procedure viola43;
+procedure viola44;
+procedure viola45;
+procedure viola46;
+procedure viola47;
+procedure viola48;
+procedure viola49;
+procedure viola50;
+procedure viola51;
+procedure viola52;
+procedure viola53;
+procedure viola53a;
+procedure viola54;
+procedure viola55;
+procedure viola56;
+procedure viola57;
+procedure viola58;
+procedure viola59;
+procedure viola60;
+procedure viola61;
+procedure viola62;
+procedure viola63;
+procedure viola64;
+procedure viola65;
+procedure viola66;
+procedure viola67;
+procedure viola68;
+procedure viola69;
+procedure viola70;
+procedure viola71;
+procedure viola72;
+procedure viola73;
+procedure viola74;
+procedure viola75;
+procedure viola76;
+procedure violadone;
+procedure violaend;
+procedure violacombat;
+procedure weapon_check;
+
+variable hostile1;
+variable armed;
+variable GENDER;
+variable LASHERKNOWN;
+variable Only_Once := 1;
+variable TALKEDTOLAURA;
+variable LAURAWARNING;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	if (Only_Once) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 20);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_CHILDREN_TRUE);
+		Only_Once := 0;
+	end
+	if (script_action == talk_proc) then begin
+		call do_dialogue;
+	end
+	else begin
+		if ((script_action == look_at_proc) or (script_action == description_proc)) then begin
+			script_overrides;
+			display_msg(message_str(SCRIPT_VIOLA, 100));
+		end
+		else begin
+			if (script_action == destroy_proc) then begin
+				if (source_obj == dude_obj) then begin
+					if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+						set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+						set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+					end
+					if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+						set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+						set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+					end
+					set_global_var(GVAR_BAD_MONSTER, global_var(GVAR_BAD_MONSTER) + 1);
+					if ((global_var(GVAR_BAD_MONSTER) % 6) == 0) then begin
+						set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) + 1);
+					end
+				end
+			end
+			else begin
+				if (script_action == pickup_proc) then begin
+					hostile1 := 1;
+				end
+				else begin
+					if (script_action == critter_proc) then begin
+						if (hostile1) then begin
+							hostile1 := 0;
+							attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure do_dialogue
+begin
+	GENDER := get_critter_stat(dude_obj, 34);
+	call weapon_check;
+	start_gdialog(-1, self_obj, 4, -1, -1);
+	gsay_start;
+	if ((local_var(4) == 1) and (get_critter_stat(dude_obj, 4) < 4)) then begin
+		gsay_message(SCRIPT_VIOLA, 143, BAD_REACTION);
+	end
+	else begin
+		if ((global_var(GVAR_CATHEDRAL_ENEMY) == 1) and not(obj_pid(critter_inven_obj(dude_obj, 0)) == 113)) then begin
+			call viola00;
+		end
+		else begin
+			if (TALKEDTOLAURA == 1) then begin
+				if (LAURAWARNING == 0) then begin
+					call viola01;
+				end
+				else begin
+					call viola02;
+				end
+			end
+			else begin
+				if (armed == 1) then begin
+					call viola03;
+				end
+				else begin
+					if ((local_var(4) == 1) and (LAURAWARNING == 0)) then begin
+						call viola04;
+					end
+					else begin
+						if (armed == 0) then begin
+							if (obj_pid(critter_inven_obj(dude_obj, 0)) == 113) then begin
+								call viola05;
+							end
+							else begin
+								if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+									call viola06;
+								end
+								else begin
+									if ((global_var(GVAR_CHILDKILLER_REPUTATION) > 2) and (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1)))) then begin
+										call viola07;
+									end
+									else begin
+										call viola08;
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	set_local_var(4, 1);
+	gsay_end;
+	end_dialogue;
+end
+
+procedure viola00
+begin
+	if (GENDER == 0) then begin
+		gsay_reply(SCRIPT_VIOLA, 101);
+	end
+	else begin
+		gsay_reply(SCRIPT_VIOLA, 102);
+	end
+	giq_option(7, SCRIPT_VIOLA, 103, viola09, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_VIOLA, 104, viola10, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 105, viola11, NEUTRAL_REACTION);
+	if (global_var(GVAR_ALOCHOL_ADDICT) == 1) then begin
+		giq_option(4, SCRIPT_VIOLA, 106, viola12, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_VIOLA, 107, violacombat, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_VIOLA, 299, violaend, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_VIOLA, 108, violacombat, NEUTRAL_REACTION);
+end
+
+procedure viola01
+begin
+	LAURAWARNING := 1;
+	gsay_reply(SCRIPT_VIOLA, 109);
+	giq_option(7, SCRIPT_VIOLA, 110, viola13, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 111, viola14, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 112, viola15, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_VIOLA, 113, violacombat, NEUTRAL_REACTION);
+	end
+	giq_option(-3, SCRIPT_VIOLA, 114, violaend, NEUTRAL_REACTION);
+end
+
+procedure viola02
+begin
+	gsay_message(SCRIPT_VIOLA, 115, NEUTRAL_REACTION);
+end
+
+procedure viola03
+begin
+	gsay_message(SCRIPT_VIOLA, 116, NEUTRAL_REACTION);
+end
+
+procedure viola04
+begin
+	gsay_reply(SCRIPT_VIOLA, 117);
+	giq_option(7, SCRIPT_VIOLA, 118, viola15, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 119, viola16, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 120, viola17, NEUTRAL_REACTION);
+	if (global_var(GVAR_ALOCHOL_ADDICT) == 1) then begin
+		giq_option(4, SCRIPT_VIOLA, 121, viola18, NEUTRAL_REACTION);
+	end
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_VIOLA, 122, viola19, NEUTRAL_REACTION);
+	end
+	giq_option(-3, SCRIPT_VIOLA, 299, violaend, NEUTRAL_REACTION);
+end
+
+procedure viola05
+begin
+	gsay_reply(SCRIPT_VIOLA, 123);
+	giq_option(7, SCRIPT_VIOLA, 124, viola05a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 125, viola46, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 126, viola47, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 127, viola48, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_VIOLA, 128, viola49, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola05a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call viola44;
+	end
+	else begin
+		call viola45;
+	end
+end
+
+procedure viola06
+begin
+	if (GENDER == 0) then begin
+		gsay_reply(SCRIPT_VIOLA, 129);
+	end
+	else begin
+		gsay_reply(SCRIPT_VIOLA, 130);
+	end
+	giq_option(7, SCRIPT_VIOLA, 131, viola06a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 132, viola52, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 133, viola47, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 134, viola48, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_VIOLA, 135, viola49, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola06a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call viola50;
+	end
+	else begin
+		call viola51;
+	end
+end
+
+procedure viola07
+begin
+	if (GENDER == 0) then begin
+		gsay_reply(SCRIPT_VIOLA, 136);
+	end
+	else begin
+		gsay_reply(SCRIPT_VIOLA, 137);
+	end
+	giq_option(7, SCRIPT_VIOLA, 138, viola07a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 139, viola52, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 140, viola47, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 141, viola48, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_VIOLA, 142, viola49, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola07a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call viola50;
+	end
+	else begin
+		call viola51;
+	end
+end
+
+procedure viola08
+begin
+	gsay_reply(SCRIPT_VIOLA, 143);
+	giq_option(7, SCRIPT_VIOLA, 144, viola08a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 145, viola55, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_VIOLA, 146, viola40, NEUTRAL_REACTION);
+	end
+	giq_option(-3, SCRIPT_VIOLA, 299, violaend, NEUTRAL_REACTION);
+end
+
+procedure viola08a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call viola53;
+	end
+	else begin
+		call viola54;
+	end
+end
+
+procedure viola09
+begin
+	gsay_message(SCRIPT_VIOLA, 147, NEUTRAL_REACTION);
+end
+
+procedure viola10
+begin
+	gsay_message(SCRIPT_VIOLA, 148, NEUTRAL_REACTION);
+end
+
+procedure viola11
+begin
+	gsay_message(SCRIPT_VIOLA, 149, NEUTRAL_REACTION);
+end
+
+procedure viola12
+begin
+	gsay_message(SCRIPT_VIOLA, 150, NEUTRAL_REACTION);
+end
+
+procedure viola13
+begin
+	gsay_reply(SCRIPT_VIOLA, 151);
+	giq_option(7, SCRIPT_VIOLA, 152, viola20, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 153, viola21, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 154, viola22, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_VIOLA, 155, viola23, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola14
+begin
+	gsay_reply(SCRIPT_VIOLA, 156);
+	giq_option(7, SCRIPT_VIOLA, 157, viola16, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 158, viola21, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 159, viola22, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_VIOLA, 160, viola23, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola15
+begin
+	gsay_message(SCRIPT_VIOLA, 161, NEUTRAL_REACTION);
+end
+
+procedure viola16
+begin
+	gsay_message(SCRIPT_VIOLA, 162, NEUTRAL_REACTION);
+end
+
+procedure viola17
+begin
+	gsay_message(SCRIPT_VIOLA, 163, NEUTRAL_REACTION);
+end
+
+procedure viola18
+begin
+	gsay_message(SCRIPT_VIOLA, 164, NEUTRAL_REACTION);
+end
+
+procedure viola19
+begin
+	gsay_message(SCRIPT_VIOLA, 165, NEUTRAL_REACTION);
+end
+
+procedure viola20
+begin
+	gsay_reply(SCRIPT_VIOLA, 166);
+	giq_option(7, SCRIPT_VIOLA, 167, viola24, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 168, viola24, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 169, viola25, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 170, viola26, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 171, viola27, NEUTRAL_REACTION);
+end
+
+procedure viola21
+begin
+	gsay_message(SCRIPT_VIOLA, 172, NEUTRAL_REACTION);
+end
+
+procedure viola22
+begin
+	gsay_reply(SCRIPT_VIOLA, 173);
+	giq_option(7, SCRIPT_VIOLA, 174, viola41, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 175, viola21, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 176, viola42, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_VIOLA, 177, viola43, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola23
+begin
+	gsay_message(SCRIPT_VIOLA, 178, NEUTRAL_REACTION);
+end
+
+procedure viola24
+begin
+	gsay_reply(SCRIPT_VIOLA, 179);
+	giq_option(7, SCRIPT_VIOLA, 180, viola28, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_VIOLA, 181, viola29, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 182, viola30, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 183, viola31, NEUTRAL_REACTION);
+end
+
+procedure viola25
+begin
+	gsay_reply(SCRIPT_VIOLA, 184);
+	giq_option(7, SCRIPT_VIOLA, 185, viola31, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 186, viola32, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 187, viola33, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_VIOLA, 188, viola34, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola26
+begin
+	gsay_reply(SCRIPT_VIOLA, 189);
+	giq_option(7, SCRIPT_VIOLA, 190, viola35, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 191, viola32, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 192, viola36, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_VIOLA, 193, viola37, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola27
+begin
+	gsay_reply(SCRIPT_VIOLA, 194);
+	giq_option(7, SCRIPT_VIOLA, 195, viola29, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 196, viola38, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 197, viola39, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_VIOLA, 198, viola40, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola28
+begin
+	gsay_message(SCRIPT_VIOLA, 199, NEUTRAL_REACTION);
+end
+
+procedure viola29
+begin
+	gsay_message(SCRIPT_VIOLA, 200, NEUTRAL_REACTION);
+end
+
+procedure viola30
+begin
+	gsay_message(SCRIPT_VIOLA, 201, NEUTRAL_REACTION);
+end
+
+procedure viola31
+begin
+	gsay_message(SCRIPT_VIOLA, 202, NEUTRAL_REACTION);
+end
+
+procedure viola32
+begin
+	gsay_message(SCRIPT_VIOLA, 203, NEUTRAL_REACTION);
+end
+
+procedure viola33
+begin
+	gsay_message(SCRIPT_VIOLA, 204, NEUTRAL_REACTION);
+end
+
+procedure viola34
+begin
+	gsay_message(SCRIPT_VIOLA, 205, NEUTRAL_REACTION);
+end
+
+procedure viola35
+begin
+	gsay_message(SCRIPT_VIOLA, 206, NEUTRAL_REACTION);
+end
+
+procedure viola36
+begin
+	gsay_message(SCRIPT_VIOLA, 207, NEUTRAL_REACTION);
+end
+
+procedure viola37
+begin
+	gsay_message(SCRIPT_VIOLA, 208, NEUTRAL_REACTION);
+end
+
+procedure viola38
+begin
+	gsay_message(SCRIPT_VIOLA, 209, NEUTRAL_REACTION);
+end
+
+procedure viola39
+begin
+	gsay_message(SCRIPT_VIOLA, 210, NEUTRAL_REACTION);
+end
+
+procedure viola40
+begin
+	gsay_message(SCRIPT_VIOLA, 211, NEUTRAL_REACTION);
+end
+
+procedure viola41
+begin
+	gsay_reply(SCRIPT_VIOLA, 212);
+	giq_option(7, SCRIPT_VIOLA, 213, viola28, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_VIOLA, 214, viola29, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 215, viola32, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 216, viola30, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 217, viola31, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_VIOLA, 218, viola43, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola42
+begin
+	gsay_reply(SCRIPT_VIOLA, 219);
+	giq_option(7, SCRIPT_VIOLA, 220, viola28, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_VIOLA, 221, viola29, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 222, viola32, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 223, viola30, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 224, viola31, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_VIOLA, 225, viola43, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola43
+begin
+	gsay_message(SCRIPT_VIOLA, 226, NEUTRAL_REACTION);
+end
+
+procedure viola44
+begin
+	gsay_reply(SCRIPT_VIOLA, 227);
+	giq_option(7, SCRIPT_VIOLA, 228, viola56, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 229, viola16, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 230, viola57, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_VIOLA, 231, viola49, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola45
+begin
+	gsay_message(SCRIPT_VIOLA, 232, NEUTRAL_REACTION);
+end
+
+procedure viola46
+begin
+	gsay_message(SCRIPT_VIOLA, 233, NEUTRAL_REACTION);
+end
+
+procedure viola47
+begin
+	gsay_reply(SCRIPT_VIOLA, 234);
+	giq_option(7, SCRIPT_VIOLA, 235, viola58, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_VIOLA, 236, viola59, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 237, viola60, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 238, viola61, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 239, viola62, NEUTRAL_REACTION);
+end
+
+procedure viola48
+begin
+	gsay_reply(SCRIPT_VIOLA, 240);
+	giq_option(7, SCRIPT_VIOLA, 241, viola63, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_VIOLA, 242, viola64, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 243, viola65, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 244, viola66, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 245, viola67, NEUTRAL_REACTION);
+end
+
+procedure viola49
+begin
+	gsay_message(SCRIPT_VIOLA, 246, NEUTRAL_REACTION);
+end
+
+procedure viola50
+begin
+	gsay_reply(SCRIPT_VIOLA, 247);
+	giq_option(7, SCRIPT_VIOLA, 248, viola68, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_VIOLA, 249, viola69, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_VIOLA, 250, viola70, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_VIOLA, 251, viola49, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_VIOLA, 252, viola16, NEUTRAL_REACTION);
+end
+
+procedure viola51
+begin
+	gsay_message(SCRIPT_VIOLA, 253, NEUTRAL_REACTION);
+end
+
+procedure viola52
+begin
+	gsay_reply(SCRIPT_VIOLA, 254);
+	giq_option(7, SCRIPT_VIOLA, 255, viola71, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_VIOLA, 256, viola72, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 257, viola73, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 258, viola74, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_VIOLA, 259, viola75, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola53
+begin
+	gsay_reply(SCRIPT_VIOLA, 260);
+	giq_option(7, SCRIPT_VIOLA, 261, viola53a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 262, viola52, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 263, viola47, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 264, viola48, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 265, viola49, NEUTRAL_REACTION);
+end
+
+procedure viola53a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call viola50;
+	end
+	else begin
+		call viola51;
+	end
+end
+
+procedure viola54
+begin
+	gsay_message(SCRIPT_VIOLA, 266, NEUTRAL_REACTION);
+end
+
+procedure viola55
+begin
+	gsay_message(SCRIPT_VIOLA, 267, NEUTRAL_REACTION);
+end
+
+procedure viola56
+begin
+	gsay_message(SCRIPT_VIOLA, 268, NEUTRAL_REACTION);
+end
+
+procedure viola57
+begin
+	gsay_message(SCRIPT_VIOLA, 269, NEUTRAL_REACTION);
+end
+
+procedure viola58
+begin
+	gsay_message(SCRIPT_VIOLA, 270, NEUTRAL_REACTION);
+end
+
+procedure viola59
+begin
+	gsay_message(SCRIPT_VIOLA, 271, NEUTRAL_REACTION);
+end
+
+procedure viola60
+begin
+	gsay_message(SCRIPT_VIOLA, 272, NEUTRAL_REACTION);
+end
+
+procedure viola61
+begin
+	if (GENDER == 0) then begin
+		gsay_message(SCRIPT_VIOLA, 273, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_VIOLA, 274, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola62
+begin
+	if (GENDER == 0) then begin
+		gsay_message(SCRIPT_VIOLA, 275, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_VIOLA, 276, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola63
+begin
+	gsay_message(SCRIPT_VIOLA, 277, NEUTRAL_REACTION);
+end
+
+procedure viola64
+begin
+	gsay_reply(SCRIPT_VIOLA, 278);
+	giq_option(7, SCRIPT_VIOLA, 279, viola63, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_VIOLA, 280, viola76, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 281, viola65, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 282, viola66, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_VIOLA, 283, viola67, NEUTRAL_REACTION);
+end
+
+procedure viola65
+begin
+	gsay_message(SCRIPT_VIOLA, 284, NEUTRAL_REACTION);
+end
+
+procedure viola66
+begin
+	gsay_message(SCRIPT_VIOLA, 285, NEUTRAL_REACTION);
+end
+
+procedure viola67
+begin
+	if (GENDER == 0) then begin
+		gsay_message(SCRIPT_VIOLA, 286, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_VIOLA, 287, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola68
+begin
+	gsay_message(SCRIPT_VIOLA, 288, NEUTRAL_REACTION);
+end
+
+procedure viola69
+begin
+	gsay_message(SCRIPT_VIOLA, 289, NEUTRAL_REACTION);
+end
+
+procedure viola70
+begin
+	if (dude_is_male) then begin
+		gsay_message(SCRIPT_VIOLA, 302, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_VIOLA, 303, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola71
+begin
+	if (dude_is_male) then begin
+		gsay_message(SCRIPT_VIOLA, 304, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_VIOLA, 305, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola72
+begin
+	if (dude_is_male) then begin
+		gsay_message(SCRIPT_VIOLA, 306, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_VIOLA, 307, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola73
+begin
+	if (dude_is_male) then begin
+		gsay_message(SCRIPT_VIOLA, 300, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_VIOLA, 301, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola74
+begin
+	gsay_message(SCRIPT_VIOLA, 294, NEUTRAL_REACTION);
+end
+
+procedure viola75
+begin
+	if (GENDER == 0) then begin
+		gsay_message(SCRIPT_VIOLA, 295, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_VIOLA, 296, NEUTRAL_REACTION);
+	end
+end
+
+procedure viola76
+begin
+	gsay_message(SCRIPT_VIOLA, 297, NEUTRAL_REACTION);
+end
+
+procedure violadone
+begin
+	gsay_option(SCRIPT_VIOLA, 298, violaend, NEUTRAL_REACTION);
+end
+
+procedure violaend
+begin
+end
+
+procedure violacombat
+begin
+	set_global_var(GVAR_CATHEDRAL_ENEMY, 1);
+	hostile1 := 1;
+end
+
+procedure weapon_check
+begin
+	if ((obj_item_subtype(critter_inven_obj(dude_obj, 1)) == 3) or (obj_item_subtype(critter_inven_obj(dude_obj, 2)) == 3)) then begin
+		armed := 1;
+	end
+	else begin
+		armed := 0;
+	end
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

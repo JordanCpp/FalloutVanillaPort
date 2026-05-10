@@ -1,0 +1,714 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure combat;
+procedure critter_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure flee_dude;
+procedure damage_p_proc;
+procedure Thorn00;
+procedure Thorn01;
+procedure Thorn02;
+procedure Thorn02a;
+procedure Thorn03;
+procedure Thorn03a;
+procedure Thorn03b;
+procedure Thorn04;
+procedure Thorn05;
+procedure Thorn06;
+procedure Thorn07;
+procedure Thorn08;
+procedure Thorn09;
+procedure Thorn10;
+procedure Thorn11;
+procedure Thorn12;
+procedure Thorn13;
+procedure Thorn14;
+procedure Thorn15;
+procedure Thorn16;
+procedure Thorn17;
+procedure Thorn17a;
+procedure Thorn18;
+procedure Thorn18a;
+procedure Thorn19;
+procedure Thorn20;
+procedure Thorn21;
+procedure Thorn22;
+procedure Thorn22a;
+procedure Thorn22b;
+procedure Thorn23;
+procedure Thorn24;
+procedure Thorn25;
+procedure Thorn26;
+procedure Thorn27;
+procedure Thorn28;
+procedure Thorn29;
+
+variable hostile1;
+variable Only_Once := 1;
+variable PlayerYellsOuch;
+variable DoctorPostTreatmentResponse;
+variable HealPlayer;
+
+import variable Thorndyke_Ptr;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	if (Only_Once) then begin
+		Only_Once := 0;
+		Thorndyke_Ptr := self_obj;
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 72);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_COC_HUB_BRAINWASHED);
+	end
+	if (script_action == look_at_proc) then begin
+		call look_at_p_proc;
+	end
+	else begin
+		if (script_action == pickup_proc) then begin
+			call pickup_p_proc;
+		end
+		else begin
+			if (script_action == talk_proc) then begin
+				call talk_p_proc;
+			end
+			else begin
+				if (script_action == critter_proc) then begin
+					call critter_p_proc;
+				end
+				else begin
+					if (script_action == destroy_proc) then begin
+						call destroy_p_proc;
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure combat
+begin
+	hostile1 := 1;
+end
+
+procedure critter_p_proc
+begin
+	if (hostile1) then begin
+		hostile1 := 0;
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+	if ((map_var(6) == 1) and (obj_can_see_obj(self_obj, dude_obj) == 1)) then begin
+		call combat;
+	end
+end
+
+procedure pickup_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		hostile1 := 1;
+	end
+end
+
+procedure talk_p_proc
+begin
+	variable LVar0 := 0;
+	call Get_Reaction;
+	if (global_var(GVAR_CATHEDRAL_ENEMY) == 1) then begin
+		call Thorn00;
+	end
+	else begin
+		if (local_var(5) == 1) then begin
+			call Thorn28;
+		end
+		else begin
+			if (map_var(0) == 1) then begin
+				call Thorn29;
+			end
+			else begin
+				if ((global_var(GVAR_CHILDKILLER_REPUTATION) == 1) or (global_var(GVAR_BERSERKER_REPUTATION) == 1)) then begin
+					call Thorn01;
+				end
+				else begin
+					start_gdialog(SCRIPT_THORNDYK, self_obj, 4, -1, -1);
+					gsay_start;
+					call Thorn02;
+					gsay_end;
+					end_dialogue;
+				end
+			end
+		end
+	end
+	if (HealPlayer == 1) then begin
+		HealPlayer := 0;
+		set_local_var(6, game_time / (10 * 60 * 60));
+		if (PlayerYellsOuch == 1) then begin
+			PlayerYellsOuch := 0;
+			float_msg(dude_obj, 168, FLOAT_MSG_WHITE);
+		end
+		float_msg(self_obj, message_str(SCRIPT_THORNDYK, DoctorPostTreatmentResponse), FLOAT_MSG_RED);
+		LVar0 := random(5, 15) + 10;
+		critter_heal(dude_obj, LVar0);
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+		if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+		end
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	display_msg(message_str(SCRIPT_THORNDYK, 100));
+end
+
+procedure flee_dude
+begin
+	variable LVar0 := 0;
+	variable LVar1 := 0;
+	variable LVar2 := 0;
+	while(LVar1 < 5) do begin
+		if (tile_distance(tile_num(dude_obj), tile_num_in_direction(tile_num(self_obj), LVar1, 3)) > LVar2) then begin
+			LVar0 := tile_num_in_direction(tile_num(self_obj), LVar1, 3);
+			LVar2 := tile_distance(tile_num(dude_obj), LVar0);
+		end
+		LVar1 := LVar1 + 1;
+	end
+	animate_move_obj_to_tile(self_obj, LVar0, ANIMATE_WALK);
+end
+
+procedure damage_p_proc
+begin
+	variable LVar0 := 0;
+	LVar0 := obj_pid(source_obj);
+	if (party_member_obj(LVar0) != 0) then begin
+		set_map_var(6, 1);
+	end
+end
+
+procedure Thorn00
+begin
+	float_msg(self_obj, message_str(SCRIPT_THORNDYK, 101), FLOAT_MSG_RED);
+	call flee_dude;
+end
+
+procedure Thorn01
+begin
+	float_msg(self_obj, message_str(SCRIPT_THORNDYK, 102), FLOAT_MSG_RED);
+	call flee_dude;
+end
+
+procedure Thorn02
+begin
+	variable LVar0 := 0;
+	variable LVar1 := 0;
+	LVar0 := get_critter_stat(dude_obj, 35);
+	LVar1 := get_critter_stat(dude_obj, 7);
+	if (LVar0 == LVar1) then begin
+		if (dude_is_male) then begin
+			gsay_reply(SCRIPT_THORNDYK, 103);
+		end
+		else begin
+			gsay_reply(SCRIPT_THORNDYK, 104);
+		end
+		giq_option(7, SCRIPT_THORNDYK, 105, Thorn02a, GOOD_REACTION);
+		giq_option(7, SCRIPT_THORNDYK, 106, Thorn05, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_THORNDYK, 107, Thorn06, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_THORNDYK, 108, Thorn07, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_THORNDYK, 109, Thorn08, BAD_REACTION);
+		giq_option(-3, SCRIPT_THORNDYK, 110, Thorn09, BAD_REACTION);
+	end
+	else begin
+		if ((LVar0 < LVar1) and (((game_time / (10 * 60 * 60)) - local_var(6)) < 24)) then begin
+			if (dude_is_male) then begin
+				gsay_reply(SCRIPT_THORNDYK, 111);
+			end
+			else begin
+				gsay_reply(SCRIPT_THORNDYK, 112);
+			end
+			giq_option(7, SCRIPT_THORNDYK, 113, Thorn02a, NEUTRAL_REACTION);
+			giq_option(7, SCRIPT_THORNDYK, 114, Thorn05, NEUTRAL_REACTION);
+			giq_option(4, SCRIPT_THORNDYK, 115, Thorn27, BAD_REACTION);
+			giq_option(4, SCRIPT_THORNDYK, 116, Thorn07, GOOD_REACTION);
+			giq_option(4, SCRIPT_THORNDYK, 117, Thorn08, BAD_REACTION);
+			giq_option(-3, SCRIPT_THORNDYK, 118, Thorn09, NEUTRAL_REACTION);
+		end
+		else begin
+			if ((LVar0 > (LVar1 / 2)) and (((game_time / (10 * 60 * 60)) - local_var(6)) > 24)) then begin
+				if (dude_is_male) then begin
+					gsay_reply(SCRIPT_THORNDYK, 119);
+				end
+				else begin
+					gsay_reply(SCRIPT_THORNDYK, 120);
+				end
+				giq_option(7, SCRIPT_THORNDYK, 121, Thorn10, NEUTRAL_REACTION);
+				giq_option(7, SCRIPT_THORNDYK, 122, Thorn10, NEUTRAL_REACTION);
+				giq_option(4, SCRIPT_THORNDYK, 123, Thorn11, NEUTRAL_REACTION);
+				giq_option(4, SCRIPT_THORNDYK, 124, Thorn12, NEUTRAL_REACTION);
+				giq_option(4, SCRIPT_THORNDYK, 125, Thorn13, NEUTRAL_REACTION);
+				giq_option(4, SCRIPT_THORNDYK, 126, Thorn14, NEUTRAL_REACTION);
+				giq_option(-3, SCRIPT_THORNDYK, 127, Thorn15, NEUTRAL_REACTION);
+				giq_option(-3, SCRIPT_THORNDYK, 128, Thorn16, NEUTRAL_REACTION);
+			end
+			else begin
+				if ((LVar0 < (LVar1 / 2)) and (((game_time / (10 * 60 * 60)) - local_var(6)) > 24)) then begin
+					if (dude_is_male) then begin
+						gsay_reply(SCRIPT_THORNDYK, 129);
+					end
+					else begin
+						gsay_reply(SCRIPT_THORNDYK, 130);
+					end
+					giq_option(7, SCRIPT_THORNDYK, 131, Thorn10, NEUTRAL_REACTION);
+					giq_option(7, SCRIPT_THORNDYK, 132, Thorn10, NEUTRAL_REACTION);
+					giq_option(4, SCRIPT_THORNDYK, 133, Thorn11, NEUTRAL_REACTION);
+					giq_option(4, SCRIPT_THORNDYK, 124, Thorn12, NEUTRAL_REACTION);
+					giq_option(4, SCRIPT_THORNDYK, 134, Thorn13, NEUTRAL_REACTION);
+					giq_option(4, SCRIPT_THORNDYK, 135, Thorn14, NEUTRAL_REACTION);
+					giq_option(-3, SCRIPT_THORNDYK, 136, Thorn15, NEUTRAL_REACTION);
+					giq_option(-3, SCRIPT_THORNDYK, 137, Thorn16, NEUTRAL_REACTION);
+				end
+			end
+		end
+	end
+end
+
+procedure Thorn02a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0)) == 1) then begin
+		call Thorn03;
+	end
+	else begin
+		call Thorn04;
+	end
+end
+
+procedure Thorn03
+begin
+	gsay_reply(SCRIPT_THORNDYK, 138);
+	giq_option(7, SCRIPT_THORNDYK, 139, Thorn03a, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_THORNDYK, 140, Thorn03b, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_THORNDYK, 141, Thorn05, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 142, Thorn07, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 143, Thorn19, NEUTRAL_REACTION);
+end
+
+procedure Thorn03a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0)) == 1) then begin
+		call Thorn17;
+	end
+	else begin
+		call Thorn04;
+	end
+end
+
+procedure Thorn03b
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0)) == 1) then begin
+		call Thorn18;
+	end
+	else begin
+		call Thorn04;
+	end
+end
+
+procedure Thorn04
+begin
+	if (dude_is_male) then begin
+		gsay_message(SCRIPT_THORNDYK, 144, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_THORNDYK, 145, NEUTRAL_REACTION);
+	end
+end
+
+procedure Thorn05
+begin
+	if (dude_is_male) then begin
+		gsay_message(SCRIPT_THORNDYK, 146, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_THORNDYK, 147, NEUTRAL_REACTION);
+	end
+end
+
+procedure Thorn06
+begin
+	gsay_message(SCRIPT_THORNDYK, 148, NEUTRAL_REACTION);
+end
+
+procedure Thorn07
+begin
+	gsay_message(SCRIPT_THORNDYK, 149, NEUTRAL_REACTION);
+end
+
+procedure Thorn08
+begin
+	gsay_message(SCRIPT_THORNDYK, 150, BAD_REACTION);
+end
+
+procedure Thorn09
+begin
+	gsay_message(SCRIPT_THORNDYK, 151, NEUTRAL_REACTION);
+end
+
+procedure Thorn10
+begin
+	gsay_reply(SCRIPT_THORNDYK, 152);
+	giq_option(7, SCRIPT_THORNDYK, 153, Thorn20, BAD_REACTION);
+	giq_option(7, SCRIPT_THORNDYK, 154, Thorn20, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 155, Thorn11, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 156, Thorn12, GOOD_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 157, Thorn13, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 158, Thorn14, NEUTRAL_REACTION);
+end
+
+procedure Thorn11
+begin
+	gsay_reply(SCRIPT_THORNDYK, 159);
+	giq_option(4, SCRIPT_THORNDYK, 160, Thorn12, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 157, Thorn13, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 162, Thorn24, BAD_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 163, Thorn14, NEUTRAL_REACTION);
+end
+
+procedure Thorn12
+begin
+	DoctorPostTreatmentResponse := 164;
+	PlayerYellsOuch := 0;
+	HealPlayer := 1;
+	gsay_message(SCRIPT_THORNDYK, 161, NEUTRAL_REACTION);
+end
+
+procedure Thorn13
+begin
+	gsay_message(SCRIPT_THORNDYK, 165, NEUTRAL_REACTION);
+end
+
+procedure Thorn14
+begin
+	gsay_message(SCRIPT_THORNDYK, 166, NEUTRAL_REACTION);
+end
+
+procedure Thorn15
+begin
+	DoctorPostTreatmentResponse := 169;
+	PlayerYellsOuch := 1;
+	HealPlayer := 1;
+	gsay_message(SCRIPT_THORNDYK, 167, NEUTRAL_REACTION);
+end
+
+procedure Thorn16
+begin
+	gsay_message(SCRIPT_THORNDYK, 170, NEUTRAL_REACTION);
+end
+
+procedure Thorn17
+begin
+	gsay_reply(SCRIPT_THORNDYK, 171);
+	giq_option(7, SCRIPT_THORNDYK, 172, Thorn17a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 173, Thorn27, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 174, Thorn27, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 175, Thorn14, NEUTRAL_REACTION);
+end
+
+procedure Thorn17a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0)) == 1) then begin
+		call Thorn21;
+	end
+	else begin
+		call Thorn04;
+	end
+end
+
+procedure Thorn18
+begin
+	gsay_reply(SCRIPT_THORNDYK, 176);
+	giq_option(7, SCRIPT_THORNDYK, 177, Thorn18a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 178, Thorn24, BAD_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 179, Thorn27, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 180, Thorn24, BAD_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 181, Thorn14, NEUTRAL_REACTION);
+end
+
+procedure Thorn18a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0)) == 1) then begin
+		call Thorn22;
+	end
+	else begin
+		call Thorn04;
+	end
+end
+
+procedure Thorn19
+begin
+	gsay_message(SCRIPT_THORNDYK, 182, NEUTRAL_REACTION);
+end
+
+procedure Thorn20
+begin
+	gsay_reply(SCRIPT_THORNDYK, 183);
+	giq_option(7, SCRIPT_THORNDYK, 184, Thorn23, BAD_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 185, Thorn24, BAD_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 186, Thorn12, GOOD_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 187, Thorn13, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 188, Thorn14, NEUTRAL_REACTION);
+end
+
+procedure Thorn21
+begin
+	gsay_reply(SCRIPT_THORNDYK, 189);
+	giq_option(7, SCRIPT_THORNDYK, 190, Thorn25, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 191, Thorn27, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 192, Thorn27, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 193, Thorn24, BAD_REACTION);
+end
+
+procedure Thorn22
+begin
+	gsay_reply(SCRIPT_THORNDYK, 194);
+	giq_option(7, SCRIPT_THORNDYK, 195, Thorn22a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 196, Thorn22b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 197, Thorn27, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 198, Thorn27, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 199, Thorn24, BAD_REACTION);
+end
+
+procedure Thorn22a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0)) == 1) then begin
+		call Thorn25;
+	end
+	else begin
+		call Thorn04;
+	end
+end
+
+procedure Thorn22b
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0)) == 1) then begin
+		call Thorn26;
+	end
+	else begin
+		call Thorn04;
+	end
+end
+
+procedure Thorn23
+begin
+	set_local_var(5, 1);
+	gsay_message(SCRIPT_THORNDYK, 200, BAD_REACTION);
+end
+
+procedure Thorn24
+begin
+	set_local_var(5, 1);
+	gsay_message(SCRIPT_THORNDYK, 201, BAD_REACTION);
+end
+
+procedure Thorn25
+begin
+	if (dude_is_male) then begin
+		gsay_message(SCRIPT_THORNDYK, 202, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_THORNDYK, 203, NEUTRAL_REACTION);
+	end
+end
+
+procedure Thorn26
+begin
+	gsay_reply(SCRIPT_THORNDYK, 204);
+	giq_option(7, SCRIPT_THORNDYK, 205, Thorn27, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 206, Thorn07, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 207, Thorn24, BAD_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 208, Thorn24, BAD_REACTION);
+	giq_option(4, SCRIPT_THORNDYK, 209, Thorn27, BAD_REACTION);
+end
+
+procedure Thorn27
+begin
+	gsay_message(SCRIPT_THORNDYK, 210, NEUTRAL_REACTION);
+end
+
+procedure Thorn28
+begin
+	if (dude_is_male) then begin
+		float_msg(self_obj, message_str(SCRIPT_THORNDYK, 211), FLOAT_MSG_RED);
+	end
+	else begin
+		float_msg(self_obj, message_str(SCRIPT_THORNDYK, 212), FLOAT_MSG_RED);
+	end
+end
+
+procedure Thorn29
+begin
+	float_msg(self_obj, message_str(SCRIPT_THORNDYK, 213), FLOAT_MSG_RED);
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

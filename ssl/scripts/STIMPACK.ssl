@@ -1,0 +1,19 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+
+
+procedure start
+begin
+	if (script_action == use_obj_on_proc) then begin
+		scr_return(critter_heal(source_obj, 5));
+	end
+end

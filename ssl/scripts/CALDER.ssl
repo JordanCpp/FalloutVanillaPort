@@ -1,0 +1,753 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure do_dialogue;
+procedure calder00;
+procedure calder01;
+procedure calder01a;
+procedure calder01b;
+procedure calder02;
+procedure calder03;
+procedure calder04;
+procedure calder05;
+procedure calder05a;
+procedure calder06;
+procedure calder06a;
+procedure calder07;
+procedure calder07a;
+procedure calder07b;
+procedure calder08;
+procedure calder09;
+procedure calder09a;
+procedure calder10;
+procedure calder11;
+procedure calder12;
+procedure calder12a;
+procedure calder13;
+procedure calder14;
+procedure calder15;
+procedure calder16;
+procedure calder17;
+procedure calder18;
+procedure calder19;
+procedure calder20;
+procedure calder21;
+procedure calder22;
+procedure calder23;
+procedure calder24;
+procedure calder25;
+procedure calder25a;
+procedure calder26;
+procedure calder27;
+procedure calder28;
+procedure calder29;
+procedure calder29a;
+procedure calder29b;
+procedure calder29c;
+procedure calder30;
+procedure calder30a;
+procedure calder30b;
+procedure calder31;
+procedure calder32;
+procedure calder33;
+procedure calder34;
+procedure calderdone;
+procedure calderend;
+procedure caldercombat;
+procedure weapon_check;
+
+variable hostile1;
+variable armed;
+variable GENDER;
+variable LASHERKNOWN;
+variable LASHERABUSEKNOWN;
+variable Only_once := 1;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	if (Only_once) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 20);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_CHILDREN_TRUE);
+		Only_once := 0;
+	end
+	if (script_action == talk_proc) then begin
+		call do_dialogue;
+	end
+	else begin
+		if ((script_action == look_at_proc) or (script_action == description_proc)) then begin
+			script_overrides;
+			display_msg(message_str(SCRIPT_CALDER, 100));
+		end
+		else begin
+			if (script_action == destroy_proc) then begin
+				if (source_obj == dude_obj) then begin
+					if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+						set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+						set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+					end
+					if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+						set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+						set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+					end
+					set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+					if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+						set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+					end
+				end
+			end
+			else begin
+				if (script_action == pickup_proc) then begin
+					hostile1 := 1;
+				end
+				else begin
+					if (script_action == critter_proc) then begin
+						if (hostile1) then begin
+							hostile1 := 0;
+							attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure do_dialogue
+begin
+	call weapon_check;
+	start_gdialog(SCRIPT_CALDER, self_obj, 4, -1, -1);
+	gsay_start;
+	if (obj_pid(critter_inven_obj(dude_obj, 0)) == 113) then begin
+		if (local_var(4) == 1) then begin
+			call calder28;
+		end
+		else begin
+			set_local_var(4, 1);
+			call calder05;
+		end
+	end
+	else begin
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			call calder00;
+		end
+		else begin
+			if (local_var(4) == 1) then begin
+				call calder28;
+			end
+			else begin
+				set_local_var(4, 1);
+				call calder29;
+			end
+		end
+	end
+	gsay_end;
+	end_dialogue;
+end
+
+procedure calder00
+begin
+	gsay_reply(SCRIPT_CALDER, 101);
+	giq_option(4, SCRIPT_CALDER, 102, calder02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 103, calder03, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 104, calder04, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 105, calder05, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_CALDER, 106, caldercombat, NEUTRAL_REACTION);
+	end
+end
+
+procedure calder01
+begin
+	gsay_reply(SCRIPT_CALDER, 107);
+	giq_option(4, SCRIPT_CALDER, 108, calder01a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 109, calder03, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 110, calder01b, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CALDER, 111, calder03, NEUTRAL_REACTION);
+end
+
+procedure calder01a
+begin
+	if (get_critter_stat(dude_obj, 3) > 6) then begin
+		call calder04;
+	end
+	else begin
+		call calder03;
+	end
+end
+
+procedure calder01b
+begin
+	if (get_critter_stat(dude_obj, 3) > 6) then begin
+		call calder02;
+	end
+	else begin
+		call calder03;
+	end
+end
+
+procedure calder02
+begin
+	gsay_message(SCRIPT_CALDER, 112, BAD_REACTION);
+end
+
+procedure calder03
+begin
+	gsay_message(SCRIPT_CALDER, 113, BAD_REACTION);
+	call caldercombat;
+end
+
+procedure calder04
+begin
+	gsay_message(SCRIPT_CALDER, 114, BAD_REACTION);
+end
+
+procedure calder05
+begin
+	if (GENDER == 0) then begin
+		gsay_reply(SCRIPT_CALDER, 115);
+	end
+	else begin
+		gsay_reply(SCRIPT_CALDER, 116);
+	end
+	giq_option(7, SCRIPT_CALDER, 117, calder05a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 118, calder08, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 119, calder09, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CALDER, 120, calder10, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_CALDER, 121, calder11, NEUTRAL_REACTION);
+	end
+end
+
+procedure calder05a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call calder06;
+	end
+	else begin
+		call calder07;
+	end
+end
+
+procedure calder06
+begin
+	set_global_var(GVAR_MORPHEUS_KNOWN, 1);
+	gsay_reply(SCRIPT_CALDER, 122);
+	giq_option(7, SCRIPT_CALDER, 123, calder06a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 124, calder12, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 125, calder09, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CALDER, 126, calder10, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_CALDER, 127, calder11, NEUTRAL_REACTION);
+	end
+end
+
+procedure calder06a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call calder12;
+	end
+	else begin
+		call calder07;
+	end
+end
+
+procedure calder07
+begin
+	LASHERKNOWN := 1;
+	LASHERABUSEKNOWN := 1;
+	gsay_reply(SCRIPT_CALDER, 128);
+	giq_option(7, SCRIPT_CALDER, 129, calder07a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 130, calder07b, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CALDER, 131, calder16, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_CALDER, 132, calder15, NEUTRAL_REACTION);
+	end
+end
+
+procedure calder07a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call calder06;
+	end
+	else begin
+		call calder13;
+	end
+end
+
+procedure calder07b
+begin
+	if (get_critter_stat(dude_obj, 3) > 6) then begin
+		call calder14;
+	end
+	else begin
+		call calder15;
+	end
+end
+
+procedure calder08
+begin
+	variable LVar0 := 0;
+	LVar0 := create_object_sid(117, 0, 0, -1);
+	add_obj_to_inven(dude_obj, LVar0);
+	gsay_message(SCRIPT_CALDER, 133, GOOD_REACTION);
+end
+
+procedure calder09
+begin
+	gsay_reply(SCRIPT_CALDER, 134);
+	giq_option(7, SCRIPT_CALDER, 135, calder15, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 136, calder16, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 137, calder17, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_CALDER, 138, calder09a, NEUTRAL_REACTION);
+	end
+end
+
+procedure calder09a
+begin
+	if (get_critter_stat(dude_obj, 3) > 6) then begin
+		call calder02;
+	end
+	else begin
+		call calder03;
+	end
+end
+
+procedure calder10
+begin
+	gsay_message(SCRIPT_CALDER, 139, NEUTRAL_REACTION);
+end
+
+procedure calder11
+begin
+	gsay_message(SCRIPT_CALDER, 140, NEUTRAL_REACTION);
+end
+
+procedure calder12
+begin
+	gsay_reply(SCRIPT_CALDER, 141);
+	giq_option(7, SCRIPT_CALDER, 142, calder12a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 143, calder08, NEUTRAL_REACTION);
+	if (GENDER == 0) then begin
+		giq_option(4, SCRIPT_CALDER, 144, calder19, NEUTRAL_REACTION);
+	end
+	if (GENDER == 0) then begin
+		giq_option(4, SCRIPT_CALDER, 145, calder19, NEUTRAL_REACTION);
+	end
+	giq_option(-3, SCRIPT_CALDER, 146, calder15, NEUTRAL_REACTION);
+end
+
+procedure calder12a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, -3))) then begin
+		call calder18;
+	end
+	else begin
+		call calder13;
+	end
+end
+
+procedure calder13
+begin
+	gsay_message(SCRIPT_CALDER, 147, NEUTRAL_REACTION);
+end
+
+procedure calder14
+begin
+	gsay_reply(SCRIPT_CALDER, 148);
+	giq_option(7, SCRIPT_CALDER, 149, calder20, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 150, calder21, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 151, calder22, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CALDER, 152, calder15, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_CALDER, 153, calder02, NEUTRAL_REACTION);
+	end
+end
+
+procedure calder15
+begin
+	gsay_message(SCRIPT_CALDER, 154, BAD_REACTION);
+end
+
+procedure calder16
+begin
+	gsay_message(SCRIPT_CALDER, 155, NEUTRAL_REACTION);
+end
+
+procedure calder17
+begin
+	gsay_message(SCRIPT_CALDER, 156, NEUTRAL_REACTION);
+end
+
+procedure calder18
+begin
+	gsay_message(SCRIPT_CALDER, 157, BAD_REACTION);
+end
+
+procedure calder19
+begin
+	gsay_message(SCRIPT_CALDER, 158, NEUTRAL_REACTION);
+end
+
+procedure calder20
+begin
+	gsay_reply(SCRIPT_CALDER, 159);
+	giq_option(7, SCRIPT_CALDER, 160, calder23, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 161, calder24, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 162, calder25, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CALDER, 163, calder15, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_CALDER, 164, calder25, NEUTRAL_REACTION);
+	end
+end
+
+procedure calder21
+begin
+	gsay_message(SCRIPT_CALDER, 165, BAD_REACTION);
+end
+
+procedure calder22
+begin
+	gsay_message(SCRIPT_CALDER, 166, BAD_REACTION);
+end
+
+procedure calder23
+begin
+	gsay_message(SCRIPT_CALDER, 167, BAD_REACTION);
+end
+
+procedure calder24
+begin
+	gsay_message(SCRIPT_CALDER, 168, NEUTRAL_REACTION);
+end
+
+procedure calder25
+begin
+	LASHERKNOWN := 1;
+	LASHERABUSEKNOWN := 1;
+	gsay_reply(SCRIPT_CALDER, 169);
+	giq_option(7, SCRIPT_CALDER, 171, calder25a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 172, calder15, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 173, calder24, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CALDER, 174, calder15, NEUTRAL_REACTION);
+end
+
+procedure calder25a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call calder26;
+	end
+	else begin
+		call calder15;
+	end
+end
+
+procedure calder26
+begin
+	set_global_var(GVAR_MORPHEUS_KNOWN, 1);
+	gsay_reply(SCRIPT_CALDER, 175);
+	giq_option(4, SCRIPT_CALDER, 176, calder13, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 177, calder27, NEUTRAL_REACTION);
+	giq_option(3, SCRIPT_CALDER, 178, calder16, NEUTRAL_REACTION);
+end
+
+procedure calder27
+begin
+	gsay_message(SCRIPT_CALDER, 179, BAD_REACTION);
+end
+
+procedure calder28
+begin
+	gsay_reply(SCRIPT_CALDER, 180);
+	giq_option(7, SCRIPT_CALDER, 181, calder27, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 182, calder27, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 183, calder15, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_CALDER, 184, calder15, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_CALDER, 185, calder15, NEUTRAL_REACTION);
+	end
+end
+
+procedure calder29
+begin
+	gsay_reply(SCRIPT_CALDER, 186);
+	giq_option(7, SCRIPT_CALDER, 187, calder29a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 188, calder29b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 189, calder29c, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_CALDER, 190, calder02, NEUTRAL_REACTION);
+	end
+	giq_option(-3, SCRIPT_CALDER, 191, calder15, NEUTRAL_REACTION);
+end
+
+procedure calder29a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call calder30;
+	end
+	else begin
+		call calder32;
+	end
+end
+
+procedure calder29b
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call calder31;
+	end
+	else begin
+		call calder32;
+	end
+end
+
+procedure calder29c
+begin
+	if (get_critter_stat(dude_obj, 3) > 6) then begin
+		call calder33;
+	end
+	else begin
+		call calder32;
+	end
+end
+
+procedure calder30
+begin
+	gsay_reply(SCRIPT_CALDER, 192);
+	giq_option(4, SCRIPT_CALDER, 193, calder30a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 194, calder30b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 195, calder11, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_CALDER, 196, calder03, NEUTRAL_REACTION);
+	end
+end
+
+procedure calder30a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call calder13;
+	end
+	else begin
+		call calder15;
+	end
+end
+
+procedure calder30b
+begin
+	if (get_critter_stat(dude_obj, 3) > 6) then begin
+		call calder31;
+	end
+	else begin
+		call calder32;
+	end
+end
+
+procedure calder31
+begin
+	gsay_reply(SCRIPT_CALDER, 197);
+	giq_option(7, SCRIPT_CALDER, 198, calder13, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 199, calder08, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 200, calder09, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_CALDER, 201, calder11, NEUTRAL_REACTION);
+	end
+end
+
+procedure calder32
+begin
+	LASHERKNOWN := 1;
+	LASHERABUSEKNOWN := 1;
+	gsay_message(SCRIPT_CALDER, 202, NEUTRAL_REACTION);
+end
+
+procedure calder33
+begin
+	LASHERKNOWN := 1;
+	LASHERABUSEKNOWN := 1;
+	gsay_reply(SCRIPT_CALDER, 203);
+	giq_option(7, SCRIPT_CALDER, 204, calder34, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 205, calder14, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CALDER, 206, calder34, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_CALDER, 207, calder15, NEUTRAL_REACTION);
+	end
+end
+
+procedure calder34
+begin
+	gsay_message(SCRIPT_CALDER, 208, BAD_REACTION);
+end
+
+procedure calderdone
+begin
+	gsay_option(SCRIPT_CALDER, 209, calderend, NEUTRAL_REACTION);
+end
+
+procedure calderend
+begin
+end
+
+procedure caldercombat
+begin
+	set_global_var(GVAR_CATHEDRAL_ENEMY, 1);
+	hostile1 := 1;
+end
+
+procedure weapon_check
+begin
+	if ((obj_item_subtype(critter_inven_obj(dude_obj, 1)) == 3) or (obj_item_subtype(critter_inven_obj(dude_obj, 2)) == 3)) then begin
+		armed := 1;
+	end
+	else begin
+		armed := 0;
+	end
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

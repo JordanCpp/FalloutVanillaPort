@@ -1,0 +1,12 @@
+{100}{}{Voici un commercant.}
+{101}{}{Tu veux faire du commerce ?}
+{102}{}{Cliques sur Troc -->}
+{103}{}{Non.}
+{104}{}{On a été en proie à des radscorpions pendant un certain temps. Tout ceux qui ont étés envoyés détruire ces monstres se sont pas revenus. Je te donnerais des armes si tu vas jusqu'à leur repaire et que tu t'en débarasses.}
+{105}{}{Ca me semble bien.}
+{106}{}{Non merci.}
+{107}{}{C'est une honte. Vas t'en.}
+{108}{}{Excellent. Parles en à Seth, il te guidera jusqu'à leur repaire. Prends ça, ça pourrait être utile. }
+{109}{}{S'il te plait, aide nous dès que tu le pourras. C'est urgent.}
+{110}{}{Je ne parle pas aux gens de ton espèce, étranger.}
+{111}{}{Merci de nous avoir débarassés des radscorpions, étranger.}

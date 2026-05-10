@@ -1,0 +1,372 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure critter_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure flee_dude;
+procedure Patrick01;
+procedure Patrick02;
+procedure Patrick03;
+procedure Patrick04;
+procedure Patrick05;
+procedure Patrick06;
+procedure Patrick06a;
+procedure Patrick07;
+procedure Patrick08;
+procedure Patrick09;
+procedure Patrick10;
+procedure Patrick11;
+procedure Patrick12;
+procedure Patrick13;
+procedure Patrick14;
+procedure Patrick15;
+procedure Patrick16;
+procedure Patrick17;
+procedure PatrickCombat;
+procedure PatrickEnd;
+
+variable hostile1;
+variable initialized1;
+variable known;
+variable scared;
+
+
+procedure start
+begin
+	if (not(initialized1)) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 87);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_CAREFUL);
+		initialized1 := 1;
+	end
+	else begin
+		if (script_action == critter_proc) then begin
+			call critter_p_proc;
+		end
+		else begin
+			if (script_action == destroy_proc) then begin
+				call destroy_p_proc;
+			end
+			else begin
+				if (script_action == look_at_proc) then begin
+					call look_at_p_proc;
+				end
+				else begin
+					if (script_action == pickup_proc) then begin
+						call pickup_p_proc;
+					end
+					else begin
+						if (script_action == talk_proc) then begin
+							call talk_p_proc;
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (scared) then begin
+		if (tile_distance_objs(self_obj, dude_obj) < 8) then begin
+			call flee_dude;
+		end
+	end
+	else begin
+		if (hostile1) then begin
+			hostile1 := 0;
+			scared := 1;
+			attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+		end
+	end
+end
+
+procedure destroy_p_proc
+begin
+	set_global_var(GVAR_WATER_THIEF_10, 1);
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+		if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+		end
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	known := global_var(GVAR_SAVE_TANDI_1);
+	if (known) then begin
+		display_msg(message_str(SCRIPT_PATRICK, 101));
+	end
+	else begin
+		display_msg(message_str(SCRIPT_PATRICK, 100));
+	end
+end
+
+procedure pickup_p_proc
+begin
+	hostile1 := 1;
+end
+
+procedure talk_p_proc
+begin
+	known := global_var(GVAR_SAVE_TANDI_1);
+	if (scared) then begin
+		float_msg(self_obj, message_str(SCRIPT_ENEMY, random(100, 105)), FLOAT_MSG_RED);
+	end
+	else begin
+		start_gdialog(SCRIPT_PATRICK, self_obj, 4, -1, -1);
+		gsay_start;
+		if (known) then begin
+			call Patrick17;
+		end
+		else begin
+			call Patrick01;
+		end
+		gsay_end;
+		end_dialogue;
+	end
+end
+
+procedure flee_dude
+begin
+	variable LVar0 := 0;
+	variable LVar1 := 0;
+	variable LVar2 := 0;
+	while(LVar1 < 5) do begin
+		if (tile_distance(tile_num(dude_obj), tile_num_in_direction(tile_num(self_obj), LVar1, 3)) > LVar2) then begin
+			LVar0 := tile_num_in_direction(tile_num(self_obj), LVar1, 3);
+			LVar2 := tile_distance(tile_num(dude_obj), LVar0);
+		end
+		LVar1 := LVar1 + 1;
+	end
+	animate_move_obj_to_tile(self_obj, LVar0, ANIMATE_RUN);
+end
+
+procedure Patrick01
+begin
+	known := 1;
+	set_global_var(GVAR_SAVE_TANDI_1, known);
+	gsay_reply(SCRIPT_PATRICK, 102);
+	giq_option(4, SCRIPT_PATRICK, 103, Patrick02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_PATRICK, 104, Patrick03, NEUTRAL_REACTION);
+	if ((global_var(GVAR_FIND_WATER_CHIP) == 0) and (obj_is_carrying_obj_pid(dude_obj, 55) == 0)) then begin
+		giq_option(4, SCRIPT_PATRICK, 105, Patrick04, NEUTRAL_REACTION);
+	end
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_PATRICK, 106, PatrickCombat, BAD_REACTION);
+	end
+	giq_option(-3, SCRIPT_PATRICK, 107, PatrickEnd, NEUTRAL_REACTION);
+end
+
+procedure Patrick02
+begin
+	gsay_reply(SCRIPT_PATRICK, 108);
+	giq_option(4, SCRIPT_PATRICK, 109, Patrick05, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_PATRICK, 110, Patrick06, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_PATRICK, 111, Patrick05, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_PATRICK, 112, PatrickEnd, NEUTRAL_REACTION);
+end
+
+procedure Patrick03
+begin
+	gsay_reply(SCRIPT_PATRICK, 113);
+	giq_option(4, SCRIPT_PATRICK, 114, PatrickEnd, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_PATRICK, 115, Patrick05, NEUTRAL_REACTION);
+end
+
+procedure Patrick04
+begin
+	gsay_reply(SCRIPT_PATRICK, 116);
+	if (get_critter_stat(dude_obj, 4) > 6) then begin
+		giq_option(7, SCRIPT_PATRICK, 117, Patrick07, NEUTRAL_REACTION);
+	end
+	else begin
+		giq_option(4, SCRIPT_PATRICK, 118, Patrick07, NEUTRAL_REACTION);
+	end
+end
+
+procedure Patrick05
+begin
+	gsay_reply(SCRIPT_PATRICK, 119);
+	giq_option(4, SCRIPT_PATRICK, 120, Patrick08, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_PATRICK, 121, Patrick09, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_PATRICK, 110, Patrick06, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_PATRICK, 122, PatrickEnd, NEUTRAL_REACTION);
+end
+
+procedure Patrick06
+begin
+	gsay_reply(SCRIPT_PATRICK, 123);
+	if (global_var(GVAR_SHADY_SANDS) < 1) then begin
+		set_global_var(GVAR_SHADY_SANDS, 1);
+	end
+	if (global_var(GVAR_JUNKTOWN) < 1) then begin
+		set_global_var(GVAR_JUNKTOWN, 1);
+	end
+	if (global_var(GVAR_THE_HUB) < 1) then begin
+		set_global_var(GVAR_JUNKTOWN, 1);
+	end
+	if (global_var(GVAR_NECROPOLIS) < 1) then begin
+		set_global_var(GVAR_NECROPOLIS, 1);
+	end
+	call Patrick06a;
+end
+
+procedure Patrick06a
+begin
+	giq_option(4, SCRIPT_PATRICK, 124, Patrick10, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_PATRICK, 125, Patrick11, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_PATRICK, 126, Patrick12, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_PATRICK, 127, Patrick13, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MODREACT, 100, PatrickEnd, NEUTRAL_REACTION);
+end
+
+procedure Patrick07
+begin
+	gsay_reply(SCRIPT_PATRICK, 128);
+	giq_option(4, SCRIPT_MODREACT, 100, PatrickEnd, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_PATRICK, 115, Patrick05, NEUTRAL_REACTION);
+end
+
+procedure Patrick08
+begin
+	gsay_reply(SCRIPT_PATRICK, 129);
+	if ((global_var(GVAR_FIND_WATER_CHIP) == 0) and (obj_is_carrying_obj_pid(dude_obj, 55) == 0)) then begin
+		giq_option(4, SCRIPT_PATRICK, 130, Patrick07, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_PATRICK, 110, Patrick05, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_PATRICK, 112, PatrickEnd, NEUTRAL_REACTION);
+end
+
+procedure Patrick09
+begin
+	gsay_reply(SCRIPT_PATRICK, 131);
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		giq_option(7, SCRIPT_PATRICK, 132, Patrick15, GOOD_REACTION);
+	end
+	giq_option(4, SCRIPT_PATRICK, 133, Patrick05, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_PATRICK, 122, PatrickEnd, NEUTRAL_REACTION);
+end
+
+procedure Patrick10
+begin
+	if (global_var(GVAR_NECROPOLIS_INVADED) == 1) then begin
+		gsay_reply(SCRIPT_PATRICK, 141);
+	end
+	else begin
+		if (global_var(GVAR_TANDI_STATUS) == 27) then begin
+			gsay_reply(SCRIPT_PATRICK, 135);
+		end
+		else begin
+			gsay_reply(SCRIPT_PATRICK, 134);
+		end
+	end
+	call Patrick06a;
+end
+
+procedure Patrick11
+begin
+	if (global_var(GVAR_NECROPOLIS_INVADED) == 1) then begin
+		gsay_reply(SCRIPT_PATRICK, 141);
+	end
+	else begin
+		if (global_var(GVAR_KILLIAN_DEAD)) then begin
+			if (global_var(GVAR_GIZMO_DEAD)) then begin
+				gsay_reply(SCRIPT_PATRICK, 138);
+			end
+			else begin
+				gsay_reply(SCRIPT_PATRICK, 137);
+			end
+		end
+		else begin
+			gsay_reply(SCRIPT_PATRICK, 136);
+		end
+	end
+	call Patrick06a;
+end
+
+procedure Patrick12
+begin
+	if (global_var(GVAR_NECROPOLIS_INVADED) == 1) then begin
+		gsay_reply(SCRIPT_PATRICK, 141);
+	end
+	else begin
+		gsay_reply(SCRIPT_PATRICK, 139);
+	end
+	call Patrick06a;
+end
+
+procedure Patrick13
+begin
+	if (global_var(GVAR_NECROPOLIS_INVADED) == 1) then begin
+		gsay_reply(SCRIPT_PATRICK, 141);
+	end
+	else begin
+		gsay_reply(SCRIPT_PATRICK, 140);
+	end
+	if (get_critter_stat(dude_obj, 4) > 5) then begin
+		giq_option(6, SCRIPT_PATRICK, 142, Patrick14, NEUTRAL_REACTION);
+	end
+	else begin
+		call Patrick06a;
+	end
+end
+
+procedure Patrick14
+begin
+	gsay_reply(SCRIPT_PATRICK, 143);
+	call Patrick06a;
+end
+
+procedure Patrick15
+begin
+	gsay_reply(SCRIPT_PATRICK, 144);
+	giq_option(4, SCRIPT_PATRICK, 145, Patrick16, GOOD_REACTION);
+	giq_option(4, SCRIPT_PATRICK, 146, PatrickEnd, NEUTRAL_REACTION);
+end
+
+procedure Patrick16
+begin
+	gfade_out(600);
+	set_critter_stat(dude_obj, 3, 1);
+	gfade_in(600);
+	gsay_message(SCRIPT_PATRICK, 147, GOOD_REACTION);
+end
+
+procedure Patrick17
+begin
+	gsay_reply(SCRIPT_PATRICK, 148);
+	giq_option(4, SCRIPT_PATRICK, 149, Patrick06, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_PATRICK, 150, PatrickEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_PATRICK, 107, PatrickEnd, NEUTRAL_REACTION);
+end
+
+procedure PatrickCombat
+begin
+	hostile1 := 1;
+end
+
+procedure PatrickEnd
+begin
+end

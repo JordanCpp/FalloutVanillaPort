@@ -1,0 +1,858 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure critter_p_proc;
+procedure description_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure map_enter_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure damage_p_proc;
+procedure Gizmo01;
+procedure Gizmo01_1;
+procedure Gizmo01b;
+procedure Gizmo02;
+procedure Gizmo04;
+procedure Gizmo04a;
+procedure Gizmo04_1;
+procedure Gizmo05;
+procedure Gizmo05_1;
+procedure Gizmo06;
+procedure Gizmo07;
+procedure Gizmo08;
+procedure Gizmo09;
+procedure Gizmo10;
+procedure Gizmo11;
+procedure Gizmo13;
+procedure Gizmo13_1;
+procedure Gizmo14;
+procedure Gizmo15;
+procedure Gizmo15_1;
+procedure Gizmo16;
+procedure Gizmo16a;
+procedure Gizmo17;
+procedure Gizmo18;
+procedure Gizmo19;
+procedure Gizmo20;
+procedure Gizmo21;
+procedure Gizmo22;
+procedure Gizmo23;
+procedure Gizmo24;
+procedure Gizmo25;
+procedure Gizmo26;
+procedure Gizmo27;
+procedure Gizmo28;
+procedure Gizmo29;
+procedure Gizmo30;
+procedure Gizmo32;
+procedure Gizmo33;
+procedure Gizmo34;
+procedure Gizmo35;
+procedure Gizmo36;
+procedure Gizmo37;
+procedure Gizmo38;
+procedure Gizmo39;
+procedure Gizmo42;
+procedure Gizmo43;
+procedure Gizmo44;
+procedure Gizmo45;
+procedure Gizmo47;
+procedure Gizmo48;
+procedure Gizmo19a;
+procedure Gizmox;
+procedure Gizmox1;
+procedure Gizmox2;
+procedure GizmoPay;
+procedure badmouth;
+
+variable rndx;
+variable rndy;
+variable rndz;
+variable HOSTILE;
+variable INSISTS;
+variable CRIME;
+variable stealing;
+variable initialized1;
+
+import variable Killian_ptr;
+import variable Gizmo_is_angry;
+import variable show_to_door;
+import variable Gizmo_ptr;
+import variable payment;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+if (script_action == critter_proc) then begin
+    call critter_p_proc;
+  end
+  else begin
+    if (script_action == description_proc) then begin
+      call description_p_proc;
+    end
+    else begin
+      if (script_action == destroy_proc) then begin
+        call destroy_p_proc;
+      end
+      else begin
+        if (script_action == look_at_proc) then begin
+          call look_at_p_proc;
+        end
+        else begin
+          if (script_action == map_enter_proc) then begin
+            call map_enter_p_proc;
+          end
+          else begin
+            if (script_action == pickup_proc) then begin
+              call pickup_p_proc;
+            end
+            else begin
+              if (script_action == talk_proc) then begin
+                call talk_p_proc;
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+procedure critter_p_proc
+begin
+  if (HOSTILE) then begin
+    HOSTILE := 0;
+    attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+  end
+  else begin
+    if (Killian_ptr != 0) then begin
+      float_msg(self_obj, message_str(SCRIPT_GIZMO, 220), FLOAT_MSG_NORMAL);
+      attack_complex(Killian_ptr, 0, 1, 0, 0, 30000, 0, 0);
+    end
+    else begin
+      if (obj_is_carrying_obj_pid(self_obj, 57)) then begin
+        set_global_var(GVAR_BUG_PLANTED, 1);
+      end
+    end
+  end
+  if (global_var(GVAR_CURE_JARVIS_8) == 1) then begin
+    if (obj_can_see_obj(self_obj, dude_obj)) then begin
+      attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+    end
+  end
+end
+
+procedure description_p_proc
+begin
+  script_overrides;
+  display_msg(message_str(SCRIPT_GIZMO, 218));
+end
+
+procedure destroy_p_proc
+begin
+  if (source_obj == dude_obj) then begin
+    set_global_var(GVAR_CURE_JARVIS_8, 1);
+    if (source_obj == dude_obj) then begin
+      if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+        set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+        set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+      end
+      if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+        set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+        set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+      end
+      set_global_var(GVAR_BAD_MONSTER, global_var(GVAR_BAD_MONSTER) + 1);
+      if ((global_var(GVAR_BAD_MONSTER) % 6) == 0) then begin
+        set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) + 1);
+      end
+    end
+  end
+  set_global_var(GVAR_GIZMO_DEAD, 1);
+end
+
+procedure look_at_p_proc
+begin
+  script_overrides;
+  display_msg(message_str(SCRIPT_GIZMO, 100));
+end
+
+procedure map_enter_p_proc
+begin
+  variable LVar0 := 0;
+  Gizmo_ptr := self_obj;
+  if (local_var(7) == 0) then begin
+    set_local_var(7, 1000);
+  end
+  critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 13);
+  critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_GIZMO);
+  if (global_var(GVAR_CAPTURE_GIZMO) == 2) then begin
+    LVar0 := create_object_sid(213, tile_num(self_obj), 0, -1);
+    kill_critter(self_obj, 0);
+  end
+end
+
+procedure pickup_p_proc
+begin
+  stealing := 1;
+  dialogue_system_enter;
+end
+
+procedure talk_p_proc
+begin
+  call Get_Reaction;
+  if (local_var(8) == 1) then begin
+    float_msg(self_obj, message_str(SCRIPT_ENEMY, 104), FLOAT_MSG_RED);
+  end
+  else begin
+    if (global_var(GVAR_HIRED_BY_GIZMO) == 2) then begin
+      float_msg(self_obj, message_str(SCRIPT_ENEMY, 101), FLOAT_MSG_NORMAL);
+    end
+    else begin
+      start_gdialog(SCRIPT_GIZMO, self_obj, 4, HEAD_GIZMO, BACKGROUND_JUNKTOWN);
+      gsay_start;
+      if (stealing) then begin
+        call Gizmo45;
+      end
+      else begin
+        if (global_var(GVAR_KILLIAN_DEAD) == 1) then begin
+          call Gizmo21;
+        end
+        else begin
+          if ((local_var(4) > 0) and (local_var(4) < 3)) then begin
+            call Gizmo13;
+          end
+          else begin
+            if (local_var(4) == 3) then begin
+              call Gizmo35;
+            end
+            else begin
+              set_local_var(4, 1);
+              if ((global_var(GVAR_KILLIAN_DEAD) == 1) or (global_var(GVAR_HIRED_BY_KILLIAN) == 1)) then begin
+                call Gizmo21;
+              end
+              else begin
+                call Gizmo01;
+              end
+            end
+          end
+        end
+      end
+      gsay_end;
+      end_dialogue;
+    end
+  end
+end
+
+procedure damage_p_proc
+begin
+  if (source_obj == dude_obj) then begin
+    set_global_var(GVAR_CURE_JARVIS_8, 1);
+  end
+end
+
+procedure Gizmo01
+begin
+  gsay_reply(SCRIPT_GIZMO, 101);
+  giq_option(5, SCRIPT_GIZMO, 102, Gizmo01_1, GOOD_REACTION);
+  giq_option(7, SCRIPT_GIZMO, 103, Gizmo04, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 104, Gizmo04, NEUTRAL_REACTION);
+  giq_option(-3, SCRIPT_GIZMO, 105, Gizmo01b, BAD_REACTION);
+end
+
+procedure Gizmo01_1
+begin
+  call Up_React_Level;
+  set_local_var(5, 1);
+  call Gizmo02;
+end
+
+procedure Gizmo01b
+begin
+  gsay_message(SCRIPT_GIZMO, 106, BAD_REACTION);
+  call Gizmox2;
+end
+
+procedure Gizmo02
+begin
+  gsay_reply(SCRIPT_GIZMO, 107);
+  giq_option(5, SCRIPT_GIZMO, 108, Gizmo11, BAD_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 109, Gizmo04, NEUTRAL_REACTION);
+end
+
+procedure Gizmo04
+begin
+  gsay_reply(SCRIPT_GIZMO, 110);
+  giq_option(4, SCRIPT_GIZMO, 111, Gizmo05, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 112, Gizmo04_1, BAD_REACTION);
+end
+
+procedure Gizmo04a
+begin
+  gsay_message(SCRIPT_GIZMO, 113, NEUTRAL_REACTION);
+  call Gizmo05;
+end
+
+procedure Gizmo04_1
+begin
+  set_local_var(5, local_var(5) + 1);
+  if (local_var(5) > 1) then begin
+    call Gizmo11;
+  end
+  else begin
+    call Gizmo04a;
+  end
+end
+
+procedure Gizmo05
+begin
+  gsay_reply(SCRIPT_GIZMO, 114);
+  giq_option(7, SCRIPT_GIZMO, 115, Gizmo06, NEUTRAL_REACTION);
+  if (not(is_success(do_check(dude_obj, 6, 0)))) then begin
+    giq_option(6, SCRIPT_GIZMO, 116, Gizmo05_1, BAD_REACTION);
+  end
+  giq_option(4, SCRIPT_GIZMO, 117, Gizmo07, GOOD_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 118, Gizmo10, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_GIZMO, 119, Gizmo08, NEUTRAL_REACTION);
+end
+
+procedure Gizmo05_1
+begin
+  call Down_React_Level;
+  call Gizmo10;
+end
+
+procedure Gizmo06
+begin
+  gsay_reply(SCRIPT_GIZMO, 120);
+  giq_option(7, SCRIPT_GIZMO, 121, Gizmo07, GOOD_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 122, Gizmo07, GOOD_REACTION);
+  giq_option(6, SCRIPT_GIZMO, 123, badmouth, BAD_REACTION);
+  giq_option(5, SCRIPT_GIZMO, 124, Gizmo08, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 125, Gizmo10, BAD_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 126, Gizmo10, NEUTRAL_REACTION);
+end
+
+procedure Gizmo07
+begin
+  set_global_var(GVAR_HIRED_BY_GIZMO, 1);
+  gsay_message(SCRIPT_GIZMO, 127, GOOD_REACTION);
+  call Gizmox;
+end
+
+procedure Gizmo08
+begin
+  gsay_reply(SCRIPT_GIZMO, 128);
+  giq_option(4, SCRIPT_GIZMO, 129, Gizmo07, GOOD_REACTION);
+  giq_option(6, SCRIPT_GIZMO, 130, Gizmo09, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 131, Gizmo10, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_GIZMO, 132, badmouth, BAD_REACTION);
+end
+
+procedure Gizmo09
+begin
+  set_local_var(7, 1500);
+  gsay_reply(SCRIPT_GIZMO, 133);
+  giq_option(4, SCRIPT_GIZMO, 134, Gizmo07, GOOD_REACTION);
+  giq_option(6, SCRIPT_GIZMO, 135, badmouth, BAD_REACTION);
+  giq_option(5, SCRIPT_GIZMO, 136, Gizmo10, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 137, Gizmo10, BAD_REACTION);
+end
+
+procedure Gizmo10
+begin
+  gsay_message(SCRIPT_GIZMO, 138, BAD_REACTION);
+  call Gizmox1;
+end
+
+procedure Gizmo11
+begin
+  gsay_message(SCRIPT_GIZMO, 139, BAD_REACTION);
+  call Gizmox1;
+end
+
+procedure Gizmo13
+begin
+  set_local_var(4, local_var(4) + 1);
+  gsay_reply(SCRIPT_GIZMO, 140);
+  giq_option(4, SCRIPT_GIZMO, 141, Gizmo13_1, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 142, Gizmo20, NEUTRAL_REACTION);
+end
+
+procedure Gizmo13_1
+begin
+  if (obj_is_carrying_obj_pid(dude_obj, 56) or (global_var(GVAR_KILLIAN_DEAD) == 1)) then begin
+    call Gizmo14;
+  end
+  else begin
+    call Gizmo17;
+  end
+end
+
+procedure Gizmo14
+begin
+  gsay_reply(SCRIPT_GIZMO, 143);
+  if (obj_is_carrying_obj_pid(dude_obj, 56)) then begin
+    gsay_option(SCRIPT_MODREACT, 106, Gizmo15, GOOD_REACTION);
+  end
+  else begin
+    gsay_option(SCRIPT_MODREACT, 106, Gizmo17, BAD_REACTION);
+  end
+end
+
+procedure Gizmo15
+begin
+  destroy_object(obj_carrying_pid_obj(dude_obj, 56));
+  set_global_var(GVAR_HIRED_BY_GIZMO, 2);
+  gsay_reply(SCRIPT_GIZMO, 144);
+  giq_option(4, SCRIPT_GIZMO, 145, GizmoPay, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_GIZMO, 146, Gizmo15_1, BAD_REACTION);
+  giq_option(6, SCRIPT_GIZMO, 147, Gizmo16, NEUTRAL_REACTION);
+  giq_option(7, SCRIPT_GIZMO, 148, GizmoPay, NEUTRAL_REACTION);
+end
+
+procedure Gizmo15_1
+begin
+  set_local_var(5, local_var(5) + 1);
+  if (local_var(5) > 1) then begin
+    call Gizmo11;
+  end
+  else begin
+    call Gizmo16;
+  end
+end
+
+procedure Gizmo16
+begin
+  gsay_reply(SCRIPT_GIZMO, 149);
+  giq_option(4, SCRIPT_GIZMO, 150, GizmoPay, NEUTRAL_REACTION);
+  if (not(is_success(do_check(dude_obj, 6, 0)))) then begin
+    giq_option(7, SCRIPT_GIZMO, 151, Gizmo16a, BAD_REACTION);
+  end
+  giq_option(6, SCRIPT_GIZMO, 152, GizmoPay, NEUTRAL_REACTION);
+end
+
+procedure Gizmo16a
+begin
+  call Down_React_Level;
+  call badmouth;
+end
+
+procedure Gizmo17
+begin
+  gsay_reply(SCRIPT_GIZMO, 153);
+  giq_option(4, SCRIPT_GIZMO, 154, Gizmo18, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_GIZMO, 155, Gizmo19, BAD_REACTION);
+  giq_option(5, SCRIPT_GIZMO, 156, Gizmo20, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_GIZMO, 157, Gizmo20, NEUTRAL_REACTION);
+end
+
+procedure Gizmo18
+begin
+  if (local_var(6) > 1) then begin
+    call Gizmo11;
+  end
+  else begin
+    set_local_var(6, local_var(6) + 1);
+    if (obj_is_carrying_obj_pid(dude_obj, 104) and (global_var(GVAR_HIRED_BY_KILLIAN) == 1)) then begin
+      set_global_var(GVAR_GOT_CONFESSION, 1);
+    end
+    gsay_message(SCRIPT_GIZMO, 158, NEUTRAL_REACTION);
+    call Gizmox;
+  end
+end
+
+procedure Gizmo19
+begin
+  gsay_reply(SCRIPT_GIZMO, 159);
+  giq_option(4, SCRIPT_GIZMO, 160, Gizmo20, NEUTRAL_REACTION);
+  if (not(is_success(do_check(dude_obj, 6, 0)))) then begin
+    giq_option(7, SCRIPT_GIZMO, 161, Gizmo19a, BAD_REACTION);
+  end
+  giq_option(5, SCRIPT_GIZMO, 162, Gizmo18, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_GIZMO, 163, Gizmo20, NEUTRAL_REACTION);
+end
+
+procedure Gizmo20
+begin
+  if (local_var(6) > 1) then begin
+    call Gizmo11;
+  end
+  else begin
+    set_local_var(6, local_var(6) + 1);
+    gsay_message(SCRIPT_GIZMO, 164, NEUTRAL_REACTION);
+    call Gizmox;
+  end
+end
+
+procedure Gizmo21
+begin
+  gsay_reply(SCRIPT_GIZMO, 165);
+  if (global_var(GVAR_KILLIAN_DEAD) == 0) then begin
+    giq_option(7, SCRIPT_GIZMO, 166, Gizmo22, NEUTRAL_REACTION);
+    giq_option(4, SCRIPT_GIZMO, 169, Gizmo22, NEUTRAL_REACTION);
+  end
+  else begin
+    giq_option(4, SCRIPT_GIZMO, 221, Gizmo15, GOOD_REACTION);
+  end
+  giq_option(4, SCRIPT_GIZMO, 167, Gizmo32, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_GIZMO, 168, Gizmo34, BAD_REACTION);
+  giq_option(-3, SCRIPT_GIZMO, 105, Gizmo01b, BAD_REACTION);
+end
+
+procedure Gizmo22
+begin
+  gsay_reply(SCRIPT_GIZMO, 170);
+  if (get_critter_stat(dude_obj, 4) >= 7) then begin
+    giq_option(7, SCRIPT_GIZMO, 171, Gizmo23, NEUTRAL_REACTION);
+  end
+  else begin
+    giq_option(4, SCRIPT_GIZMO, 222, Gizmo23, NEUTRAL_REACTION);
+  end
+  giq_option(6, SCRIPT_GIZMO, 172, Gizmo34, BAD_REACTION);
+  giq_option(5, SCRIPT_GIZMO, 173, Gizmo33, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 174, Gizmo34, BAD_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 175, Gizmo32, BAD_REACTION);
+end
+
+procedure Gizmo23
+begin
+  gsay_reply(SCRIPT_GIZMO, 176);
+  giq_option(7, SCRIPT_GIZMO, 177, Gizmo24, GOOD_REACTION);
+  giq_option(5, SCRIPT_GIZMO, 178, Gizmo34, BAD_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 179, Gizmo32, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 223, Gizmo24, GOOD_REACTION);
+end
+
+procedure Gizmo24
+begin
+  if (dude_is_male) then begin
+    gsay_reply(SCRIPT_GIZMO, 180);
+  end
+  else begin
+    gsay_reply(SCRIPT_GIZMO, 226);
+  end
+  giq_option(7, SCRIPT_GIZMO, 181, Gizmo25, GOOD_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 182, Gizmo32, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 224, Gizmo26, GOOD_REACTION);
+end
+
+procedure Gizmo25
+begin
+  gsay_reply(SCRIPT_GIZMO, 183);
+  giq_option(7, SCRIPT_GIZMO, 184, Gizmo26, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 185, Gizmo26, NEUTRAL_REACTION);
+end
+
+procedure Gizmo26
+begin
+  gsay_reply(SCRIPT_GIZMO, 186);
+  giq_option(7, SCRIPT_GIZMO, 187, Gizmo27, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 188, Gizmo30, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 189, Gizmo27, NEUTRAL_REACTION);
+end
+
+procedure Gizmo27
+begin
+  gsay_reply(SCRIPT_GIZMO, 190);
+  giq_option(6, SCRIPT_GIZMO, 191, Gizmo34, BAD_REACTION);
+  giq_option(6, SCRIPT_GIZMO, 192, Gizmo28, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 225, Gizmo28, NEUTRAL_REACTION);
+end
+
+procedure Gizmo28
+begin
+  gsay_reply(SCRIPT_GIZMO, 193);
+  if (global_var(GVAR_HIRED_BY_KILLIAN) == 1) then begin
+    if (obj_is_carrying_obj_pid(dude_obj, 104)) then begin
+      set_global_var(GVAR_GOT_CONFESSION, 1);
+    end
+  end
+  set_global_var(GVAR_HIRED_BY_GIZMO, 1);
+  giq_option(6, SCRIPT_GIZMO, 194, Gizmo29, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 195, Gizmo29, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 196, Gizmo30, BAD_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 197, Gizmo30, NEUTRAL_REACTION);
+end
+
+procedure Gizmo29
+begin
+  gsay_message(SCRIPT_GIZMO, 198, NEUTRAL_REACTION);
+  call Gizmox;
+end
+
+procedure Gizmo30
+begin
+  gsay_message(SCRIPT_GIZMO, 199, BAD_REACTION);
+  call Gizmox1;
+end
+
+procedure Gizmo32
+begin
+  gsay_message(SCRIPT_GIZMO, 200, BAD_REACTION);
+  call Gizmox2;
+end
+
+procedure Gizmo33
+begin
+  gsay_reply(SCRIPT_GIZMO, 201);
+  giq_option(5, SCRIPT_GIZMO, 202, Gizmo25, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_GIZMO, 203, Gizmo32, NEUTRAL_REACTION);
+end
+
+procedure Gizmo34
+begin
+  gsay_message(SCRIPT_GIZMO, 204, NEUTRAL_REACTION);
+  call Gizmox1;
+end
+
+procedure Gizmo35
+begin
+  gsay_message(SCRIPT_GIZMO, 205, BAD_REACTION);
+  call Gizmox1;
+end
+
+procedure Gizmo36
+begin
+  gsay_message(SCRIPT_GIZMO, 206, NEUTRAL_REACTION);
+end
+
+procedure Gizmo37
+begin
+  gsay_message(SCRIPT_GIZMO, 207, NEUTRAL_REACTION);
+end
+
+procedure Gizmo38
+begin
+  gsay_message(SCRIPT_GIZMO, 208, NEUTRAL_REACTION);
+end
+
+procedure Gizmo39
+begin
+  gsay_message(SCRIPT_GIZMO, 209, NEUTRAL_REACTION);
+end
+
+procedure Gizmo42
+begin
+  gsay_message(SCRIPT_GIZMO, 210, NEUTRAL_REACTION);
+end
+
+procedure Gizmo43
+begin
+  gsay_message(SCRIPT_GIZMO, 211, NEUTRAL_REACTION);
+end
+
+procedure Gizmo44
+begin
+  gsay_message(SCRIPT_GIZMO, 212, NEUTRAL_REACTION);
+end
+
+procedure Gizmo45
+begin
+  Gizmo_is_angry := 1;
+  set_local_var(8, 1);
+  stealing := 0;
+  if (dude_is_male) then begin
+    gsay_message(SCRIPT_GIZMO, 213, NEUTRAL_REACTION);
+  end
+  else begin
+    gsay_message(SCRIPT_GIZMO, 214, NEUTRAL_REACTION);
+  end
+end
+
+procedure Gizmo47
+begin
+  gsay_message(SCRIPT_GIZMO, 215, NEUTRAL_REACTION);
+end
+
+procedure Gizmo48
+begin
+  gsay_message(SCRIPT_GIZMO, 216, NEUTRAL_REACTION);
+end
+
+procedure Gizmo19a
+begin
+  call Down_React_Level;
+  call Gizmo11;
+end
+
+procedure Gizmox
+begin
+  show_to_door := 1;
+end
+
+procedure Gizmox1
+begin
+  Gizmo_is_angry := 1;
+  set_local_var(8, 1);
+end
+
+procedure Gizmox2
+begin
+  set_local_var(8, 1);
+end
+
+procedure GizmoPay
+begin
+  payment := local_var(7);
+end
+
+procedure badmouth
+begin
+  set_local_var(5, local_var(5) + 1);
+  if (local_var(5) > 1) then begin
+    call Gizmo11;
+  end
+  else begin
+    call Gizmo10;
+  end
+end
+
+procedure Get_Reaction
+begin
+  if (local_var(2) == 0) then begin
+    set_local_var(0, 50);
+    set_local_var(1, 2);
+    set_local_var(2, 1);
+    set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+    set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+    if (has_trait(0, dude_obj, 39)) then begin
+      if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+        set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+      end
+      else begin
+        set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+      end
+    end
+    else begin
+      if (local_var(3) == 1) then begin
+        set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+      end
+      else begin
+        set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+      end
+    end
+    if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+      set_local_var(0, local_var(0) - 30);
+    end
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+      set_local_var(0, local_var(0) + 20);
+    end
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+      set_local_var(0, local_var(0) - 20);
+    end
+    call React_To_Level;
+  end
+end
+
+procedure React_To_Level
+begin
+  if (local_var(0) <= 25) then begin
+    set_local_var(1, 1);
+  end
+  else begin
+    if (local_var(0) <= 75) then begin
+      set_local_var(1, 2);
+    end
+    else begin
+      set_local_var(1, 3);
+    end
+  end
+end
+
+procedure Level_To_React
+begin
+  if (local_var(1) == 1) then begin
+    set_local_var(0, random(1, 25));
+  end
+  else begin
+    if (local_var(1) == 2) then begin
+      set_local_var(0, random(26, 75));
+    end
+    else begin
+      set_local_var(0, random(76, 100));
+    end
+  end
+end
+
+procedure Up_React
+begin
+  set_local_var(0, local_var(0) + 10);
+  call React_To_Level;
+end
+
+procedure Down_React
+begin
+  set_local_var(0, local_var(0) - 10);
+  call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+  set_local_var(1, 1);
+  set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+  set_local_var(0, 100);
+  set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+  set_local_var(0, local_var(0) + 25);
+  call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+  set_local_var(0, local_var(0) - 25);
+  call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+  set_local_var(1, local_var(1) + 1);
+  if (local_var(1) > 3) then begin
+    set_local_var(1, 3);
+  end
+  call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+  set_local_var(1, local_var(1) - 1);
+  if (local_var(1) < 1) then begin
+    set_local_var(1, 1);
+  end
+  call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+  exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

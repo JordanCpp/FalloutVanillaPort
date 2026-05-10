@@ -1,0 +1,27 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure critter_p_proc;
+
+
+procedure start
+begin
+	if (script_action == critter_proc) then begin
+		call critter_p_proc;
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (obj_can_see_obj(self_obj, dude_obj)) then begin
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+end

@@ -1,0 +1,45 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure critter_p_proc;
+procedure map_enter_p_proc;
+
+variable hostile1;
+
+
+procedure start
+begin
+	if (script_action == map_enter_proc) then begin
+		call map_enter_p_proc;
+	end
+	else begin
+		if (script_action == critter_proc) then begin
+			call critter_p_proc;
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (tile_distance_objs(self_obj, dude_obj) < 6) then begin
+		hostile1 := 1;
+	end
+	if (hostile1) then begin
+		hostile1 := 0;
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+end
+
+procedure map_enter_p_proc
+begin
+	critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 34);
+	critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_SUPER_MUTANT_AGGRESSIVE);
+end

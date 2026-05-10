@@ -1,0 +1,48 @@
+{100}{}{Voici Romero.}
+{103}{}{Tu vois un membre des Ecorcheurs.}
+{104}{}{Tu vois un membre des Ecorcheurs.}
+{105}{}{Tu penses que ça pourrait être Books.}
+{106}{}{Tu penses que ça pourrait être Scars.}
+{107}{}{Tu penses que ça pourrait être Gunner.}
+{108}{}{Tu penses que ça pourrait être Twitch.}
+{109}{}{Tu penses que ça pourrait être Hammer.}
+{110}{}{Tu penses que ça pourrait être Razor.}
+{111}{}{Retire toi !}
+{112}{}{Quoi ? Qu'est ce que tu veux dire ?}
+{113}{}{Jamais !}
+{114}{}{Je suis ici pour parler de paix.}
+{115}{}{Ok...}
+{116}{}{C'est moi qui pose les questions ici. Qu'est-ce que tu fait là ?}
+{117}{}{Je suis à la recherche d'un ami.}
+{118}{}{Je suis ici pour parler de paix.}
+{119}{}{Je veux arrêter la guerre avec le Sanctuaire !}
+{120}{}{Je veux boire le sang des Ecorcheurs !}
+{121}{}{T'es au mauvais endroit. Disparais.}
+{122}{}{Tu dois être un de ces nazes en p'tite robe violette. Casses toi de là avant qu'on t'explose.}
+{123}{}{Attend ! Je sais pas de quoi tu parles. Je suis ici pour le Sanctuaire. Ils veulent que vous les laissiez tranquille.}
+{124}{}{Voilà ta paix !}
+{125}{}{Désolé. Je vais vous laisser.}
+{126}{}{Hmm. Si t'es vraiment du Sanctuaire, alors t'es toujours un naze. Il n'y aura jamais de paix tant que les Régulateurs seront là.}
+{127}{}{Je peux en savoir plus ?}
+{128}{}{Hmm, certainement.}
+{129}{}{Vas voir Razor. Elle te parlera de ces assoiffés de sang.}
+{130}{}{Dégages !}
+{131}{}{Hey, maintenant que t'es un Ecorcheur, je voudrais te demander un service.}
+{132}{}{Bien sûr.}
+{133}{}{Lequel ?}
+{134}{}{Pas question.}
+{135}{}{Génial. Apporte ce médaillon à Julianna. Dis lui que j'espère la voir bientôt.}
+{136}{}{Je suis tombé amoureux d'une fille au Sanctuaire. A cause des Régulateurs qui nous tirent dessus à vue, je ne peux pas m'approcher d'elle.}
+{137}{}{Comment je peux t'aider ?}
+{138}{}{Continue.}
+{139}{}{Pas de chance.}
+{140}{}{Si t'apportes ce médaillon à Julianna, je te serais redevable.}
+{141}{}{Ca marche.}
+{142}{}{Trouves quelqu'un d'autre.}
+{143}{}{Avec des alliés comme toi, qui a besoin d'ennemis ? A bientôt !}
+{144}{}{Je crois qu'elle m'aime aussi, mais je ne suis pas sûr. Les Ecorcheurs ne vont pas prendre le risque de me laisser entrer au Sanctuaire.}
+{145}{}{Pas de chance.}
+{146}{}{Ok, je vais t'aider.}
+{147}{}{Merci ! Elle m'a envoyé une lettre. Nous allons nous rencontrer dans le quartier des Disciples et nous marrier.}
+{148}{}{Te voilà de retour.}
+{149}{}{Merci beaucoup. Nous allons rester avec les Disciples de l'Apocalypse, où nous pouvons êtes heureux emsemble.}

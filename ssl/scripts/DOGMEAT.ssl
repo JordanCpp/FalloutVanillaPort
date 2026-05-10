@@ -1,0 +1,66 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure critter_p_proc;
+procedure destroy_p_proc;
+procedure use_skill_on_p_proc;
+
+variable initialized1;
+
+
+procedure start
+begin
+	if (not(initialized1) and metarule(14, 0)) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 0);
+		add_timer_event(self_obj, game_ticks(1), 1);
+		move_to(self_obj, tile_num_in_direction(tile_num(dude_obj), (has_trait(1, dude_obj, 10) + 3) % 6, 2), elevation(dude_obj));
+		initialized1 := 1;
+	end
+	else begin
+		if (script_action == critter_proc) then begin
+			call critter_p_proc;
+		end
+		else begin
+			if (script_action == destroy_proc) then begin
+				call destroy_p_proc;
+			end
+			else begin
+				if (script_action == use_skill_on_proc) then begin
+					call use_skill_on_p_proc;
+				end
+			end
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (global_var(GVAR_DOG_EMPATHY) == 1) then begin
+		if (tile_distance_objs(self_obj, dude_obj) > 4) then begin
+			animate_move_obj_to_tile(self_obj, tile_num_in_direction(tile_num(dude_obj), random(0, 5), 1), ANIMATE_RUN);
+		end
+		else begin
+			animate_move_obj_to_tile(self_obj, tile_num_in_direction(tile_num(dude_obj), random(0, 5), 3), ANIMATE_WALK);
+		end
+	end
+end
+
+procedure destroy_p_proc
+begin
+	set_global_var(GVAR_DOG_EMPATHY, 0);
+end
+
+procedure use_skill_on_p_proc
+begin
+	if (action_being_used == 10) then begin
+		script_overrides;
+	end
+end

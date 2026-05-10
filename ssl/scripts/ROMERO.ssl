@@ -1,0 +1,294 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure description_p_proc;
+procedure talk_p_proc;
+procedure show_true_name;
+procedure show_false_name;
+procedure Romero00;
+procedure Romero01;
+procedure Romero02;
+procedure Romero03;
+procedure Romero04;
+procedure Romero05;
+procedure Romero06;
+procedure Romero07;
+procedure Romero08;
+procedure Romero09;
+procedure Romero10;
+procedure Romero11;
+procedure Romero12;
+procedure Romero13;
+procedure Romero14;
+procedure Romero15;
+procedure RomeroCombat;
+procedure RomeroEnd;
+procedure GiveLocket;
+
+variable name;
+variable asked;
+variable initialized1;
+variable hostile1;
+
+procedure damage_p_proc;
+
+
+procedure start
+begin
+	if (not(initialized1)) then begin
+		name := message_str(SCRIPT_ROMERO, 100);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 47);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_BLADES);
+		initialized1 := 1;
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		set_global_var(GVAR_ENEMY_BLADES, 1);
+		if (source_obj == dude_obj) then begin
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+				set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+			end
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+				set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+			end
+			set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+			if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+				set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+			end
+		end
+	end
+end
+
+procedure look_at_p_proc
+begin
+	call description_p_proc;
+end
+
+procedure description_p_proc
+begin
+	if ((global_var(GVAR_BLADES) == 9101) or (global_var(GVAR_BLADES) == 2)) then begin
+		call show_true_name;
+	end
+	else begin
+		if ((get_critter_stat(dude_obj, 6) > 6) or (get_critter_stat(dude_obj, 4) > 6)) then begin
+			call show_true_name;
+		end
+		else begin
+			if (get_critter_stat(dude_obj, 4) < 4) then begin
+				call show_false_name;
+			end
+			else begin
+				if (random(0, 1)) then begin
+					call show_true_name;
+				end
+				else begin
+					call show_false_name;
+				end
+			end
+		end
+	end
+end
+
+procedure talk_p_proc
+begin
+	if (get_critter_stat(dude_obj, 4) < 4) then begin
+		display_msg(message_str(SCRIPT_GENCHAT, 175));
+	end
+	else begin
+		start_gdialog(SCRIPT_ROMERO, self_obj, 4, -1, -1);
+		gsay_start;
+		set_local_var(0, 1);
+		if (global_var(GVAR_ROMEO_JULIET == 3)) then begin
+			call Romero15;
+		end
+		else begin
+			if ((game_time_hour >= 1900) or (game_time_hour < 600)) then begin
+				call Romero06;
+			end
+			else begin
+				if (global_var(GVAR_ROMEO_JULIET) == 2) then begin
+					call Romero13;
+				end
+				else begin
+					if (global_var(GVAR_BECOME_BLADE) == 2) then begin
+						if (not(local_var(1))) then begin
+							call Romero07;
+						end
+						else begin
+							call Romero14;
+						end
+					end
+					else begin
+						call Romero00;
+					end
+				end
+			end
+		end
+		gsay_end;
+		end_dialogue;
+	end
+end
+
+procedure show_true_name
+begin
+	script_overrides;
+	if (local_var(0)) then begin
+		display_msg(message_str(SCRIPT_ROMERO, 100));
+	end
+	else begin
+		display_msg(message_str(SCRIPT_ROMERO, 103));
+	end
+end
+
+procedure show_false_name
+begin
+	script_overrides;
+	display_msg(message_str(SCRIPT_ROMERO, random(104, 110)));
+	script_overrides;
+end
+
+procedure Romero00
+begin
+	gsay_reply(SCRIPT_ROMERO, 111);
+	giq_option(4, SCRIPT_ROMERO, 112, Romero01, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ROMERO, 113, RomeroCombat, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ROMERO, 114, Romero03, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ROMERO, 115, RomeroEnd, NEUTRAL_REACTION);
+end
+
+procedure Romero01
+begin
+	gsay_reply(SCRIPT_ROMERO, 116);
+	giq_option(4, SCRIPT_ROMERO, 117, Romero02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ROMERO, 118, Romero03, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ROMERO, 119, Romero03, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ROMERO, 120, RomeroCombat, NEUTRAL_REACTION);
+end
+
+procedure Romero02
+begin
+	gsay_message(SCRIPT_ROMERO, 121, NEUTRAL_REACTION);
+end
+
+procedure Romero03
+begin
+	gsay_reply(SCRIPT_ROMERO, 122);
+	giq_option(4, SCRIPT_ROMERO, 123, Romero04, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ROMERO, 124, RomeroCombat, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ROMERO, 125, RomeroEnd, NEUTRAL_REACTION);
+end
+
+procedure Romero04
+begin
+	gsay_reply(SCRIPT_ROMERO, 126);
+	giq_option(4, SCRIPT_ROMERO, 127, Romero05, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ROMERO, 128, RomeroEnd, NEUTRAL_REACTION);
+end
+
+procedure Romero05
+begin
+	gsay_message(SCRIPT_ROMERO, 129, NEUTRAL_REACTION);
+end
+
+procedure Romero06
+begin
+	gsay_message(SCRIPT_ROMERO, 130, NEUTRAL_REACTION);
+end
+
+procedure Romero07
+begin
+	set_local_var(1, 1);
+	gsay_reply(SCRIPT_ROMERO, 131);
+	giq_option(4, SCRIPT_ROMERO, 132, Romero08, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ROMERO, 133, Romero09, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ROMERO, 134, Romero11, NEUTRAL_REACTION);
+end
+
+procedure Romero08
+begin
+	gsay_message(SCRIPT_ROMERO, 135, NEUTRAL_REACTION);
+	call GiveLocket;
+end
+
+procedure Romero09
+begin
+	gsay_reply(SCRIPT_ROMERO, 136);
+	giq_option(4, SCRIPT_ROMERO, 137, Romero10, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ROMERO, 138, Romero12, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ROMERO, 139, Romero11, NEUTRAL_REACTION);
+end
+
+procedure Romero10
+begin
+	gsay_reply(SCRIPT_ROMERO, 140);
+	giq_option(4, SCRIPT_ROMERO, 141, GiveLocket, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ROMERO, 142, Romero11, NEUTRAL_REACTION);
+end
+
+procedure Romero11
+begin
+	gsay_message(SCRIPT_ROMERO, 143, NEUTRAL_REACTION);
+end
+
+procedure Romero12
+begin
+	gsay_reply(SCRIPT_ROMERO, 144);
+	giq_option(4, SCRIPT_ROMERO, 145, Romero11, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_ROMERO, 146, Romero08, NEUTRAL_REACTION);
+end
+
+procedure Romero13
+begin
+	gsay_message(SCRIPT_ROMERO, 147, NEUTRAL_REACTION);
+	set_global_var(GVAR_ROMEO_JULIET, 3);
+end
+
+procedure Romero14
+begin
+	gsay_message(SCRIPT_ROMERO, 148, NEUTRAL_REACTION);
+end
+
+procedure Romero15
+begin
+	gsay_message(SCRIPT_ROMERO, 149, NEUTRAL_REACTION);
+end
+
+procedure RomeroCombat
+begin
+	set_global_var(GVAR_ENEMY_BLADES, 1);
+	attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+end
+
+procedure RomeroEnd
+begin
+end
+
+procedure GiveLocket
+begin
+	variable LVar0 := 0;
+	set_global_var(GVAR_ROMEO_JULIET, 1);
+	LVar0 := create_object_sid(99, 0, 0, -1);
+	add_obj_to_inven(dude_obj, LVar0);
+end
+
+procedure damage_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		set_global_var(GVAR_ENEMY_BLADES, 1);
+	end
+end

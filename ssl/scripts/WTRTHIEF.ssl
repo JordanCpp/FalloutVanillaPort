@@ -1,0 +1,547 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure combat_p_proc;
+procedure critter_p_proc;
+procedure description_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure map_enter_p_proc;
+procedure map_update_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure timed_event_p_proc;
+procedure WtrThief01;
+procedure WtrThief02;
+procedure WtrThief03;
+procedure WtrThief04;
+procedure WtrThief05;
+procedure WtrThief06;
+procedure WtrThief07;
+procedure WtrThief08;
+procedure WtrThief09;
+procedure WtrThief10;
+procedure WtrThief11;
+procedure WtrThief11a;
+procedure WtrThiefCombat;
+procedure finish_quest;
+procedure WtrThiefBye;
+procedure WtrThiefEnd;
+
+variable dest_tile1 := 7000;
+variable hostile1;
+variable watched;
+variable got_water;
+variable on_the_way;
+variable searched;
+variable scared;
+
+import variable Officer_ptr;
+import variable VaultBox_ptr;
+import variable WtrThief_ptr;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	if (script_action == combat_proc) then begin
+		call combat_p_proc;
+	end
+	else begin
+		if (script_action == critter_proc) then begin
+			call critter_p_proc;
+		end
+		else begin
+			if (script_action == description_proc) then begin
+				call description_p_proc;
+			end
+			else begin
+				if (script_action == destroy_proc) then begin
+					call destroy_p_proc;
+				end
+				else begin
+					if (script_action == look_at_proc) then begin
+						call look_at_p_proc;
+					end
+					else begin
+						if (script_action == map_enter_proc) then begin
+							call map_enter_p_proc;
+						end
+						else begin
+							if (script_action == map_update_proc) then begin
+								call map_update_p_proc;
+							end
+							else begin
+								if (script_action == pickup_proc) then begin
+									call pickup_p_proc;
+								end
+								else begin
+									if (script_action == talk_proc) then begin
+										call talk_p_proc;
+									end
+									else begin
+										if (script_action == timed_event_proc) then begin
+											call timed_event_p_proc;
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure combat_p_proc
+begin
+	if (fixed_param == 4) then begin
+		if (Officer_ptr != 0) then begin
+			critter_add_trait(Officer_ptr, 1, 6, 0);
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+	variable LVar0 := 0;
+	if (hostile1) then begin
+		hostile1 := 0;
+		scared := 1;
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+	else begin
+		if (game_time_hour <= 600) then begin
+			if (global_var(GVAR_WATER_THIEF) == 1) then begin
+				if (not(got_water)) then begin
+					if (not(on_the_way)) then begin
+						on_the_way := 1;
+						dest_tile1 := 22728;
+						move_to(self_obj, 16912, 2);
+						add_timer_event(self_obj, game_ticks(30), 1);
+					end
+				end
+			end
+			if (tile_num(self_obj) != dest_tile1) then begin
+				animate_move_obj_to_tile(self_obj, dest_tile1, ANIMATE_WALK);
+			end
+		end
+		else begin
+			got_water := 0;
+			on_the_way := 0;
+			if (obj_is_carrying_obj_pid(self_obj, 126)) then begin
+				destroy_object(obj_carrying_pid_obj(self_obj, 126));
+			end
+		end
+		if (tile_distance_objs(self_obj, VaultBox_ptr) < 4) then begin
+			if (not(got_water)) then begin
+				if (anim_busy(self_obj) == 0) then begin
+					use_obj(VaultBox_ptr);
+					got_water := 1;
+					LVar0 := create_object_sid(126, 0, 0, -1);
+					add_obj_to_inven(self_obj, LVar0);
+					add_timer_event(self_obj, game_ticks(3), 2);
+					if (obj_can_see_obj(dude_obj, self_obj)) then begin
+						display_msg(message_str(SCRIPT_WTRTHIEF, 103));
+					end
+				end
+			end
+		end
+		if (got_water and (tile_num(self_obj) == 16912)) then begin
+			move_to(self_obj, 7000, 0);
+			dest_tile1 := 7000;
+		end
+	end
+end
+
+procedure description_p_proc
+begin
+	script_overrides;
+	watched := 1;
+	display_msg(message_str(SCRIPT_WTRTHIEF, 102));
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		if (source_obj == dude_obj) then begin
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+				set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+			end
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+				set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+			end
+			set_global_var(GVAR_BAD_MONSTER, global_var(GVAR_BAD_MONSTER) + 1);
+			if ((global_var(GVAR_BAD_MONSTER) % 6) == 0) then begin
+				set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) + 1);
+			end
+		end
+		display_msg(message_str(SCRIPT_WTRTHIEF, 104));
+		give_exp_points(500);
+	end
+	set_global_var(GVAR_WATER_THIEF, 2);
+	if (Officer_ptr != 0) then begin
+		critter_add_trait(Officer_ptr, 1, 6, 1);
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	if (not(watched)) then begin
+		watched := is_success(do_check(self_obj, 1, has_trait(0, dude_obj, 0)));
+	end
+	if ((tile_distance_objs(self_obj, dude_obj) > 2) and not(watched)) then begin
+		display_msg(message_str(SCRIPT_WTRTHIEF, 100));
+	end
+	else begin
+		display_msg(message_str(SCRIPT_WTRTHIEF, 101));
+	end
+end
+
+procedure map_enter_p_proc
+begin
+	WtrThief_ptr := self_obj;
+	critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 87);
+	critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_BERZERKER);
+	if (global_var(GVAR_WATER_THIEF) == 0) then begin
+		set_obj_visibility(self_obj, 1);
+	end
+	else begin
+		set_obj_visibility(self_obj, 0);
+	end
+end
+
+procedure map_update_p_proc
+begin
+	if (global_var(GVAR_WATER_THIEF) == 0) then begin
+		set_obj_visibility(self_obj, 1);
+	end
+	else begin
+		set_obj_visibility(self_obj, 0);
+	end
+	if ((game_time_hour > 700) and (tile_num(self_obj) != 7000)) then begin
+		move_to(self_obj, 7000, 0);
+		dest_tile1 := 7000;
+	end
+end
+
+procedure pickup_p_proc
+begin
+	hostile1 := 1;
+end
+
+procedure talk_p_proc
+begin
+	if (scared) then begin
+		animate_move_obj_to_tile(self_obj, 16912, ANIMATE_RUN);
+	end
+	else begin
+		start_gdialog(SCRIPT_WTRTHIEF, self_obj, 4, -1, -1);
+		gsay_start;
+		watched := 1;
+		call WtrThief01;
+		gsay_end;
+		end_dialogue;
+		if (global_var(GVAR_WATER_THIEF) == 2) then begin
+			gfade_out(600);
+			move_to(self_obj, 7000, 2);
+			if (Officer_ptr != 0) then begin
+				move_to(Officer_ptr, 22093, 2);
+				move_to(dude_obj, 22293, 2);
+				anim(dude_obj, 1000, 5);
+				anim(Officer_ptr, 1000, 2);
+				float_msg(Officer_ptr, message_str(SCRIPT_WTRTHIEF, 105), FLOAT_MSG_NORMAL);
+			end
+			gfade_in(600);
+			display_msg(message_str(SCRIPT_WTRTHIEF, 106));
+			give_exp_points(1000);
+		end
+		if (searched) then begin
+			display_msg(message_str(SCRIPT_WTRTHIEF, 130));
+			searched := 0;
+		end
+	end
+end
+
+procedure timed_event_p_proc
+begin
+	if (fixed_param == 1) then begin
+		if (obj_can_see_obj(self_obj, dude_obj)) then begin
+			dest_tile1 := 16912;
+		end
+		else begin
+			dest_tile1 := 20706;
+		end
+	end
+	else begin
+		if (fixed_param == 2) then begin
+			dest_tile1 := 16912;
+		end
+	end
+end
+
+procedure WtrThief01
+begin
+	variable LVar0 := 0;
+	LVar0 := message_str(SCRIPT_WTRTHIEF, 107);
+	LVar0 := LVar0 + proto_data(obj_pid(dude_obj), 1);
+	LVar0 := LVar0 + message_str(SCRIPT_WTRTHIEF, 108);
+	gsay_reply(SCRIPT_WTRTHIEF, LVar0);
+	giq_option(4, SCRIPT_WTRTHIEF, 109, WtrThief02, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_WTRTHIEF, 110, WtrThiefEnd, NEUTRAL_REACTION);
+end
+
+procedure WtrThief02
+begin
+	gsay_reply(SCRIPT_WTRTHIEF, 111);
+	giq_option(4, SCRIPT_WTRTHIEF, 112, WtrThiefBye, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_WTRTHIEF, 113, WtrThief03, NEUTRAL_REACTION);
+	if (global_var(GVAR_WATER_THIEF) == 1) then begin
+		giq_option(4, SCRIPT_WTRTHIEF, 114, WtrThief05, NEUTRAL_REACTION);
+	end
+end
+
+procedure WtrThief03
+begin
+	gsay_reply(SCRIPT_WTRTHIEF, 115);
+	giq_option(4, SCRIPT_WTRTHIEF, 116, WtrThief04, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_WTRTHIEF, 117, WtrThief05, BAD_REACTION);
+end
+
+procedure WtrThief04
+begin
+	gsay_reply(SCRIPT_WTRTHIEF, 118);
+	giq_option(4, SCRIPT_WTRTHIEF, 119, WtrThiefBye, NEUTRAL_REACTION);
+end
+
+procedure WtrThief05
+begin
+	if (got_water) then begin
+		call WtrThief08;
+	end
+	else begin
+		call WtrThief06;
+	end
+end
+
+procedure WtrThief06
+begin
+	gsay_reply(SCRIPT_WTRTHIEF, 120);
+	giq_option(4, SCRIPT_WTRTHIEF, 121, WtrThief07, NEUTRAL_REACTION);
+end
+
+procedure WtrThief07
+begin
+	searched := 1;
+end
+
+procedure WtrThief08
+begin
+	gsay_reply(SCRIPT_WTRTHIEF, 122);
+	giq_option(4, SCRIPT_WTRTHIEF, 123, WtrThiefEnd, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_WTRTHIEF, 124, WtrThief09, BAD_REACTION);
+end
+
+procedure WtrThief09
+begin
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		call WtrThief10;
+	end
+	else begin
+		call WtrThief11;
+	end
+end
+
+procedure WtrThief10
+begin
+	gsay_reply(SCRIPT_WTRTHIEF, 125);
+	giq_option(4, SCRIPT_WTRTHIEF, 126, finish_quest, NEUTRAL_REACTION);
+end
+
+procedure WtrThief11
+begin
+	gsay_reply(SCRIPT_WTRTHIEF, 127);
+	giq_option(4, SCRIPT_WTRTHIEF, 121, WtrThief11a, NEUTRAL_REACTION);
+end
+
+procedure WtrThief11a
+begin
+	if (is_success(do_check(dude_obj, 3, 0))) then begin
+		call finish_quest;
+	end
+	else begin
+		call WtrThiefCombat;
+	end
+end
+
+procedure WtrThiefCombat
+begin
+	hostile1 := 1;
+end
+
+procedure finish_quest
+begin
+	set_global_var(GVAR_WATER_THIEF, 2);
+end
+
+procedure WtrThiefBye
+begin
+	gsay_reply(SCRIPT_WTRTHIEF, 128);
+	giq_option(4, SCRIPT_WTRTHIEF, 129, WtrThiefEnd, NEUTRAL_REACTION);
+end
+
+procedure WtrThiefEnd
+begin
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

@@ -1,0 +1,32 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure do_stuff;
+
+
+procedure start
+begin
+	variable LVar0 := 0;
+	if (script_action == use_proc) then begin
+		call do_stuff;
+	end
+end
+
+procedure do_stuff
+begin
+	if (local_var(0) == 1) then begin
+		display_msg(message_str(SCRIPT_SETDESK, 100));
+	end
+	else begin
+		display_msg(message_str(SCRIPT_SETDESK, 101));
+		set_local_var(0, 1);
+	end
+end

@@ -1,0 +1,20 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+
+
+procedure start
+begin
+	if (script_action == spatial_proc) then begin
+		critter_dmg(dude_obj, 1, 0);
+		display_msg("Hurt dude");
+	end
+end

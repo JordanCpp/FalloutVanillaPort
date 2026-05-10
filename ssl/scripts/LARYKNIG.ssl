@@ -1,0 +1,197 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure combat;
+procedure critter_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure do_dialogue;
+procedure goto00;
+procedure goto00b;
+procedure goto01;
+procedure goto02;
+procedure goto03;
+procedure goto04;
+procedure goto05;
+procedure goto06;
+
+variable hostile1;
+variable only_once := 1;
+variable rndx;
+
+
+procedure start
+begin
+	if (only_once) then begin
+		only_once := 0;
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 44);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_BROTHERHOOD_KNIGHT);
+	end
+	if (script_action == look_at_proc) then begin
+		call look_at_p_proc;
+	end
+	else begin
+		if (script_action == pickup_proc) then begin
+			call pickup_p_proc;
+		end
+		else begin
+			if (script_action == critter_proc) then begin
+				call critter_p_proc;
+			end
+			else begin
+				if (script_action == talk_proc) then begin
+					call talk_p_proc;
+				end
+				else begin
+					if (script_action == destroy_proc) then begin
+						call destroy_p_proc;
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure combat
+begin
+	hostile1 := 1;
+end
+
+procedure critter_p_proc
+begin
+	if (global_var(GVAR_ENEMY_BROTHERHOOD)) then begin
+		hostile1 := 1;
+	end
+	if (tile_distance_objs(self_obj, dude_obj) > 12) then begin
+		hostile1 := 0;
+	end
+	if (hostile1) then begin
+		set_global_var(GVAR_ENEMY_BROTHERHOOD, 1);
+		hostile1 := 0;
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+end
+
+procedure pickup_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		hostile1 := 1;
+	end
+end
+
+procedure talk_p_proc
+begin
+	if (local_var(0)) then begin
+		call goto05;
+	end
+	else begin
+		if (local_var(1) == 0) then begin
+			call do_dialogue;
+		end
+		else begin
+			call goto06;
+		end
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		set_global_var(GVAR_ENEMY_BROTHERHOOD, 1);
+	end
+	rm_timer_event(self_obj);
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+		if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+		end
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	display_msg(message_str(SCRIPT_LARYKNIG, 100));
+end
+
+procedure do_dialogue
+begin
+	start_gdialog(SCRIPT_LARYKNIG, self_obj, 4, -1, -1);
+	gsay_start;
+	call goto00;
+	gsay_end;
+	end_dialogue;
+end
+
+procedure goto00
+begin
+	gsay_reply(SCRIPT_LARYKNIG, 101);
+	giq_option(4, SCRIPT_LARYKNIG, 102, goto02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_LARYKNIG, 103, goto00b, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_LARYKNIG, 104, goto01, NEUTRAL_REACTION);
+end
+
+procedure goto00b
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call goto03;
+	end
+	else begin
+		call goto04;
+	end
+end
+
+procedure goto01
+begin
+	gsay_message(SCRIPT_LARYKNIG, 105, NEUTRAL_REACTION);
+end
+
+procedure goto02
+begin
+	set_local_var(1, 1);
+	critter_mod_skill(dude_obj, 2, 5);
+	game_time_advance(game_ticks(1800));
+	gsay_message(SCRIPT_LARYKNIG, 106, NEUTRAL_REACTION);
+end
+
+procedure goto03
+begin
+	set_local_var(1, 1);
+	critter_mod_skill(dude_obj, 2, 5);
+	game_time_advance(game_ticks(1800));
+	gsay_message(SCRIPT_LARYKNIG, 107, NEUTRAL_REACTION);
+end
+
+procedure goto04
+begin
+	set_local_var(0, 1);
+	gsay_message(SCRIPT_LARYKNIG, 108, NEUTRAL_REACTION);
+end
+
+procedure goto05
+begin
+	float_msg(self_obj, message_str(SCRIPT_LARYKNIG, 109), FLOAT_MSG_RED);
+end
+
+procedure goto06
+begin
+	float_msg(self_obj, message_str(SCRIPT_LARYKNIG, random(216, 223)), FLOAT_MSG_RED);
+end

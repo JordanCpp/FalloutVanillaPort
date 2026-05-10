@@ -1,0 +1,352 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure critter_p_proc;
+procedure destroy_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure LoneRaid00;
+procedure LoneRaid01;
+procedure LoneRaid02;
+procedure LoneRaid03;
+procedure LoneRaid03a;
+procedure LoneRaid04;
+procedure LoneRaid04a;
+procedure LoneRaid05;
+procedure LoneRaid06;
+procedure LoneRaid07;
+procedure LoneRaid08;
+procedure LoneRaid09;
+procedure LoneRaid10;
+procedure LoneRaid11;
+procedure LoneRaid12;
+procedure LoneRaid13;
+procedure LoneRaid14;
+procedure LoneRaid15;
+procedure LoneRaid16;
+procedure LoneRaid17;
+procedure LoneRaid18;
+procedure LoneRaid19;
+procedure LoneRaid20;
+procedure LoneRaid21;
+procedure LoneRaid22;
+procedure LoneRaidCombat;
+procedure LoneRaidEnd;
+procedure LoneRaidLoot;
+procedure flee_dude;
+
+variable hostile1;
+variable initialized1;
+variable known;
+variable broken;
+
+
+procedure start
+begin
+	if (not(initialized1)) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 6);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_GENERIC_RAIDER);
+		initialized1 := 1;
+	end
+	else begin
+		if (script_action == critter_proc) then begin
+			call critter_p_proc;
+		end
+		else begin
+			if (script_action == destroy_proc) then begin
+				call destroy_p_proc;
+			end
+			else begin
+				if (script_action == pickup_proc) then begin
+					call pickup_p_proc;
+				end
+				else begin
+					if (script_action == talk_proc) then begin
+						call talk_p_proc;
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (hostile1) then begin
+		hostile1 := 0;
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+	else begin
+		if ((tile_distance_objs(self_obj, dude_obj) > 8) and (tile_distance_objs(self_obj, dude_obj) < 24)) then begin
+			call flee_dude;
+		end
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_BAD_MONSTER, global_var(GVAR_BAD_MONSTER) + 1);
+		if ((global_var(GVAR_BAD_MONSTER) % 6) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) + 1);
+		end
+	end
+end
+
+procedure pickup_p_proc
+begin
+	hostile1 := 1;
+end
+
+procedure talk_p_proc
+begin
+	if (broken) then begin
+		call LoneRaid01;
+	end
+	else begin
+		if ((obj_item_subtype(critter_inven_obj(dude_obj, 1)) == 3) or (obj_item_subtype(critter_inven_obj(dude_obj, 2)) == 3)) then begin
+			call LoneRaid00;
+		end
+		else begin
+			if (known) then begin
+				call LoneRaid02;
+			end
+			else begin
+				start_gdialog(SCRIPT_LONERAID, self_obj, 4, -1, -1);
+				gsay_start;
+				known := 1;
+				if (global_var(GVAR_SHADY_SANDS_INVADED)) then begin
+					call LoneRaid06;
+				end
+				else begin
+					if ((global_var(GVAR_TANDI_STATUS) == 2) or global_var(GVAR_ENEMY_RAIDERS)) then begin
+						call LoneRaid05;
+					end
+					else begin
+						if (global_var(GVAR_GARLS_FRIEND)) then begin
+							call LoneRaid04;
+						end
+						else begin
+							call LoneRaid03;
+						end
+					end
+				end
+				gsay_end;
+				end_dialogue;
+			end
+		end
+	end
+end
+
+procedure LoneRaid00
+begin
+	float_msg(self_obj, message_str(SCRIPT_LONERAID, 100), FLOAT_MSG_NORMAL);
+end
+
+procedure LoneRaid01
+begin
+	float_msg(self_obj, message_str(SCRIPT_LONERAID, 101), FLOAT_MSG_NORMAL);
+end
+
+procedure LoneRaid02
+begin
+	float_msg(self_obj, message_str(SCRIPT_LONERAID, 102), FLOAT_MSG_NORMAL);
+end
+
+procedure LoneRaid03
+begin
+	gsay_reply(SCRIPT_LONERAID, 103);
+	giq_option(7, SCRIPT_LONERAID, 104, LoneRaid07, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_LONERAID, 105, LoneRaid03a, BAD_REACTION);
+	giq_option(4, SCRIPT_LONERAID, 106, LoneRaid09, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_LONERAID, 107, LoneRaid10, BAD_REACTION);
+	giq_option(-3, SCRIPT_LONERAID, 108, LoneRaid11, BAD_REACTION);
+	giq_option(-3, SCRIPT_LONERAID, 109, LoneRaid12, NEUTRAL_REACTION);
+end
+
+procedure LoneRaid03a
+begin
+	if ((get_critter_stat(dude_obj, 0) + get_critter_stat(dude_obj, 2)) > 13) then begin
+		call LoneRaid08;
+	end
+	else begin
+		call LoneRaidCombat;
+	end
+end
+
+procedure LoneRaid04
+begin
+	gsay_reply(SCRIPT_LONERAID, 110 + (dude_is_female));
+	giq_option(7, SCRIPT_LONERAID, 112, LoneRaid13, GOOD_REACTION);
+	giq_option(4, SCRIPT_LONERAID, 113, LoneRaid04a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_LONERAID, 114, LoneRaid16, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_LONERAID, 115, LoneRaid17, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_LONERAID, 109, LoneRaid12, NEUTRAL_REACTION);
+end
+
+procedure LoneRaid04a
+begin
+	if (get_critter_stat(dude_obj, 6) < 5) then begin
+		call LoneRaid14;
+	end
+	else begin
+		call LoneRaid15;
+	end
+end
+
+procedure LoneRaid05
+begin
+	gsay_reply(SCRIPT_LONERAID, 116);
+	if ((global_var(GVAR_RESCUE_TANDI) == 1) and (global_var(GVAR_TANDI_STATUS) == 1)) then begin
+		giq_option(7, SCRIPT_LONERAID, 117, LoneRaid18, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_LONERAID, 118, LoneRaid03a, BAD_REACTION);
+	giq_option(4, SCRIPT_LONERAID, 119, LoneRaid09, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_LONERAID, 120, LoneRaid10, BAD_REACTION);
+	giq_option(-3, SCRIPT_LONERAID, 108, LoneRaid11, BAD_REACTION);
+	giq_option(-3, SCRIPT_LONERAID, 109, LoneRaid12, NEUTRAL_REACTION);
+end
+
+procedure LoneRaid06
+begin
+	gsay_reply(SCRIPT_LONERAID, 121);
+	giq_option(7, SCRIPT_LONERAID, 122, LoneRaid18, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_LONERAID, 123, LoneRaid19, BAD_REACTION);
+	giq_option(4, SCRIPT_LONERAID, 124, LoneRaid20, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_LONERAID, 125, LoneRaid21, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_LONERAID, 109, LoneRaid12, NEUTRAL_REACTION);
+end
+
+procedure LoneRaid07
+begin
+	gsay_reply(SCRIPT_LONERAID, 126);
+	giq_option(4, SCRIPT_LONERAID, 127, LoneRaid03a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_LONERAID, 128, LoneRaid09, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_LONERAID, 129, LoneRaid22, BAD_REACTION);
+end
+
+procedure LoneRaid08
+begin
+	broken := 1;
+	gsay_reply(SCRIPT_LONERAID, 130);
+	giq_option(0, SCRIPT_MODREACT, 106, LoneRaidLoot, NEUTRAL_REACTION);
+end
+
+procedure LoneRaid09
+begin
+	gsay_message(SCRIPT_LONERAID, 131, NEUTRAL_REACTION);
+end
+
+procedure LoneRaid10
+begin
+	gsay_message(SCRIPT_LONERAID, 132, BAD_REACTION);
+end
+
+procedure LoneRaid11
+begin
+	gsay_message(SCRIPT_LONERAID, 133, BAD_REACTION);
+end
+
+procedure LoneRaid12
+begin
+	gsay_message(SCRIPT_LONERAID, 135, NEUTRAL_REACTION);
+end
+
+procedure LoneRaid13
+begin
+	gsay_message(SCRIPT_LONERAID, 135 + (dude_is_female), GOOD_REACTION);
+end
+
+procedure LoneRaid14
+begin
+	gsay_message(SCRIPT_LONERAID, 137, BAD_REACTION);
+	hostile1 := 1;
+end
+
+procedure LoneRaid15
+begin
+	gsay_message(SCRIPT_LONERAID, 138 + (dude_is_female), NEUTRAL_REACTION);
+end
+
+procedure LoneRaid16
+begin
+	gsay_message(SCRIPT_LONERAID, 140, NEUTRAL_REACTION);
+end
+
+procedure LoneRaid17
+begin
+	gsay_message(SCRIPT_LONERAID, 141 + (dude_is_female), GOOD_REACTION);
+end
+
+procedure LoneRaid18
+begin
+	gsay_message(SCRIPT_LONERAID, 143, NEUTRAL_REACTION);
+end
+
+procedure LoneRaid19
+begin
+	gsay_message(SCRIPT_LONERAID, 144, BAD_REACTION);
+	hostile1 := 1;
+end
+
+procedure LoneRaid20
+begin
+	gsay_message(SCRIPT_LONERAID, 145, NEUTRAL_REACTION);
+end
+
+procedure LoneRaid21
+begin
+	gsay_message(SCRIPT_LONERAID, 146, GOOD_REACTION);
+end
+
+procedure LoneRaid22
+begin
+	gsay_message(SCRIPT_LONERAID, 147, BAD_REACTION);
+	hostile1 := 1;
+end
+
+procedure LoneRaidCombat
+begin
+	hostile1 := 1;
+end
+
+procedure LoneRaidEnd
+begin
+end
+
+procedure LoneRaidLoot
+begin
+	gdialog_mod_barter(0);
+	giq_option(0, SCRIPT_MODREACT, 103, LoneRaidEnd, BAD_REACTION);
+end
+
+procedure flee_dude
+begin
+	variable LVar0 := 0;
+	variable LVar1 := 0;
+	variable LVar2 := 0;
+	while(LVar1 < 5) do begin
+		if (tile_distance(tile_num(dude_obj), tile_num_in_direction(tile_num(self_obj), LVar1, 3)) > LVar2) then begin
+			LVar0 := tile_num_in_direction(tile_num(self_obj), LVar1, 3);
+			LVar2 := tile_distance(tile_num(dude_obj), LVar0);
+		end
+		LVar1 := LVar1 + 1;
+	end
+	animate_move_obj_to_tile(self_obj, LVar0, ANIMATE_WALK);
+end

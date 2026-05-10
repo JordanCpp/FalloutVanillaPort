@@ -1,0 +1,618 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure combat;
+procedure critter_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure damage_p_proc;
+procedure Jain00;
+procedure Jain01;
+procedure Jain02;
+procedure Jain03;
+procedure Jain04;
+procedure Jain05;
+procedure Jain06;
+procedure Jain07;
+procedure Jain08;
+procedure Jain09;
+procedure Jain10;
+procedure Jain11;
+procedure Jain12;
+procedure Jain13;
+procedure Jain14;
+procedure Jain15;
+procedure Jain16;
+procedure Jain17;
+procedure Jain18;
+procedure Jain19;
+procedure Jain20;
+procedure Jain21;
+procedure Jain22;
+procedure Jain23;
+procedure Jain24;
+procedure Jain25;
+procedure Jain26;
+procedure Jain27;
+procedure Jain28;
+procedure Jain29;
+procedure Jain30;
+procedure Jain31;
+procedure Jain32;
+procedure Jain33;
+procedure Jain34;
+procedure Jain35;
+procedure Jain36;
+procedure Jain37;
+procedure Jain38;
+procedure Jain39;
+procedure JainEnd;
+procedure JainEndCombat;
+
+variable hostile1;
+variable Only_Once := 1;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+if (Only_Once) then begin
+    Only_Once := 0;
+    critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 72);
+    critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_COC_HUB_BRAINWASHED);
+  end
+  if (script_action == look_at_proc) then begin
+    call look_at_p_proc;
+  end
+  else begin
+    if (script_action == pickup_proc) then begin
+      call pickup_p_proc;
+    end
+    else begin
+      if (script_action == talk_proc) then begin
+        call talk_p_proc;
+      end
+      else begin
+        if (script_action == critter_proc) then begin
+          call critter_p_proc;
+        end
+        else begin
+          if (script_action == destroy_proc) then begin
+            call destroy_p_proc;
+          end
+        end
+      end
+    end
+  end
+end
+
+procedure combat
+begin
+  hostile1 := 1;
+end
+
+procedure critter_p_proc
+begin
+  if (hostile1) then begin
+    hostile1 := 0;
+    attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+  end
+  if ((map_var(6) == 1) and (obj_can_see_obj(self_obj, dude_obj) == 1)) then begin
+    call combat;
+  end
+end
+
+procedure pickup_p_proc
+begin
+  if (source_obj == dude_obj) then begin
+    hostile1 := 1;
+  end
+end
+
+procedure talk_p_proc
+begin
+  call Get_Reaction;
+  if (map_var(0) == 1) then begin
+    start_gdialog(SCRIPT_JAIN, self_obj, 4, HEAD_JAIN, BACKGROUND_HUB);
+    gsay_start;
+    call Jain29;
+    gsay_end;
+    end_dialogue;
+  end
+  else begin
+    if (global_var(GVAR_MASTER_BLOWN) == 1) then begin
+      start_gdialog(SCRIPT_JAIN, self_obj, 4, HEAD_JAIN, BACKGROUND_HUB);
+      gsay_start;
+      call Jain30;
+      gsay_end;
+      end_dialogue;
+    end
+    else begin
+      if (local_var(4) == 0) then begin
+        set_local_var(4, 1);
+        start_gdialog(SCRIPT_JAIN, self_obj, 4, HEAD_JAIN, BACKGROUND_HUB);
+        gsay_start;
+        call Jain00;
+        gsay_end;
+        end_dialogue;
+      end
+      else begin
+        if (local_var(1) >= 2) then begin
+          start_gdialog(SCRIPT_JAIN, self_obj, 4, HEAD_JAIN, BACKGROUND_HUB);
+          gsay_start;
+          call Jain27;
+          gsay_end;
+          end_dialogue;
+        end
+        else begin
+          start_gdialog(SCRIPT_JAIN, self_obj, 4, HEAD_JAIN, BACKGROUND_HUB);
+          gsay_start;
+          call Jain29;
+          gsay_end;
+          end_dialogue;
+        end
+      end
+    end
+  end
+end
+
+procedure destroy_p_proc
+begin
+  if (source_obj == dude_obj) then begin
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+      set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+      set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+    end
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+      set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+      set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+    end
+    set_global_var(GVAR_BAD_MONSTER, global_var(GVAR_BAD_MONSTER) + 1);
+    if ((global_var(GVAR_BAD_MONSTER) % 6) == 0) then begin
+      set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) + 1);
+    end
+  end
+  set_global_var(GVAR_KILL_JAIN, 2);
+end
+
+procedure look_at_p_proc
+begin
+  script_overrides;
+  display_msg(message_str(SCRIPT_JAIN, 100));
+end
+
+procedure damage_p_proc
+begin
+  variable LVar0 := 0;
+  LVar0 := obj_pid(source_obj);
+  if (party_member_obj(LVar0) != 0) then begin
+    set_map_var(6, 1);
+  end
+end
+
+procedure Jain00
+begin
+  gsay_reply(SCRIPT_JAIN, 101);
+  giq_option(4, SCRIPT_JAIN, 102, Jain04, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 103, Jain07, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 104, Jain10, NEUTRAL_REACTION);
+  giq_option(-3, SCRIPT_JAIN, 105, Jain02, NEUTRAL_REACTION);
+end
+
+procedure Jain01
+begin
+  gsay_reply(SCRIPT_JAIN, 106);
+  giq_option(-3, SCRIPT_JAIN, 107, Jain03, NEUTRAL_REACTION);
+  giq_option(-3, SCRIPT_JAIN, 108, Jain02, NEUTRAL_REACTION);
+end
+
+procedure Jain02
+begin
+  gsay_message(SCRIPT_JAIN, 109, BAD_REACTION);
+  call JainEndCombat;
+end
+
+procedure Jain03
+begin
+  set_map_var(0, 1);
+  gsay_message(SCRIPT_JAIN, 110, NEUTRAL_REACTION);
+end
+
+procedure Jain04
+begin
+  gsay_reply(SCRIPT_JAIN, 111);
+  giq_option(4, SCRIPT_JAIN, 112, Jain05, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 113, Jain03, NEUTRAL_REACTION);
+end
+
+procedure Jain05
+begin
+  set_map_var(0, 1);
+  gsay_message(SCRIPT_JAIN, 114, BAD_REACTION);
+end
+
+procedure Jain06
+begin
+end
+
+procedure Jain07
+begin
+  gsay_reply(SCRIPT_JAIN, 115);
+  giq_option(4, SCRIPT_JAIN, 116, Jain10, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 117, Jain09, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 118, Jain08, BAD_REACTION);
+  giq_option(4, SCRIPT_JAIN, 119, JainEnd, NEUTRAL_REACTION);
+end
+
+procedure Jain08
+begin
+  gsay_message(SCRIPT_JAIN, 120, BAD_REACTION);
+  call JainEndCombat;
+end
+
+procedure Jain09
+begin
+  call Big_Down_React;
+  gsay_message(SCRIPT_JAIN, 121, BAD_REACTION);
+  call JainEndCombat;
+end
+
+procedure Jain10
+begin
+  gsay_reply(SCRIPT_JAIN, 122);
+  giq_option(4, SCRIPT_JAIN, 123, Jain11, GOOD_REACTION);
+  giq_option(4, SCRIPT_JAIN, 124, Jain26, BAD_REACTION);
+  giq_option(4, SCRIPT_JAIN, 125, Jain20, NEUTRAL_REACTION);
+end
+
+procedure Jain11
+begin
+  call Up_React;
+  gsay_reply(SCRIPT_JAIN, 126);
+  giq_option(4, SCRIPT_JAIN, 127, Jain17, BAD_REACTION);
+  giq_option(4, SCRIPT_JAIN, 128, Jain13, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 129, Jain12, NEUTRAL_REACTION);
+end
+
+procedure Jain12
+begin
+  set_map_var(0, 1);
+  gsay_reply(SCRIPT_JAIN, 130);
+  giq_option(4, SCRIPT_JAIN, 131, JainEnd, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 132, JainEndCombat, BAD_REACTION);
+end
+
+procedure Jain13
+begin
+  gsay_reply(SCRIPT_JAIN, 133);
+  giq_option(4, SCRIPT_JAIN, 134, Jain14, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 135, Jain15, BAD_REACTION);
+end
+
+procedure Jain14
+begin
+  gsay_reply(SCRIPT_JAIN, 136);
+  giq_option(4, SCRIPT_JAIN, 137, Jain20, GOOD_REACTION);
+  giq_option(4, SCRIPT_JAIN, 138, Jain09, BAD_REACTION);
+  giq_option(4, SCRIPT_JAIN, 139, Jain15, BAD_REACTION);
+end
+
+procedure Jain15
+begin
+  call Down_React;
+  gsay_message(SCRIPT_JAIN, 140, NEUTRAL_REACTION);
+end
+
+procedure Jain16
+begin
+end
+
+procedure Jain17
+begin
+  gsay_reply(SCRIPT_JAIN, 141);
+  giq_option(4, SCRIPT_JAIN, 142, Jain18, BAD_REACTION);
+  giq_option(4, SCRIPT_JAIN, 143, Jain19, NEUTRAL_REACTION);
+end
+
+procedure Jain18
+begin
+  call Down_React;
+  gsay_message(SCRIPT_JAIN, 144, BAD_REACTION);
+end
+
+procedure Jain19
+begin
+  gsay_reply(SCRIPT_JAIN, 145);
+  giq_option(4, SCRIPT_JAIN, 146, Jain13, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 147, JainEnd, NEUTRAL_REACTION);
+end
+
+procedure Jain20
+begin
+  call Up_React;
+  gsay_reply(SCRIPT_JAIN, 148);
+  giq_option(4, SCRIPT_JAIN, 149, Jain21, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 150, Jain22, NEUTRAL_REACTION);
+end
+
+procedure Jain21
+begin
+  gsay_reply(SCRIPT_JAIN, 151);
+  giq_option(4, SCRIPT_JAIN, 152, Jain38, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 153, JainEndCombat, BAD_REACTION);
+  giq_option(4, SCRIPT_JAIN, 154, Jain37, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 155, JainEnd, NEUTRAL_REACTION);
+end
+
+procedure Jain22
+begin
+  gsay_reply(SCRIPT_JAIN, 156);
+  giq_option(4, SCRIPT_JAIN, 157, Jain37, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 158, Jain15, BAD_REACTION);
+  giq_option(4, SCRIPT_JAIN, 159, JainEnd, NEUTRAL_REACTION);
+end
+
+procedure Jain23
+begin
+end
+
+procedure Jain24
+begin
+end
+
+procedure Jain25
+begin
+end
+
+procedure Jain26
+begin
+  call Big_Down_React;
+  gsay_reply(SCRIPT_JAIN, 161);
+  giq_option(4, SCRIPT_JAIN, 161, Jain19, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 162, JainEndCombat, NEUTRAL_REACTION);
+end
+
+procedure Jain27
+begin
+  gsay_reply(SCRIPT_JAIN, 163);
+  giq_option(4, SCRIPT_JAIN, 164, Jain36, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 165, Jain28, BAD_REACTION);
+  giq_option(4, SCRIPT_JAIN, 166, JainEnd, NEUTRAL_REACTION);
+  giq_option(-3, SCRIPT_JAIN, 167, Jain39, NEUTRAL_REACTION);
+  giq_option(-3, SCRIPT_JAIN, 168, Jain34, NEUTRAL_REACTION);
+end
+
+procedure Jain28
+begin
+  call Big_Down_React;
+  set_map_var(0, 1);
+  gsay_message(SCRIPT_JAIN, 169, NEUTRAL_REACTION);
+end
+
+procedure Jain29
+begin
+  gsay_message(SCRIPT_JAIN, 170, NEUTRAL_REACTION);
+end
+
+procedure Jain30
+begin
+  gsay_reply(SCRIPT_JAIN, 171);
+  giq_option(4, SCRIPT_JAIN, 172, Jain31, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 173, Jain32, NEUTRAL_REACTION);
+  giq_option(-3, SCRIPT_JAIN, 174, Jain39, NEUTRAL_REACTION);
+  giq_option(-3, SCRIPT_JAIN, 175, JainEnd, NEUTRAL_REACTION);
+end
+
+procedure Jain31
+begin
+  gsay_message(SCRIPT_JAIN, 176, BAD_REACTION);
+  call JainEndCombat;
+end
+
+procedure Jain32
+begin
+  gsay_reply(SCRIPT_JAIN, 177);
+  giq_option(4, SCRIPT_JAIN, 178, Jain33, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 179, JainEnd, NEUTRAL_REACTION);
+end
+
+procedure Jain33
+begin
+  gsay_message(SCRIPT_JAIN, 180, NEUTRAL_REACTION);
+end
+
+procedure Jain34
+begin
+  set_map_var(0, 1);
+  gsay_message(SCRIPT_JAIN, 181, BAD_REACTION);
+end
+
+procedure Jain35
+begin
+  set_map_var(0, 1);
+  gsay_message(SCRIPT_JAIN, 182, BAD_REACTION);
+end
+
+procedure Jain36
+begin
+  gsay_reply(SCRIPT_JAIN, 183);
+  giq_option(4, SCRIPT_JAIN, 184, Jain14, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_JAIN, 185, JainEnd, NEUTRAL_REACTION);
+end
+
+procedure Jain37
+begin
+  call Up_React;
+  gsay_message(SCRIPT_JAIN, 186, GOOD_REACTION);
+end
+
+procedure Jain38
+begin
+  gsay_message(SCRIPT_JAIN, 187, NEUTRAL_REACTION);
+end
+
+procedure Jain39
+begin
+  gsay_message(SCRIPT_JAIN, 188, NEUTRAL_REACTION);
+end
+
+procedure JainEnd
+begin
+end
+
+procedure JainEndCombat
+begin
+  call Bottom_React;
+  set_map_var(0, 1);
+  call combat;
+end
+
+procedure Get_Reaction
+begin
+  if (local_var(2) == 0) then begin
+    set_local_var(0, 50);
+    set_local_var(1, 2);
+    set_local_var(2, 1);
+    set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+    set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+    if (has_trait(0, dude_obj, 39)) then begin
+      if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+        set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+      end
+      else begin
+        set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+      end
+    end
+    else begin
+      if (local_var(3) == 1) then begin
+        set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+      end
+      else begin
+        set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+      end
+    end
+    if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+      set_local_var(0, local_var(0) - 30);
+    end
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+      set_local_var(0, local_var(0) + 20);
+    end
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+      set_local_var(0, local_var(0) - 20);
+    end
+    call React_To_Level;
+  end
+end
+
+procedure React_To_Level
+begin
+  if (local_var(0) <= 25) then begin
+    set_local_var(1, 1);
+  end
+  else begin
+    if (local_var(0) <= 75) then begin
+      set_local_var(1, 2);
+    end
+    else begin
+      set_local_var(1, 3);
+    end
+  end
+end
+
+procedure Level_To_React
+begin
+  if (local_var(1) == 1) then begin
+    set_local_var(0, random(1, 25));
+  end
+  else begin
+    if (local_var(1) == 2) then begin
+      set_local_var(0, random(26, 75));
+    end
+    else begin
+      set_local_var(0, random(76, 100));
+    end
+  end
+end
+
+procedure Up_React
+begin
+  set_local_var(0, local_var(0) + 10);
+  call React_To_Level;
+end
+
+procedure Down_React
+begin
+  set_local_var(0, local_var(0) - 10);
+  call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+  set_local_var(1, 1);
+  set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+  set_local_var(0, 100);
+  set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+  set_local_var(0, local_var(0) + 25);
+  call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+  set_local_var(0, local_var(0) - 25);
+  call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+  set_local_var(1, local_var(1) + 1);
+  if (local_var(1) > 3) then begin
+    set_local_var(1, 3);
+  end
+  call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+  set_local_var(1, local_var(1) - 1);
+  if (local_var(1) < 1) then begin
+    set_local_var(1, 1);
+  end
+  call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+  exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

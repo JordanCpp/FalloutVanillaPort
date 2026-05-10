@@ -1,0 +1,36 @@
+{100}{}{Voici Dragon.}
+{101}{}{}
+{102}{}{}
+{103}{}{Tu vois un membre des Ecorcheurs.}
+{104}{}{Tu vois un membre des Ecorcheurs.}
+{105}{}{Tu penses que ça pourrait être Books.}
+{106}{}{Tu penses que ça pourrait être Scars.}
+{107}{}{Tu penses que ça pourrait être Gunner.}
+{108}{}{Tu penses que ça pourrait être Twitch.}
+{109}{}{Tu penses que ça pourrait être Hammer.}
+{110}{}{Tu penses que ça pourrait être Razor.}
+{111}{}{Dégage ! Tu vois pas que j'essaye de me reposer !}
+{112}{}{Qu'est ce que t'as à trainer par ici ?}
+{113}{}{Je regarde les étoiles.}
+#je ne suis pas sur de la traduction. A vérifier in game
+{114}{}{Je te cherchais.}
+{115}{}{Je chasse.}
+{116}{}{Ca va te coûter très cher. C'est quoi cette histoire ? Dis-moi la vérité, et tu pourras peut-être vivre.}
+{117}{}{Je suis vraiment là pour te tuer.}
+{118}{}{Je veux arrêter les guerres de gangs.}
+{119}{}{Je cherche une maison. C'est juste là. La Lune.}
+{120}{}{Je pense que je devrais être désolé à propos de ça, mais je ne prête aucune attention aux morts.}
+{121}{}{Quelle chance ! Maintenant, dégages d'ici avant que je n'envoie le garde de nuit à tes trousses.}
+{122}{}{Et ben, t'apprécies pas beaucoup la vie. Je vais t'aider à l'arrêter.}
+{123}{}{Tu m'as trouvé. Maintenant, bouges ou meurt !}
+{124}{}{Je pense que je vais y aller.}
+{125}{}{Je préfèrerais vivre.}
+{126}{}{Quoi de neuf sur les Ecorcheurs ?}
+{127}{}{Ils vont te tuer !}
+{128}{}{Ils sont morts. Des Griffemorts les ont tous tués.}
+{129}{}{Rien pour l'instant.}
+#je ne suis pas sur de la traduction. A vérifier in game
+{130}{}{Génial. Va annoncer ça à Razor.}
+{131}{}{Ne me mens pas. Sors !}
+{132}{}{Alors bouge ton cul hors d'ici et mets en pièces ce bâtard !}
+{133}{}{Yo, mon pote ! Joli boulot avec les Régulateurs !}

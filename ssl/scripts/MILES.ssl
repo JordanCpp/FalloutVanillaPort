@@ -1,0 +1,581 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure look_at_p_proc;
+procedure description_p_proc;
+procedure talk_p_proc;
+procedure damage_p_proc;
+procedure destroy_p_proc;
+procedure critter_p_proc;
+procedure pickup_p_proc;
+procedure Miles01;
+procedure Miles02;
+procedure Miles03;
+procedure Miles04;
+procedure Miles05;
+procedure Miles06;
+procedure Miles07;
+procedure Miles08;
+procedure Miles09;
+procedure Miles11;
+procedure Miles12;
+procedure Miles13;
+procedure Miles14;
+procedure Miles15;
+procedure Miles16;
+procedure Miles17;
+procedure Miles17a;
+procedure Miles18;
+procedure Miles19;
+procedure Miles22;
+procedure Miles22a;
+procedure Miles23;
+procedure Miles24;
+procedure Miles25;
+procedure Miles27;
+procedure Miles28;
+procedure Miles29;
+procedure MilesEnd;
+
+variable Initialize := 1;
+variable DisplayMessage := 100;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure Start
+begin
+	if (Initialize) then begin
+		if (obj_is_carrying_obj_pid(self_obj, 41) == 0) then begin
+			item_caps_adjust(self_obj, random(500, 750));
+		end
+		if ((global_var(GVAR_BLADES) == 9103) or (global_var(GVAR_BLADES) == 9102)) then begin
+			critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 0);
+		end
+		else begin
+			critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 49);
+		end
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_PEASANT);
+		Initialize := 0;
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	if (local_var(4) == 1) then begin
+		display_msg(message_str(SCRIPT_MILES, 100));
+	end
+	else begin
+		display_msg(message_str(SCRIPT_MILES, 101));
+	end
+end
+
+procedure description_p_proc
+begin
+	script_overrides;
+	if (local_var(4) == 1) then begin
+		display_msg(message_str(SCRIPT_MILES, 100));
+	end
+	else begin
+		display_msg(message_str(SCRIPT_MILES, 101));
+	end
+end
+
+procedure talk_p_proc
+begin
+	if (global_var(GVAR_ENEMY_ADYTUM) == 1) then begin
+		float_msg(self_obj, message_str(SCRIPT_ENEMY, random(100, 105)), FLOAT_MSG_RED);
+	end
+	else begin
+		if ((local_var(4) == 1) and (get_critter_stat(dude_obj, 4) < 4)) then begin
+			float_msg(self_obj, message_str(SCRIPT_MILES, 152), FLOAT_MSG_NORMAL);
+		end
+		else begin
+			if (local_var(5) == 2) then begin
+				float_msg(self_obj, message_str(SCRIPT_MILES, 152), FLOAT_MSG_NORMAL);
+			end
+			else begin
+				call Get_Reaction;
+				start_gdialog(SCRIPT_MILES, self_obj, 4, -1, -1);
+				gsay_start;
+				if (local_var(4) == 0) then begin
+					call Miles01;
+				end
+				else begin
+					if (global_var(GVAR_FIX_FARM) == 0) then begin
+						DisplayMessage := 118;
+						call Miles04;
+					end
+					else begin
+						if (global_var(GVAR_FIX_FARM) == 1) then begin
+							call Miles13;
+						end
+						else begin
+							if (global_var(GVAR_FIX_FARM) == 9302) then begin
+								call Miles18;
+							end
+							else begin
+								if (global_var(GVAR_FIX_FARM) == 9303) then begin
+									call Miles19;
+								end
+								else begin
+									if (global_var(GVAR_FIX_FARM) == 9304) then begin
+										if (local_var(5) == 0) then begin
+											if (obj_is_carrying_obj_pid(dude_obj, 3)) then begin
+												call Miles22;
+											end
+											else begin
+												call Miles22a;
+											end
+										end
+										else begin
+											if (local_var(5) == 9305) then begin
+												if (obj_is_carrying_obj_pid(dude_obj, 3)) then begin
+													call Miles24;
+												end
+												else begin
+													call Miles29;
+												end
+											end
+											else begin
+												if (obj_is_carrying_obj_pid(dude_obj, 3)) then begin
+													call Miles28;
+												end
+												else begin
+													call Miles29;
+												end
+											end
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+				gsay_end;
+				end_dialogue;
+			end
+		end
+	end
+end
+
+procedure damage_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		set_global_var(GVAR_ENEMY_ADYTUM, 1);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 49);
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		set_global_var(GVAR_ENEMY_ADYTUM, 1);
+		if (source_obj == dude_obj) then begin
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+				set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+			end
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+				set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+			end
+			set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+			if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+				set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+			end
+		end
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 49);
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (obj_can_see_obj(self_obj, dude_obj)) then begin
+		if (global_var(GVAR_ENEMY_ADYTUM) == 1) then begin
+			attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+		end
+	end
+end
+
+procedure pickup_p_proc
+begin
+	set_global_var(GVAR_ENEMY_ADYTUM, 1);
+end
+
+procedure Miles01
+begin
+	gsay_reply(SCRIPT_MILES, 102);
+	giq_option(4, SCRIPT_MILES, 103, Miles02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MILES, 104, Miles03, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_MILES, 105, Miles09, NEUTRAL_REACTION);
+	set_local_var(4, 1);
+end
+
+procedure Miles02
+begin
+	gsay_message(SCRIPT_MILES, 106, NEUTRAL_REACTION);
+end
+
+procedure Miles03
+begin
+	DisplayMessage := 107;
+	call Miles04;
+end
+
+procedure Miles04
+begin
+	gsay_reply(SCRIPT_MILES, DisplayMessage);
+	gsay_option(SCRIPT_MILES, 108, Miles05, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MILES, 109, Miles06, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MILES, 110, Miles07, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MILES, 111, Miles08, NEUTRAL_REACTION);
+end
+
+procedure Miles05
+begin
+	gsay_reply(SCRIPT_MILES, 112);
+	gsay_option(SCRIPT_MILES, 113, Miles11, NEUTRAL_REACTION);
+end
+
+procedure Miles06
+begin
+	DisplayMessage := 114;
+	call Miles04;
+end
+
+procedure Miles07
+begin
+	DisplayMessage := 115;
+	call Miles04;
+end
+
+procedure Miles08
+begin
+	gsay_message(SCRIPT_MILES, 116, NEUTRAL_REACTION);
+end
+
+procedure Miles09
+begin
+	gsay_message(SCRIPT_MILES, 117, NEUTRAL_REACTION);
+end
+
+procedure Miles11
+begin
+	gsay_reply(SCRIPT_MILES, 119);
+	gsay_option(SCRIPT_MILES, 120, Miles12, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MILES, 121, MilesEnd, NEUTRAL_REACTION);
+end
+
+procedure Miles12
+begin
+	gsay_message(SCRIPT_MILES, 122, NEUTRAL_REACTION);
+	set_global_var(GVAR_FIX_FARM, 1);
+end
+
+procedure Miles13
+begin
+	gsay_reply(SCRIPT_MILES, 123);
+	if (obj_is_carrying_obj_pid(dude_obj, 98)) then begin
+		gsay_option(SCRIPT_MILES, 124, Miles15, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_option(SCRIPT_MILES, 125, Miles14, NEUTRAL_REACTION);
+	end
+end
+
+procedure Miles14
+begin
+	gsay_message(SCRIPT_MILES, 126, NEUTRAL_REACTION);
+end
+
+procedure Miles15
+begin
+	gsay_reply(SCRIPT_MILES, 127);
+	set_global_var(GVAR_FIX_FARM, 9302);
+	gsay_option(SCRIPT_MILES, 128, Miles16, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MILES, 129, MilesEnd, NEUTRAL_REACTION);
+end
+
+procedure Miles16
+begin
+	gsay_reply(SCRIPT_MILES, 130);
+	gsay_option(SCRIPT_MILES, 131, Miles17, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MILES, 132, Miles17a, NEUTRAL_REACTION);
+end
+
+procedure Miles17
+begin
+	variable LVar0 := 0;
+	gsay_message(SCRIPT_MILES, 133, NEUTRAL_REACTION);
+	LVar0 := obj_carrying_pid_obj(dude_obj, 98);
+	rm_obj_from_inven(dude_obj, LVar0);
+	destroy_object(LVar0);
+	item_caps_adjust(dude_obj, 125);
+	LVar0 := create_object_sid(40, 0, 0, -1);
+	add_mult_objs_to_inven(dude_obj, LVar0, 3);
+	set_global_var(GVAR_FIX_FARM, 9304);
+	gsay_message(SCRIPT_MILES, 137, NEUTRAL_REACTION);
+end
+
+procedure Miles17a
+begin
+	variable LVar0 := 0;
+	call Up_React_Level;
+	gsay_message(SCRIPT_MILES, 133, NEUTRAL_REACTION);
+	LVar0 := obj_carrying_pid_obj(dude_obj, 98);
+	rm_obj_from_inven(dude_obj, LVar0);
+	destroy_object(LVar0);
+	item_caps_adjust(dude_obj, 150);
+	LVar0 := create_object_sid(40, 0, 0, -1);
+	add_mult_objs_to_inven(dude_obj, LVar0, 4);
+	set_global_var(GVAR_FIX_FARM, 9304);
+	gsay_message(SCRIPT_MILES, 137, NEUTRAL_REACTION);
+end
+
+procedure Miles18
+begin
+	gsay_reply(SCRIPT_MILES, 134);
+	gsay_option(SCRIPT_MILES, 128, Miles16, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MILES, 129, MilesEnd, NEUTRAL_REACTION);
+end
+
+procedure Miles19
+begin
+	variable LVar0 := 0;
+	gsay_message(SCRIPT_MILES, 135, NEUTRAL_REACTION);
+	gsay_message(SCRIPT_MILES, 136, NEUTRAL_REACTION);
+	LVar0 := obj_carrying_pid_obj(dude_obj, 98);
+	rm_obj_from_inven(dude_obj, LVar0);
+	destroy_object(LVar0);
+	item_caps_adjust(dude_obj, 250);
+	LVar0 := create_object_sid(40, 0, 0, -1);
+	add_mult_objs_to_inven(dude_obj, LVar0, 6);
+	set_global_var(GVAR_FIX_FARM, 9304);
+	gsay_message(SCRIPT_MILES, 137, NEUTRAL_REACTION);
+end
+
+procedure Miles22
+begin
+	gsay_reply(SCRIPT_MILES, 138);
+	set_local_var(5, 9305);
+	set_global_var(GVAR_CHEMISTRY_BOOK, 1);
+	gsay_option(SCRIPT_MILES, 139, MilesEnd, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MILES, 140, Miles23, NEUTRAL_REACTION);
+end
+
+procedure Miles22a
+begin
+	gsay_message(SCRIPT_MILES, 153, NEUTRAL_REACTION);
+end
+
+procedure Miles23
+begin
+	gsay_message(SCRIPT_MILES, 141, NEUTRAL_REACTION);
+end
+
+procedure Miles24
+begin
+	gsay_reply(SCRIPT_MILES, 142);
+	if (obj_is_carrying_obj_pid(dude_obj, 237)) then begin
+		gsay_option(SCRIPT_MILES, 143, Miles25, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_option(SCRIPT_MILES, 144, MilesEnd, NEUTRAL_REACTION);
+	end
+end
+
+procedure Miles25
+begin
+	variable LVar0 := 0;
+	gsay_reply(SCRIPT_MILES, 145);
+	LVar0 := obj_carrying_pid_obj(dude_obj, 237);
+	rm_obj_from_inven(dude_obj, LVar0);
+	add_obj_to_inven(self_obj, LVar0);
+	set_local_var(5, 9306);
+	gsay_option(SCRIPT_MILES, 146, Miles28, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MILES, 147, Miles27, NEUTRAL_REACTION);
+end
+
+procedure Miles27
+begin
+	gsay_message(SCRIPT_MILES, 148, NEUTRAL_REACTION);
+end
+
+procedure Miles28
+begin
+	variable LVar0 := 0;
+	variable LVar1 := 0;
+	gsay_message(SCRIPT_MILES, 149, NEUTRAL_REACTION);
+	gfade_out(600);
+	game_time_advance(10 * 60 * 60 * 24);
+	gfade_in(600);
+	gsay_message(SCRIPT_MILES, 150, NEUTRAL_REACTION);
+	LVar1 := create_object_sid(42, 0, 0, -1);
+	move_obj_inven_to_obj(dude_obj, LVar1);
+	move_obj_inven_to_obj(LVar1, dude_obj);
+	LVar0 := obj_carrying_pid_obj(dude_obj, 3);
+	rm_obj_from_inven(dude_obj, LVar0);
+	destroy_object(LVar0);
+	destroy_object(LVar1);
+	LVar0 := create_object_sid(232, 0, 0, -1);
+	add_obj_to_inven(dude_obj, LVar0);
+	set_local_var(5, 2);
+end
+
+procedure Miles29
+begin
+	gsay_message(SCRIPT_MILES, 151, NEUTRAL_REACTION);
+end
+
+procedure MilesEnd
+begin
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

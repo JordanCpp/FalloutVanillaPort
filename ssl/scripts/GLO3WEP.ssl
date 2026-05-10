@@ -1,0 +1,61 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+
+
+procedure start
+begin
+	if ((script_action == look_at_proc) or (script_action == description_proc)) then begin
+		script_overrides;
+		display_msg(message_str(SCRIPT_GLO3WEP, 100));
+	end
+	else begin
+		if (script_action == use_obj_on_proc) then begin
+			if (obj_being_used_with == 84) then begin
+				if (is_success(roll_vs_skill(dude_obj, 9, 0))) then begin
+					set_local_var(0, 1);
+					display_msg(message_str(SCRIPT_GLO3WEP, 101));
+				end
+				else begin
+					display_msg(message_str(SCRIPT_GLO3WEP, 102));
+				end
+			end
+			else begin
+				display_msg(message_str(SCRIPT_GLO3WEP, 103));
+			end
+		end
+		else begin
+			if (script_action == use_proc) then begin
+				if (local_var(0) == 0) then begin
+					script_overrides;
+					display_msg(message_str(SCRIPT_GLO3WEP, 104));
+				end
+			end
+			else begin
+				if (script_action == use_skill_on_proc) then begin
+					script_overrides;
+					if (action_being_used == 9) then begin
+						if (is_success(roll_vs_skill(dude_obj, 9, -10))) then begin
+							set_local_var(0, 1);
+							display_msg(message_str(SCRIPT_GLO3WEP, 105));
+						end
+						else begin
+							display_msg(message_str(SCRIPT_GLO3WEP, 106));
+						end
+					end
+					else begin
+						display_msg(message_str(SCRIPT_GLO3WEP, 107));
+					end
+				end
+			end
+		end
+	end
+end

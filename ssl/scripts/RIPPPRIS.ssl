@@ -1,0 +1,108 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure critter_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure talk_p_proc;
+procedure Prisoner01;
+procedure Prisoner02;
+procedure Prisoner03;
+procedure PrisonerEnd;
+
+variable hostile1;
+
+
+procedure start
+begin
+	if (script_action == critter_proc) then begin
+		call critter_p_proc;
+	end
+	else begin
+		if (script_action == destroy_proc) then begin
+			call destroy_p_proc;
+		end
+		else begin
+			if (script_action == look_at_proc) then begin
+				call look_at_p_proc;
+			end
+			else begin
+				if (script_action == talk_proc) then begin
+					call talk_p_proc;
+				end
+			end
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (hostile1) then begin
+		hostile1 := 0;
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+		if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+		end
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	display_msg(message_str(SCRIPT_RIPPPRIS, 100));
+end
+
+procedure talk_p_proc
+begin
+	start_gdialog(SCRIPT_RIPPPRIS, self_obj, 4, -1, -1);
+	gsay_start;
+	call Prisoner01;
+	gsay_end;
+	end_dialogue;
+end
+
+procedure Prisoner01
+begin
+	gsay_reply(SCRIPT_RIPPPRIS, 101);
+	giq_option(3, SCRIPT_RIPPPRIS, 102, Prisoner02, NEUTRAL_REACTION);
+	giq_option(3, SCRIPT_RIPPPRIS, 103, Prisoner02, NEUTRAL_REACTION);
+	giq_option(3, SCRIPT_RIPPPRIS, 104, Prisoner03, NEUTRAL_REACTION);
+end
+
+procedure Prisoner02
+begin
+	hostile1 := 1;
+end
+
+procedure Prisoner03
+begin
+	gsay_reply(SCRIPT_RIPPPRIS, 105);
+	giq_option(3, SCRIPT_RIPPPRIS, 106, PrisonerEnd, NEUTRAL_REACTION);
+end
+
+procedure PrisonerEnd
+begin
+end

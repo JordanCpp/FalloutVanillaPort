@@ -1,0 +1,7 @@
+procedure start;
+#include <push.h>
+
+procedure start
+begin
+
+end

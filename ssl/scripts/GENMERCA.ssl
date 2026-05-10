@@ -1,0 +1,187 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure critter_p_proc;
+procedure destroy_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure GenMercA00;
+procedure GenMercA01;
+procedure GenMercA02;
+procedure GenMercA03;
+procedure GenMercA04;
+procedure GenMercAEnd;
+procedure flee_dude;
+
+variable hostile1;
+variable initialized1;
+variable scared;
+variable name_index;
+variable job_index;
+
+
+procedure start
+begin
+	if (not(initialized1)) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 2);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_MERCHANT);
+		name_index := 105 + global_var(GVAR_SAVE_TANDI_6);
+		job_index := 109 + global_var(GVAR_SAVE_TANDI_6);
+		hostile1 := global_var(GVAR_SAVE_TANDI_5);
+		set_global_var(GVAR_SAVE_TANDI_6, global_var(GVAR_SAVE_TANDI_6) + 1);
+		initialized1 := 1;
+	end
+	if (script_action == critter_proc) then begin
+		call critter_p_proc;
+	end
+	else begin
+		if (script_action == destroy_proc) then begin
+			call destroy_p_proc;
+		end
+		else begin
+			if (script_action == pickup_proc) then begin
+				call pickup_p_proc;
+			end
+			else begin
+				if (script_action == talk_proc) then begin
+					call talk_p_proc;
+				end
+			end
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (scared and (tile_distance_objs(self_obj, dude_obj) < 8)) then begin
+		call flee_dude;
+	end
+	else begin
+		if (hostile1) then begin
+			hostile1 := 0;
+			scared := 1;
+			attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+		end
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		set_global_var(GVAR_SAVE_TANDI_5, 1);
+		if (source_obj == dude_obj) then begin
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+				set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+			end
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+				set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+			end
+			set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+			if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+				set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+			end
+		end
+	end
+end
+
+procedure pickup_p_proc
+begin
+	if (scared == 0) then begin
+		hostile1 := 1;
+		set_global_var(GVAR_SAVE_TANDI_5, 1);
+	end
+end
+
+procedure talk_p_proc
+begin
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+		set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+	end
+	if (scared) then begin
+		float_msg(self_obj, message_str(SCRIPT_ENEMY, random(100, 105)), FLOAT_MSG_RED);
+	end
+	else begin
+		start_gdialog(SCRIPT_GENMERCA, self_obj, 4, -1, -1);
+		gsay_start;
+		call GenMercA00;
+		gsay_end;
+		end_dialogue;
+	end
+end
+
+procedure GenMercA00
+begin
+	gsay_reply(SCRIPT_GENMERCA, 100);
+	giq_option(4, SCRIPT_GENMERCA, 101, GenMercA01, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_GENMERCA, 102, GenMercA02, NEUTRAL_REACTION);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_GENMERCA, 103, GenMercA03, BAD_REACTION);
+	end
+	giq_option(-3, SCRIPT_GENMERCA, 104, GenMercAEnd, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MODREACT, 103, GenMercAEnd, NEUTRAL_REACTION);
+end
+
+procedure GenMercA01
+begin
+	gsay_reply(SCRIPT_GENMERCA, name_index);
+	giq_option(4, SCRIPT_GENMERCA, 102, GenMercA02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MODREACT, 100, GenMercAEnd, NEUTRAL_REACTION);
+end
+
+procedure GenMercA02
+begin
+	gsay_reply(SCRIPT_GENMERCA, job_index);
+	giq_option(4, SCRIPT_GENMERCA, 114, GenMercA04, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MODREACT, 100, GenMercAEnd, NEUTRAL_REACTION);
+end
+
+procedure GenMercA03
+begin
+	scared := 1;
+	gsay_message(SCRIPT_GENMERCA, 113, BAD_REACTION);
+end
+
+procedure GenMercA04
+begin
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1)) or (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) or (global_var(GVAR_PLAYER_REPUTATION) < -20)) then begin
+		gsay_message(SCRIPT_GENMERCA, 117, BAD_REACTION);
+	end
+	else begin
+		if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+			gsay_message(SCRIPT_GENMERCA, 116, NEUTRAL_REACTION);
+		end
+		else begin
+			gsay_message(SCRIPT_GENMERCA, 116, NEUTRAL_REACTION);
+		end
+	end
+end
+
+procedure GenMercAEnd
+begin
+end
+
+procedure flee_dude
+begin
+	variable LVar0 := 0;
+	variable LVar1 := 0;
+	variable LVar2 := 0;
+	while(LVar1 < 5) do begin
+		if (tile_distance(tile_num(dude_obj), tile_num_in_direction(tile_num(self_obj), LVar1, 3)) > LVar2) then begin
+			LVar0 := tile_num_in_direction(tile_num(self_obj), LVar1, 3);
+			LVar2 := tile_distance(tile_num(dude_obj), LVar0);
+		end
+		LVar1 := LVar1 + 1;
+	end
+	animate_move_obj_to_tile(self_obj, LVar0, ANIMATE_RUN);
+end

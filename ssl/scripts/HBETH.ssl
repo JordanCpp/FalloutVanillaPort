@@ -1,0 +1,1203 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+variable GVar0;
+variable GVar1 := 1;
+variable GVar2;
+
+procedure start;
+#include <push.h>
+procedure combat;
+procedure critter_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure destroy_p_proc;
+procedure damage_p_proc;
+procedure look_at_p_proc;
+procedure Beth00;
+procedure Beth01;
+procedure Beth02;
+procedure Beth02a;
+procedure Beth02b;
+procedure Beth03;
+procedure Beth03a;
+procedure Beth04;
+procedure Beth05;
+procedure Beth06;
+procedure Beth07;
+procedure Beth08;
+procedure Beth09;
+procedure Beth10;
+procedure Beth11;
+procedure Beth12;
+procedure Beth13;
+procedure Beth14;
+procedure Beth15;
+procedure Beth15a;
+procedure Beth16;
+procedure Beth16a;
+procedure Beth17;
+procedure Beth17a;
+procedure Beth17b;
+procedure Beth18;
+procedure Beth19;
+procedure Beth20;
+procedure Beth21;
+procedure Beth22;
+procedure Beth23;
+procedure Beth24;
+procedure Beth25;
+procedure Beth26;
+procedure Beth27;
+procedure Beth27a;
+procedure Beth28;
+procedure Beth29;
+procedure Beth30;
+procedure Beth31;
+procedure Beth32;
+procedure Beth33;
+procedure Beth34;
+procedure Beth35;
+procedure Beth35a;
+procedure Beth36;
+procedure Beth37;
+procedure Beth38;
+procedure Beth39;
+procedure Beth40;
+procedure Beth40a;
+procedure Beth41;
+procedure Beth42;
+procedure Beth43;
+procedure Beth44;
+procedure Beth45;
+procedure Beth46;
+procedure Beth47;
+procedure Beth48;
+procedure Beth49;
+procedure Beth50;
+procedure Beth52;
+procedure Beth52a;
+procedure Beth53;
+procedure Beth54;
+procedure Beth55;
+procedure Beth56;
+procedure Beth57;
+procedure Beth58;
+procedure Beth59;
+procedure Beth60;
+procedure Beth61;
+procedure Beth62;
+procedure Beth63;
+procedure Beth64;
+procedure Beth65;
+procedure Beth66;
+procedure Beth67;
+procedure Beth68;
+procedure Beth69;
+procedure BethEnd;
+procedure Get_Stuff;
+procedure Put_Stuff;
+
+import variable Beth_Ptr;
+import variable Beth_Box_Ptr;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+procedure Beth02c;
+
+
+procedure start
+begin
+	variable LVar0 := 0;
+	if (GVar1) then begin
+		GVar1 := 0;
+		Beth_Ptr := self_obj;
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 37);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_MERCHANT);
+	end
+	if (script_action == look_at_proc) then begin
+		call look_at_p_proc;
+	end
+	else begin
+		if (script_action == pickup_proc) then begin
+			call pickup_p_proc;
+		end
+		else begin
+			if (script_action == talk_proc) then begin
+				call talk_p_proc;
+			end
+			else begin
+				if (script_action == critter_proc) then begin
+					call critter_p_proc;
+				end
+				else begin
+					if (script_action == destroy_proc) then begin
+						call destroy_p_proc;
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure combat
+begin
+	GVar0 := 1;
+end
+
+procedure critter_p_proc
+begin
+	if (GVar0) then begin
+		GVar0 := 0;
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+end
+
+procedure pickup_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		GVar0 := 1;
+	end
+end
+
+procedure talk_p_proc
+begin
+	variable LVar0 := 0;
+	call Get_Stuff;
+	call Get_Reaction;
+	if ((((game_time / (10 * 60 * 60 * 24)) - local_var(16)) >= 1) or (local_var(16) == 0)) then begin
+		set_local_var(16, game_time / (10 * 60 * 60 * 24));
+		set_local_var(17, 1000 + random(0, 1000));
+		LVar0 := item_caps_adjust(self_obj, local_var(17));
+	end
+	else begin
+		LVar0 := item_caps_adjust(self_obj, local_var(17));
+	end
+	if (map_var(10) == 1) then begin
+		gdialog_set_barter_mod(5);
+	end
+	else begin
+		gdialog_set_barter_mod(-10);
+	end
+	set_map_var(33, 1);
+	if (local_var(11) == 0) then begin
+		set_local_var(11, game_time / (10 * 60 * 60));
+	end
+	if ((game_time_hour >= 1900) or (game_time_hour < 600)) then begin
+		float_msg(self_obj, message_str(SCRIPT_HBETH, 361), FLOAT_MSG_RED);
+	end
+	else begin
+		if ((obj_item_subtype(critter_inven_obj(dude_obj, 1)) == 3) or (obj_item_subtype(critter_inven_obj(dude_obj, 2)) == 3) and (local_var(14) == 0)) then begin
+			call Beth55;
+		end
+		else begin
+			if ((obj_item_subtype(critter_inven_obj(dude_obj, 1)) == 3) or (obj_item_subtype(critter_inven_obj(dude_obj, 2)) == 3) and (local_var(14) == 1)) then begin
+				call Beth56;
+			end
+			else begin
+				if (local_var(4) == 1) then begin
+					start_gdialog(SCRIPT_HBETH, self_obj, 4, -1, -1);
+					gsay_start;
+					if (local_var(1) > 1) then begin
+						call Beth64;
+					end
+					else begin
+						call Beth65;
+					end
+					gsay_end;
+					end_dialogue;
+				end
+				else begin
+					set_local_var(4, 1);
+					start_gdialog(SCRIPT_HBETH, self_obj, 4, -1, -1);
+					gsay_start;
+					call Beth00;
+					gsay_end;
+					end_dialogue;
+				end
+			end
+		end
+	end
+	set_local_var(11, game_time / (10 * 60 * 60));
+	LVar0 := item_caps_adjust(self_obj, -1 * item_caps_total(self_obj));
+	call Put_Stuff;
+end
+
+procedure destroy_p_proc
+begin
+	move_obj_inven_to_obj(Beth_Box_Ptr, self_obj);
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+		if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+		end
+	end
+end
+
+procedure damage_p_proc
+begin
+	variable LVar0 := 0;
+	LVar0 := obj_pid(source_obj);
+	if (party_member_obj(LVar0) != 0) then begin
+		set_global_var(GVAR_ENEMY_HUB, 1);
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	display_msg(message_str(SCRIPT_HBETH, 100));
+end
+
+procedure Beth00
+begin
+	gsay_reply(SCRIPT_HBETH, 101);
+	call Beth01;
+end
+
+procedure Beth01
+begin
+	giq_option(4, SCRIPT_HBETH, 102, Beth09, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 104, Beth62, GOOD_REACTION);
+	giq_option(4, SCRIPT_HBETH, 398, Beth68, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 105, Beth63, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 106, Beth06, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 107, BethEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_HBETH, 108, Beth04, NEUTRAL_REACTION);
+end
+
+procedure Beth02
+begin
+	if (map_var(41) == 1) then begin
+		giq_option(4, SCRIPT_HBETH, 109, Beth36, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_HUB_FILLER_29) >= 1) then begin
+		giq_option(4, SCRIPT_HBETH, 110, Beth02a, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_DECKER_KNOWN) == 1) then begin
+		giq_option(4, SCRIPT_HBETH, 112, Beth02b, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_HBETH, 398, Beth69, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 113, Beth23, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 114, Beth03a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 115, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth02a
+begin
+	if (global_var(GVAR_HUB_FILLER_29) == 5) then begin
+		call Beth37;
+	end
+	else begin
+		call Beth38;
+	end
+end
+
+procedure Beth02b
+begin
+	if (global_var(GVAR_DECKER_STATUS) != 0) then begin
+		call Beth66;
+	end
+	else begin
+		call Beth14;
+	end
+end
+
+procedure Beth03
+begin
+	if (local_var(10) == 1) then begin
+		if ((local_var(5) == 0) and (global_var(GVAR_DECKER_STATUS) == 2)) then begin
+			set_local_var(5, 1);
+			set_global_var(GVAR_DECKER_KNOWN, 1);
+			gsay_reply(SCRIPT_HBETH, 123);
+		end
+		else begin
+			if ((local_var(6) == 0) and (global_var(GVAR_DECKER_STATUS) == 2)) then begin
+				set_local_var(5, 1);
+				gsay_reply(SCRIPT_HBETH, 124);
+			end
+			else begin
+				if ((local_var(7) == 0) and (global_var(GVAR_KILL_JAIN) == 2)) then begin
+					set_local_var(5, 1);
+					gsay_reply(SCRIPT_HBETH, 125);
+				end
+				else begin
+					if ((local_var(8) == 0) and (global_var(GVAR_MASTER_BLOWN) == 1)) then begin
+						set_local_var(5, 1);
+						gsay_reply(SCRIPT_HBETH, 126);
+					end
+					else begin
+						if ((local_var(9) == 0) and (global_var(GVAR_VATS_BLOWN) == 1)) then begin
+							set_local_var(5, 1);
+							gsay_reply(SCRIPT_HBETH, 127);
+						end
+					end
+				end
+			end
+		end
+	end
+	else begin
+		set_local_var(10, 1);
+		if ((local_var(5) == 0) and (global_var(GVAR_DECKER_STATUS) == 2)) then begin
+			set_local_var(5, 1);
+			set_global_var(GVAR_DECKER_KNOWN, 1);
+			gsay_reply(SCRIPT_HBETH, 117);
+		end
+		else begin
+			if ((local_var(6) == 0) and (global_var(GVAR_DECKER_STATUS) == 2)) then begin
+				set_local_var(5, 1);
+				gsay_reply(SCRIPT_HBETH, 118);
+			end
+			else begin
+				if ((local_var(7) == 0) and (global_var(GVAR_KILL_JAIN) == 2)) then begin
+					set_local_var(5, 1);
+					gsay_reply(SCRIPT_HBETH, 119);
+				end
+				else begin
+					if ((local_var(8) == 0) and (global_var(GVAR_MASTER_BLOWN) == 1)) then begin
+						set_local_var(5, 1);
+						gsay_reply(SCRIPT_HBETH, 121);
+					end
+					else begin
+						if ((local_var(9) == 0) and (global_var(GVAR_VATS_BLOWN) == 1)) then begin
+							set_local_var(5, 1);
+							gsay_reply(SCRIPT_HBETH, 122);
+						end
+					end
+				end
+			end
+		end
+	end
+	giq_option(4, SCRIPT_HBETH, 128, Beth03a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 129, Beth39, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 130, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth03a
+begin
+	if ((local_var(5) == 0) and (global_var(GVAR_DECKER_STATUS) == 2) or ((local_var(6) == 0) and (global_var(GVAR_DECKER_STATUS) == 2)) or ((local_var(7) == 0) and (global_var(GVAR_KILL_JAIN) == 2)) or ((local_var(8) == 0) and (global_var(GVAR_MASTER_BLOWN) == 1)) or ((local_var(9) == 0) and (global_var(GVAR_VATS_BLOWN) == 1))) then begin
+		call Beth03;
+	end
+	else begin
+		call Beth12;
+	end
+end
+
+procedure Beth04
+begin
+	gsay_reply(SCRIPT_HBETH, 131);
+	giq_option(-3, SCRIPT_HBETH, 132, Beth05, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_HBETH, 133, Beth05, NEUTRAL_REACTION);
+end
+
+procedure Beth05
+begin
+	gsay_message(SCRIPT_HBETH, 134, NEUTRAL_REACTION);
+end
+
+procedure Beth06
+begin
+	gsay_reply(SCRIPT_HBETH, 135);
+	giq_option(4, SCRIPT_HBETH, 136, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth07
+begin
+	gsay_reply(SCRIPT_HBETH, 137);
+	giq_option(4, SCRIPT_HBETH, 138, Beth08, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 139, Beth11, NEUTRAL_REACTION);
+end
+
+procedure Beth08
+begin
+	gsay_reply(SCRIPT_HBETH, 140);
+	call Beth01;
+end
+
+procedure Beth09
+begin
+	gsay_reply(SCRIPT_HBETH, 141);
+	call Beth02;
+end
+
+procedure Beth10
+begin
+	gsay_reply(SCRIPT_HBETH, 142);
+	call Beth02;
+end
+
+procedure Beth11
+begin
+	gsay_message(SCRIPT_HBETH, 143, NEUTRAL_REACTION);
+end
+
+procedure Beth12
+begin
+	gsay_reply(SCRIPT_HBETH, 144);
+	giq_option(4, SCRIPT_HBETH, 145, Beth08, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 146, Beth13, NEUTRAL_REACTION);
+end
+
+procedure Beth13
+begin
+	gsay_message(SCRIPT_HBETH, 147, NEUTRAL_REACTION);
+end
+
+procedure Beth14
+begin
+	gsay_reply(SCRIPT_HBETH, 148);
+	giq_option(4, SCRIPT_HBETH, 149, Beth15, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 150, Beth20, NEUTRAL_REACTION);
+end
+
+procedure Beth15
+begin
+	set_global_var(GVAR_DECKER_KNOWN, 1);
+	gsay_reply(SCRIPT_HBETH, 151);
+	giq_option(4, SCRIPT_HBETH, 152, Beth16, NEUTRAL_REACTION);
+	if ((map_var(46) >= 4) or (map_var(46) >= 4)) then begin
+		giq_option(4, SCRIPT_HBETH, 153, Beth15a, BAD_REACTION);
+	end
+	giq_option(4, SCRIPT_HBETH, 154, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth15a
+begin
+	call Big_Down_React;
+	call Beth21;
+end
+
+procedure Beth16
+begin
+	set_map_var(48, 1);
+	gsay_reply(SCRIPT_HBETH, 155);
+	if ((map_var(46) >= 5) or (map_var(46) >= 5)) then begin
+		giq_option(4, SCRIPT_HBETH, 156, Beth16a, BAD_REACTION);
+	end
+	giq_option(4, SCRIPT_HBETH, 157, Beth17, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 158, Beth18, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 159, Beth18, NEUTRAL_REACTION);
+end
+
+procedure Beth16a
+begin
+	call Bottom_React;
+	call Beth22;
+end
+
+procedure Beth17
+begin
+	gsay_reply(SCRIPT_HBETH, 160);
+	giq_option(4, SCRIPT_HBETH, 161, Beth18, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 162, Beth17a, BAD_REACTION);
+	giq_option(4, SCRIPT_HBETH, 163, Beth17b, BAD_REACTION);
+end
+
+procedure Beth17a
+begin
+	call Down_React;
+	call Beth19;
+end
+
+procedure Beth17b
+begin
+	call Big_Down_React;
+	call Beth19;
+end
+
+procedure Beth18
+begin
+	gsay_reply(SCRIPT_HBETH, 164);
+	call Beth02;
+end
+
+procedure Beth19
+begin
+	gsay_message(SCRIPT_HBETH, 165, BAD_REACTION);
+end
+
+procedure Beth20
+begin
+	gsay_reply(SCRIPT_HBETH, 166);
+	call Beth02;
+end
+
+procedure Beth21
+begin
+	gsay_message(SCRIPT_HBETH, 167, BAD_REACTION);
+end
+
+procedure Beth22
+begin
+	gsay_message(SCRIPT_HBETH, 168, BAD_REACTION);
+end
+
+procedure Beth23
+begin
+	gsay_reply(SCRIPT_HBETH, 169);
+	call Beth24;
+end
+
+procedure Beth24
+begin
+	giq_option(4, SCRIPT_HBETH, 170, Beth25, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 172, Beth30, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 173, Beth33, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 174, Beth42, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 175, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth25
+begin
+	gsay_reply(SCRIPT_HBETH, 177);
+	giq_option(4, SCRIPT_HBETH, 178, Beth27, NEUTRAL_REACTION);
+	if (map_var(41) == 1) then begin
+		giq_option(4, SCRIPT_HBETH, 179, Beth34, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_HBETH, 180, Beth26, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 181, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth26
+begin
+	gsay_reply(SCRIPT_HBETH, 182);
+	call Beth24;
+end
+
+procedure Beth27
+begin
+	gsay_reply(SCRIPT_HBETH, 183);
+	giq_option(4, SCRIPT_HBETH, 184, Beth28, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 185, Beth27a, BAD_REACTION);
+	giq_option(4, SCRIPT_HBETH, 186, Beth26, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 187, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth27a
+begin
+	call Big_Down_React;
+	call BethEnd;
+end
+
+procedure Beth28
+begin
+	gsay_reply(SCRIPT_HBETH, 188);
+	giq_option(4, SCRIPT_HBETH, 189, Beth29, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 190, Beth26, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 191, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth29
+begin
+	gsay_reply(SCRIPT_HBETH, 192);
+	call Beth24;
+end
+
+procedure Beth30
+begin
+	gsay_reply(SCRIPT_HBETH, 193);
+	giq_option(4, SCRIPT_HBETH, 194, Beth32, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 195, Beth31, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 196, Beth26, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 197, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth31
+begin
+	gsay_reply(SCRIPT_HBETH, 198);
+	giq_option(4, SCRIPT_HBETH, 199, Beth32, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 200, Beth26, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 201, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth32
+begin
+	gsay_reply(SCRIPT_HBETH, 202);
+	giq_option(4, SCRIPT_HBETH, 203, Beth31, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 204, Beth26, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 205, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth33
+begin
+	gsay_reply(SCRIPT_HBETH, 206);
+	call Beth24;
+end
+
+procedure Beth34
+begin
+	gsay_reply(SCRIPT_HBETH, 207);
+	call Beth35;
+end
+
+procedure Beth35
+begin
+	if (map_var(41) == 1) then begin
+		giq_option(4, SCRIPT_HBETH, 208, Beth40, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_HUB_FILLER_29) >= 1) then begin
+		giq_option(4, SCRIPT_HBETH, 209, Beth46, NEUTRAL_REACTION);
+	end
+	if (map_var(41) == 1) then begin
+		giq_option(4, SCRIPT_HBETH, 212, Beth35a, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_HBETH, 213, Beth24, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 214, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth35a
+begin
+	if (obj_pid(critter_inven_obj(dude_obj, 0)) == 3) then begin
+		call Beth54;
+	end
+	else begin
+		call Beth53;
+	end
+end
+
+procedure Beth36
+begin
+	gsay_reply(SCRIPT_HBETH, 215);
+	call Beth35;
+end
+
+procedure Beth37
+begin
+	gsay_reply(SCRIPT_HBETH, 216);
+	call Beth35;
+end
+
+procedure Beth38
+begin
+	gsay_reply(SCRIPT_HBETH, 217);
+	call Beth35;
+end
+
+procedure Beth39
+begin
+	gsay_reply(SCRIPT_HBETH, 218);
+	call Beth02;
+end
+
+procedure Beth40
+begin
+	gsay_reply(SCRIPT_HBETH, 219);
+	giq_option(4, SCRIPT_HBETH, 220, Beth43, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 221, Beth44, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 222, Beth35, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 223, Beth23, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 224, Beth40a, BAD_REACTION);
+	giq_option(4, SCRIPT_HBETH, 225, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth40a
+begin
+	call Big_Down_React;
+	call Beth41;
+end
+
+procedure Beth41
+begin
+	gsay_message(SCRIPT_HBETH, 226, BAD_REACTION);
+end
+
+procedure Beth42
+begin
+	gsay_reply(SCRIPT_HBETH, 227);
+	call Beth24;
+end
+
+procedure Beth43
+begin
+	gsay_reply(SCRIPT_HBETH, 228);
+	giq_option(4, SCRIPT_HBETH, 229, Beth44, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 230, Beth35, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 231, Beth23, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 232, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth44
+begin
+	gsay_reply(SCRIPT_HBETH, 233);
+	giq_option(4, SCRIPT_HBETH, 234, Beth44, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 235, Beth35, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 236, Beth23, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 237, Beth45, BAD_REACTION);
+	giq_option(4, SCRIPT_HBETH, 238, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth45
+begin
+	call Big_Down_React;
+	gsay_message(SCRIPT_HBETH, 239, BAD_REACTION);
+end
+
+procedure Beth46
+begin
+	gsay_reply(SCRIPT_HBETH, 240);
+	giq_option(4, SCRIPT_HBETH, 241, Beth47, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 242, Beth49, BAD_REACTION);
+	giq_option(4, SCRIPT_HBETH, 243, Beth47, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 244, Beth50, NEUTRAL_REACTION);
+end
+
+procedure Beth47
+begin
+	set_global_var(GVAR_HUB_FILLER_29, 2);
+	gsay_reply(SCRIPT_HBETH, 245);
+	giq_option(4, SCRIPT_HBETH, 246, Beth48, NEUTRAL_REACTION);
+	if (dude_is_male) then begin
+		giq_option(4, SCRIPT_HBETH, 247, Beth49, BAD_REACTION);
+	end
+	else begin
+		giq_option(4, SCRIPT_HBETH, 248, Beth49, BAD_REACTION);
+	end
+	giq_option(4, SCRIPT_HBETH, 249, Beth35, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 250, Beth23, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 251, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth48
+begin
+	gsay_reply(SCRIPT_HBETH, 252);
+	giq_option(4, SCRIPT_HBETH, 253, Beth35, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 254, Beth23, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 255, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth49
+begin
+	gsay_message(SCRIPT_HBETH, 256, BAD_REACTION);
+end
+
+procedure Beth50
+begin
+	set_global_var(GVAR_HUB_FILLER_29, 2);
+	gsay_reply(SCRIPT_HBETH, 257);
+	giq_option(4, SCRIPT_HBETH, 258, Beth35, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 259, Beth23, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 394, Beth48, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 260, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth52
+begin
+	gsay_reply(SCRIPT_HBETH, 266);
+	giq_option(4, SCRIPT_HBETH, 267, Beth35, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 268, Beth23, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 269, Beth52a, BAD_REACTION);
+	giq_option(4, SCRIPT_HBETH, 270, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth52a
+begin
+	call Down_React;
+	call BethEnd;
+end
+
+procedure Beth53
+begin
+	gsay_reply(SCRIPT_HBETH, 271);
+	if (global_var(GVAR_BECOME_AN_INITIATE) == 2) then begin
+		giq_option(4, SCRIPT_HBETH, 272, Beth57, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_HBETH, 273, Beth59, NEUTRAL_REACTION);
+	end
+	else begin
+		if (global_var(GVAR_BROTHERHOOD_OF_STEEL) == 2) then begin
+			giq_option(4, SCRIPT_HBETH, 274, Beth58, NEUTRAL_REACTION);
+		end
+		else begin
+			giq_option(4, SCRIPT_HBETH, 275, Beth58, NEUTRAL_REACTION);
+		end
+	end
+end
+
+procedure Beth54
+begin
+	gsay_reply(SCRIPT_HBETH, 276);
+	if (global_var(GVAR_BECOME_AN_INITIATE) == 2) then begin
+		giq_option(4, SCRIPT_HBETH, 277, Beth61, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_HBETH, 278, Beth57, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 279, Beth58, NEUTRAL_REACTION);
+end
+
+procedure Beth55
+begin
+	set_local_var(14, 1);
+	if (dude_is_male) then begin
+		float_msg(self_obj, message_str(SCRIPT_HBETH, 280), FLOAT_MSG_RED);
+	end
+	else begin
+		float_msg(self_obj, message_str(SCRIPT_HBETH, 281), FLOAT_MSG_RED);
+	end
+end
+
+procedure Beth56
+begin
+	float_msg(self_obj, message_str(SCRIPT_HBETH, 282), FLOAT_MSG_RED);
+end
+
+procedure Beth57
+begin
+	gsay_reply(SCRIPT_HBETH, 283);
+	call Beth60;
+end
+
+procedure Beth58
+begin
+	gsay_reply(SCRIPT_HBETH, 284);
+	call Beth60;
+end
+
+procedure Beth59
+begin
+	gsay_reply(SCRIPT_HBETH, 285);
+	call Beth60;
+end
+
+procedure Beth60
+begin
+	giq_option(4, SCRIPT_HBETH, 286, Beth35, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 287, Beth23, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HBETH, 288, BethEnd, NEUTRAL_REACTION);
+end
+
+procedure Beth61
+begin
+	gsay_reply(SCRIPT_HBETH, 289);
+	call Beth60;
+end
+
+procedure Beth62
+begin
+	gsay_message(SCRIPT_HBETH, random(290, 295), NEUTRAL_REACTION);
+	if (map_var(10) == 1) then begin
+		gsay_message(SCRIPT_HBETH, 297, GOOD_REACTION);
+		gdialog_mod_barter(5);
+		gsay_reply(SCRIPT_HBETH, 395);
+		giq_option(4, SCRIPT_HBETH, 396, BethEnd, NEUTRAL_REACTION);
+		giq_option(-3, SCRIPT_HBETH, 397, BethEnd, NEUTRAL_REACTION);
+	end
+	else begin
+		gdialog_mod_barter(-10);
+		gsay_reply(SCRIPT_HBETH, 395);
+		giq_option(4, SCRIPT_HBETH, 396, BethEnd, NEUTRAL_REACTION);
+		giq_option(-3, SCRIPT_HBETH, 397, BethEnd, NEUTRAL_REACTION);
+	end
+end
+
+procedure Beth63
+begin
+	gsay_message(SCRIPT_HBETH, random(300, 305), NEUTRAL_REACTION);
+	if (map_var(10) == 1) then begin
+		gsay_message(SCRIPT_HBETH, 297, GOOD_REACTION);
+		gdialog_mod_barter(5);
+		gsay_reply(SCRIPT_HBETH, 395);
+		giq_option(4, SCRIPT_HBETH, 396, BethEnd, NEUTRAL_REACTION);
+		giq_option(-3, SCRIPT_HBETH, 397, BethEnd, NEUTRAL_REACTION);
+	end
+	else begin
+		gdialog_mod_barter(-10);
+		gsay_reply(SCRIPT_HBETH, 395);
+		giq_option(4, SCRIPT_HBETH, 396, BethEnd, NEUTRAL_REACTION);
+		giq_option(-3, SCRIPT_HBETH, 397, BethEnd, NEUTRAL_REACTION);
+	end
+end
+
+procedure Beth64
+begin
+	if ((get_critter_stat(dude_obj, 3) >= 7) and (dude_is_male)) then begin
+		if ((((game_time / (10 * 60 * 60)) - local_var(11)) <= 1) and (dude_is_female)) then begin
+			gsay_reply(SCRIPT_HBETH, message_str(SCRIPT_HBETH, random(311, 314)) + " " + message_str(SCRIPT_HBETH, 315));
+		end
+		else begin
+			if (((game_time / (10 * 60 * 60)) - local_var(11)) <= 1) then begin
+				gsay_reply(SCRIPT_HBETH, message_str(SCRIPT_HBETH, random(311, 314)) + " " + message_str(SCRIPT_HBETH, 316));
+			end
+			else begin
+				if ((((game_time / (10 * 60 * 60)) - local_var(11)) > 1) and (((game_time / (10 * 60 * 60)) - local_var(11)) <= 96)) then begin
+					gsay_reply(SCRIPT_HBETH, message_str(SCRIPT_HBETH, random(311, 314)) + " " + message_str(SCRIPT_HBETH, 317));
+				end
+				else begin
+					if ((((game_time / (10 * 60 * 60)) - local_var(11)) > 96) and (((game_time / (10 * 60 * 60)) - local_var(11)) <= 168)) then begin
+						gsay_reply(SCRIPT_HBETH, message_str(SCRIPT_HBETH, random(311, 314)) + " " + message_str(SCRIPT_HBETH, 318));
+					end
+					else begin
+						if ((((game_time / (10 * 60 * 60)) - local_var(11)) > 168) and (((game_time / (10 * 60 * 60)) - local_var(11)) <= 336)) then begin
+							gsay_reply(SCRIPT_HBETH, message_str(SCRIPT_HBETH, random(311, 314)) + " " + message_str(SCRIPT_HBETH, 319));
+						end
+						else begin
+							if (((game_time / (10 * 60 * 60)) - local_var(11)) > 336) then begin
+								gsay_reply(SCRIPT_HBETH, message_str(SCRIPT_HBETH, random(311, 314)) + " " + message_str(SCRIPT_HBETH, 320));
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	else begin
+		if ((((game_time / (10 * 60 * 60)) - local_var(11)) <= 1) and (dude_is_female)) then begin
+			gsay_reply(SCRIPT_HBETH, message_str(SCRIPT_HBETH, random(311, 313)) + " " + message_str(SCRIPT_HBETH, 315));
+		end
+		else begin
+			if (((game_time / (10 * 60 * 60)) - local_var(11)) <= 1) then begin
+				gsay_reply(SCRIPT_HBETH, message_str(SCRIPT_HBETH, random(311, 313)) + " " + message_str(SCRIPT_HBETH, 316));
+			end
+			else begin
+				if ((((game_time / (10 * 60 * 60)) - local_var(11)) > 1) and (((game_time / (10 * 60 * 60)) - local_var(11)) <= 96)) then begin
+					gsay_reply(SCRIPT_HBETH, message_str(SCRIPT_HBETH, random(311, 313)) + " " + message_str(SCRIPT_HBETH, 317));
+				end
+				else begin
+					if ((((game_time / (10 * 60 * 60)) - local_var(11)) > 96) and (((game_time / (10 * 60 * 60)) - local_var(11)) <= 168)) then begin
+						gsay_reply(SCRIPT_HBETH, message_str(SCRIPT_HBETH, random(311, 313)) + " " + message_str(SCRIPT_HBETH, 318));
+					end
+					else begin
+						if ((((game_time / (10 * 60 * 60)) - local_var(11)) > 168) and (((game_time / (10 * 60 * 60)) - local_var(11)) <= 336)) then begin
+							gsay_reply(SCRIPT_HBETH, message_str(SCRIPT_HBETH, random(311, 313)) + " " + message_str(SCRIPT_HBETH, 319));
+						end
+						else begin
+							if (((game_time / (10 * 60 * 60)) - local_var(11)) > 336) then begin
+								gsay_reply(SCRIPT_HBETH, message_str(SCRIPT_HBETH, random(311, 313)) + " " + message_str(SCRIPT_HBETH, 320));
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	call Beth01;
+end
+
+procedure Beth65
+begin
+	gsay_reply(SCRIPT_HBETH, random(322, 329));
+	call Beth01;
+end
+
+procedure Beth66
+begin
+	if (local_var(12) == 0) then begin
+		set_local_var(12, 1);
+		gsay_reply(SCRIPT_HBETH, 330);
+	end
+	else begin
+		gsay_reply(SCRIPT_HBETH, 331);
+	end
+	giq_option(4, SCRIPT_HBETH, 332, Beth18, NEUTRAL_REACTION);
+	if (local_var(13) == 0) then begin
+		giq_option(4, SCRIPT_HBETH, 333, Beth67, NEUTRAL_REACTION);
+	end
+end
+
+procedure Beth67
+begin
+	variable LVar0 := 0;
+	set_local_var(13, 1);
+	if (dude_is_male) then begin
+		gsay_message(SCRIPT_HBETH, 334, GOOD_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_HBETH, 335, GOOD_REACTION);
+	end
+	LVar0 := create_object_sid(40, 0, 0, -1);
+	add_obj_to_inven(dude_obj, LVar0);
+	LVar0 := create_object_sid(40, 0, 0, -1);
+	add_obj_to_inven(dude_obj, LVar0);
+	LVar0 := create_object_sid(40, 0, 0, -1);
+	add_obj_to_inven(dude_obj, LVar0);
+	LVar0 := create_object_sid(40, 0, 0, -1);
+	add_obj_to_inven(dude_obj, LVar0);
+	LVar0 := create_object_sid(40, 0, 0, -1);
+	add_obj_to_inven(dude_obj, LVar0);
+	LVar0 := create_object_sid(40, 0, 0, -1);
+	add_obj_to_inven(dude_obj, LVar0);
+end
+
+procedure Beth68
+begin
+	set_global_var(GVAR_DECKER_KNOWN, 1);
+	gsay_reply(SCRIPT_HBETH, 399);
+	call Beth01;
+end
+
+procedure Beth69
+begin
+	set_global_var(GVAR_DECKER_KNOWN, 1);
+	gsay_reply(SCRIPT_HBETH, 399);
+	call Beth02;
+end
+
+procedure BethEnd
+begin
+end
+
+procedure Get_Stuff
+begin
+	move_obj_inven_to_obj(Beth_Box_Ptr, self_obj);
+end
+
+procedure Put_Stuff
+begin
+	move_obj_inven_to_obj(self_obj, Beth_Box_Ptr);
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	GVar2 := message_str(SCRIPT_MODREACT, random(100, 105));
+end
+
+procedure Beth02c
+begin
+	if ((local_var(5) == 0) and (global_var(GVAR_DECKER_STATUS) == 2) or ((local_var(6) == 0) and (global_var(GVAR_DECKER_STATUS) == 2)) or ((local_var(7) == 0) and (global_var(GVAR_KILL_JAIN) == 2)) or ((local_var(8) == 0) and (global_var(GVAR_MASTER_BLOWN) == 1)) or ((local_var(9) == 0) and (global_var(GVAR_VATS_BLOWN) == 1))) then begin
+		call Beth03;
+	end
+	else begin
+		call Beth07;
+	end
+end

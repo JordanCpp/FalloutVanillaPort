@@ -1,0 +1,56 @@
+{100}{}{Voici Fire.}
+{101}{}{}
+{102}{}{}
+{103}{}{Tu vois un membre des Ecorcheurs.}
+{104}{}{Tu vois un membre des Ecorcheurs.}
+{105}{}{Tu penses que ça pourrait être Books.}
+{106}{}{Tu penses que ça pourrait être Scars.}
+{107}{}{Tu penses que ça pourrait être Gunner.}
+{108}{}{Tu penses que ça pourrait être Twitch.}
+{109}{}{Tu penses que ça pourrait être Hammer.}
+{110}{}{Tu penses que ça pourrait être Razor.}
+{111}{}{T'veux quoi, blaireau ?}
+{112}{}{Euh.}
+{113}{}{Je veux devenir un Ecorcheur.}
+{114}{}{Qu'est ce que ça m'apporte d'obtenir la paix entre vous et le Sanctuaire ?}
+{115}{}{Ca ! *smack*}
+{116}{}{Rien. Désolé de t'avoir dérangé.}
+{117}{}{J'inspecte juste l'endroit.}
+{118}{}{Génial. Encore un débile. On dirait que t'es un Eventreur.}
+{119}{}{Rrrrr.}
+{120}{}{Arrrr.}
+{121}{}{Arrooo?}
+{122}{}{Tu les aimes pas non plus ? Peut-être qu'on peut t'embaucher pour un petit 'travail'.}
+{123}{}{Urroo.}
+{124}{}{Un nah.}
+{125}{}{Okay, parle à la nana en chef. Razor va te mettre direct au courant de c'qui a à faire.}
+{126}{}{Stupide et poule mouillée. Je vais devoir t'achever.}
+{127}{}{Donc t'es un Eventreur ! Je devrais être désolé pour ça, mais je savais déjà qu'ils étaient stupides. Bonne nuit !}
+{128}{}{Les Eventreurs. Ces ?inbreeds? de l'autre côté de la ville. T'occupe. T'es trop stupide pour savoir quoi que ce soit.}
+{129}{}{Tu veux devenir un Ecorcheur ? Bonne chance. Mais si tu arrives à trouver Razor, parles en lui. Peut-être qu'elle te laissera embarquer.}
+{130}{}{Okay, merci.}
+{131}{}{Alors, je ne veux pas me joindre à vous !}
+{132}{}{Qu'est ce que t'entends par 'embarquer' ?}
+{133}{}{Tu ne peux pas juste me proclamer Ecorcheur ?}
+{134}{}{Ta mère ne t'a jamais voulu, et nous non plus.}
+{135}{}{Simple. Tu devras tuer quelqu'un pour rentrer. Elle te dira qui tu dois abattre.}
+{136}{}{Okay, merci.}
+{137}{}{Oublie. Je ne veux pas faire partie de ton gang stupide.}
+{138}{}{Non. Je ne peux pas. C'est pas moi qui dirige. Je suis honnête avec Razor.}
+{139}{}{Simple. Massacre nos ennemis, et on laissera tranquille le Sanctuaire un moment.}
+{140}{}{Qui sont vos ennemis ?}
+{141}{}{Ca semble juste. Quelle preuve tu me donneras ?}
+{142}{}{Se battre, c'est mal, m'voyez ! Je ne le ferais pas.}
+{143}{}{Les Régulateurs. Ils contrôlent le Sanctuaire. Ils sont pas cons et très dangereux.}
+{144}{}{Okay, je tuerais les Régulateurs.}
+#traduction qui dépend du contexte...
+{145}{}{? Aucune importance. ?}
+{146}{}{Si tu prévois de faire ça, tu devrais en informer Razor. Autrement, elle aura ta tête avant que tu ne sortes d'ici.}
+{147}{}{Fais comme tu veux. Salut.}
+{148}{}{Je ne fais pas d'arrangements. Je fais juste des suggestions. Parle à Razor si tu veux faire affaire.}
+{149}{}{Alors te tuer maintenant devrait t'épargner de longues années de souffrance !}
+{150}{}{Alors inspecte ça !}
+{151}{}{Dégage si tu veux vivre.}
+{152}{}{Silence. On essaye de s'approcher des Eventreurs en douce.}
+{153}{}{Si t'as la tête, apporte la à Razor. Elle aime toujours jouer au foot. Sinon, dégage !}
+{154}{}{Yo, mon pote !}

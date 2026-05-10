@@ -1,0 +1,869 @@
+#include <define.h>
+//#include <updatmap.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+
+procedure start;
+#include <push.h>
+procedure stranger;
+procedure Lighting;
+procedure Place_critter;
+procedure hunters;
+procedure Coast1;
+procedure Coast2;
+procedure Coast3;
+procedure Coast4;
+procedure Coast5;
+procedure Coast6;
+procedure choose_start;
+procedure add_party;
+procedure update_party;
+procedure remove_party;
+
+variable party_elevation := 0;
+variable dude_start_hex := 0;
+
+export variable Ian_ptr := 0;
+export variable Dog_ptr := 0;
+export variable Tycho_ptr := 0;
+export variable Katja_ptr := 0;
+export variable Tandi_ptr := 0;
+
+variable Tot_Critter_A := 0;
+variable Tot_Critter_B := 0;
+variable Encounter_Num := 0;
+variable dude_pos := 0;
+variable dude_rot := 0;
+variable Item := 0;
+variable Dude_tile := 0;
+variable group_angle := 0;
+variable Ranger_rerolls := 0;
+variable Critter := 0;
+variable Inner_ring := 0;
+variable Outer_ring := 0;
+variable Critter_direction := 0;
+variable Critter_type := 0;
+variable Critter_script := 4294967295;
+variable victim := 0;
+variable restrict_range := 0;
+variable Critter_tile := 0;
+variable MapX := 0;
+variable MapY := 0;
+
+procedure Darkness;
+procedure Invasion;
+
+procedure start
+begin
+  if (script_action == map_enter_proc) then
+  begin
+    dude_pos := random(0, 2);
+    dude_rot := random(0, 5);
+    if ((global_var(GVAR_LOAD_MAP_INDEX) != 1) and metarule(14, 0)) then
+    begin
+      Ranger_rerolls := has_trait(0, dude_obj, 47);
+      set_global_var(GVAR_SAVE_TANDI_5, 0);
+      while (Encounter_Num == 0) do
+      begin
+        Encounter_Num := random(1, 6) + random(1, 6) + random(1, 6);
+        if (get_critter_stat(dude_obj, 6) > 8) then
+          Encounter_Num := Encounter_Num + 2;
+        else if (get_critter_stat(dude_obj, 6) > 7) then
+          Encounter_Num := Encounter_Num + 1;
+        else if (get_critter_stat(dude_obj, 6) < 3) then
+          Encounter_Num := Encounter_Num - 1;
+        if ((global_var(GVAR_HUNTER_STATUS) != 3) and (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) and random(0, 1)) then
+          Encounter_Num := 7;
+        else if (Encounter_Num <= 3) then
+          Encounter_Num := 1;
+        else if (Encounter_Num <= 5) then
+          Encounter_Num := 2;
+        else if (Encounter_Num <= 8) then
+          Encounter_Num := 3;
+        else if (Encounter_Num <= 12) then
+          Encounter_Num := 4;
+        else if (Encounter_Num <= 15) then
+          Encounter_Num := 5;
+        else
+          Encounter_Num := 6;
+        if (Ranger_rerolls) then
+        begin
+          if ((Encounter_Num == 1) or (Encounter_Num == 2) or (Encounter_Num == 4) or (Encounter_Num == 5) or (Encounter_Num == 7)) then
+            Encounter_Num := 0;
+          Ranger_rerolls := Ranger_rerolls - 1;
+        end
+      end
+      if (global_var(GVAR_WATER_THIEF_8) > 0) then
+      begin
+        Encounter_Num := global_var(GVAR_WATER_THIEF_8);
+        set_global_var(GVAR_WATER_THIEF_8, 0);
+        debug_msg("Coast encounter type: " + Encounter_Num);
+      end
+      call choose_start;
+      Dude_tile := tile_num(dude_obj);
+      if (Encounter_Num == 1) then
+        call Coast1;
+      else if (Encounter_Num == 2) then
+        call Coast2;
+      else if (Encounter_Num == 3) then
+        call Coast3;
+      else if (Encounter_Num == 4) then
+        call Coast4;
+      else if (Encounter_Num == 5) then
+        call Coast5;
+      else if (Encounter_Num == 6) then
+        call Coast6;
+      else
+        call hunters;
+    end
+    else if (metarule(14, 0)) then
+    begin
+      if (dude_pos == 0) then
+        override_map_start(92, 98, 0, dude_rot);
+      else if (dude_pos == 1) then
+        override_map_start(95, 109, 0, dude_rot);
+      else
+        override_map_start(92, 101, 0, dude_rot);
+    end
+    call Lighting;
+  end
+  else if (script_action == map_update_proc) then
+    call Lighting;
+end
+
+procedure stranger
+begin
+  if (has_trait(0, dude_obj, 46) and (global_var(GVAR_STRANGER_STATUS) == 0) and random(0, 1)) then
+  begin
+    Critter_type := 16777520;
+    Critter_script := 856;
+    Critter_direction := random(0, 1);
+    Outer_ring := 7;
+    Inner_ring := 4;
+    call Place_critter;
+    Critter_direction := dude_rot + (random(0, 2) - 1);
+    while (Critter_direction < 0) do
+      Critter_direction := Critter_direction + 6;
+    if (Critter_direction > 5) then
+      Critter_direction := Critter_direction % 6;
+    anim(Critter, 1000, Critter_direction);
+    Item := create_object_sid(40, 0, 0, -1);
+    add_mult_objs_to_inven(Critter, Item, 2);
+    Item := create_object_sid(116, 0, 0, -1);
+    add_obj_to_inven(Critter, Item);
+    Item := item_caps_adjust(Critter, random(7, 30) * ((2 * has_trait(0, dude_obj, 20)) + 1));
+    set_global_var(GVAR_WATER_THIEF_1, 12);
+  end
+end
+
+procedure Lighting
+begin
+  variable LVar1 := 0;
+
+  LVar1 := game_time_hour;
+  if ((LVar1 >= 600) and (LVar1 < 700)) then
+    set_light_level(LVar1 - 600 + 40);
+  else if ((LVar1 >= 700) and (LVar1 < 1800)) then
+    set_light_level(100);
+  else if ((LVar1 >= 1800) and (LVar1 < 1900)) then
+    set_light_level(100 - (LVar1 - 1800));
+  else
+    set_light_level(40);
+end
+
+procedure Place_critter
+begin
+  variable LVar1 := 0;
+  variable LVar2 := 0;
+  variable LVar3 := 0;
+
+  Critter := create_object_sid(Critter_type, 0, 0, Critter_script);
+  LVar3 := random(Inner_ring, Outer_ring);
+  if (restrict_range) then
+    LVar1 := random(0, 2);
+  else
+    LVar1 := random(0, 5);
+  Critter_tile := tile_num_in_direction(Dude_tile, Critter_direction, LVar3);
+  LVar2 := tile_num_in_direction(Critter_tile, LVar1, LVar3 / 2);
+  if ((tile_distance(Dude_tile, LVar2) <= Outer_ring) and (tile_distance(Dude_tile, LVar2) >= Inner_ring)) then
+    Critter_tile := tile_num_in_direction(Critter_tile, LVar1, LVar3 / 2);
+  critter_attempt_placement(Critter, Critter_tile, 0);
+end
+
+procedure hunters
+begin
+  Inner_ring := 8;
+  Outer_ring := 5;
+  group_angle := random(0, 5);
+  Critter_direction := group_angle + random(0, 3 * 2) - 3;
+  while (Critter_direction < 0) do
+    Critter_direction := Critter_direction + 6;
+  if (Critter_direction > 5) then
+    Critter_direction := Critter_direction % 6;
+  Critter_type := 16777349;
+  Critter_script := 241;
+  call Place_critter;
+  anim(Critter, 1000, rotation_to_tile(tile_num(Critter), tile_num(dude_obj)));
+  Item := create_object_sid(23, 0, 0, -1);
+  add_obj_to_inven(Critter, Item);
+  Item := create_object_sid(36, 0, 0, -1);
+  add_mult_objs_to_inven(Critter, Item, 4 * (has_trait(0, dude_obj, 40) + 1));
+  Item := create_object_sid(17, 0, 0, -1);
+  add_obj_to_inven(Critter, Item);
+  Item := item_caps_adjust(Critter, random(5, 30) * ((2 * has_trait(0, dude_obj, 20)) + 1));
+  Item := create_object_sid(144, 0, 0, -1);
+  add_mult_objs_to_inven(Critter, Item, 2);
+  Critter_direction := group_angle + random(0, 3 * 2) - 3;
+  while (Critter_direction < 0) do
+    Critter_direction := Critter_direction + 6;
+  if (Critter_direction > 5) then
+    Critter_direction := Critter_direction % 6;
+  Critter_type := 16777467;
+  Critter_script := 383;
+  call Place_critter;
+  anim(Critter, 1000, rotation_to_tile(tile_num(Critter), tile_num(dude_obj)));
+  Item := create_object_sid(7, 0, 0, -1);
+  add_obj_to_inven(Critter, Item);
+  Item := create_object_sid(2, 0, 0, -1);
+  add_obj_to_inven(Critter, Item);
+  if (random(0, 2) == 0) then
+    Item := item_caps_adjust(Critter, random(5, 30) * ((2 * has_trait(0, dude_obj, 20)) + 1));
+  Critter_direction := group_angle + random(0, 3 * 2) - 3;
+  while (Critter_direction < 0) do
+    Critter_direction := Critter_direction + 6;
+  if (Critter_direction > 5) then
+    Critter_direction := Critter_direction % 6;
+  Critter_type := 16777472;
+  Critter_script := 383;
+  call Place_critter;
+  anim(Critter, 1000, rotation_to_tile(tile_num(Critter), tile_num(dude_obj)));
+  Item := create_object_sid(143, 0, 0, -1);
+  add_obj_to_inven(Critter, Item);
+  Item := create_object_sid(34, 0, 0, -1);
+  add_mult_objs_to_inven(Critter, Item, 3 * (has_trait(0, dude_obj, 40) + 1));
+  Item := create_object_sid(2, 0, 0, -1);
+  add_obj_to_inven(Critter, Item);
+  Item := create_object_sid(14, 0, 0, -1);
+  add_mult_objs_to_inven(Critter, Item, 2 * (has_trait(0, dude_obj, 40) + 1));
+  if (random(0, 2) == 0) then
+    Item := item_caps_adjust(Critter, random(5, 40) * ((2 * has_trait(0, dude_obj, 20)) + 1));
+  Critter_direction := group_angle + random(0, 3 * 2) - 3;
+  while (Critter_direction < 0) do
+    Critter_direction := Critter_direction + 6;
+  if (Critter_direction > 5) then
+    Critter_direction := Critter_direction % 6;
+  Critter_type := 16777462;
+  Critter_script := 383;
+  call Place_critter;
+  anim(Critter, 1000, rotation_to_tile(tile_num(Critter), tile_num(dude_obj)));
+  Item := create_object_sid(18, 0, 0, -1);
+  add_obj_to_inven(Critter, Item);
+  Item := create_object_sid(31, 0, 0, -1);
+  add_mult_objs_to_inven(Critter, Item, 2 * (has_trait(0, dude_obj, 40) + 1));
+  Item := create_object_sid(2, 0, 0, -1);
+  add_obj_to_inven(Critter, Item);
+  if (random(0, 2) == 0) then
+    Item := item_caps_adjust(Critter, random(5, 30) * ((2 * has_trait(0, dude_obj, 20)) + 1));
+  call stranger;
+end
+
+procedure Coast1
+begin
+  display_msg(message_str(SCRIPT_RNDCOAST, 100));
+  display_msg(message_str(SCRIPT_RNDCOAST, 104));
+  Outer_ring := (get_critter_stat(dude_obj, 1) / 3) + 7;
+  Inner_ring := (get_critter_stat(dude_obj, 1) / 3) + 4;
+  Tot_Critter_A := random(2, 4);
+  Critter_type := 16777261;
+  Critter_script := 953;
+  if (restrict_range) then
+    group_angle := random(0, 1);
+  else
+    group_angle := random(0, 5);
+  while (Tot_Critter_A) do
+  begin
+    Critter_direction := group_angle + (random(0, 1 * 2) - 1);
+    while (Critter_direction < 0) do
+      Critter_direction := Critter_direction + 6;
+    if (Critter_direction > 5) then
+      Critter_direction := Critter_direction % 6;
+    call Place_critter;
+    anim(Critter, 1000, rotation_to_tile(tile_num(Critter), tile_num(dude_obj)));
+    Tot_Critter_A := Tot_Critter_A - 1;
+  end
+  Outer_ring := 3;
+  Inner_ring := 2;
+  Critter_type := 16777261;
+  Critter_script := 953;
+  if (restrict_range) then
+    Critter_direction := random(0, 1);
+  else
+    Critter_direction := group_angle + (random(0, 1 * 2) - 1);
+  while (Critter_direction < 0) do
+    Critter_direction := Critter_direction + 6;
+  if (Critter_direction > 5) then
+    Critter_direction := Critter_direction % 6;
+  call Place_critter;
+  anim(Critter, 1000, rotation_to_tile(tile_num(Critter), tile_num(dude_obj)));
+  Outer_ring := 6;
+  Inner_ring := 3;
+  Critter_type := 16777254;
+  Critter_script := -1;
+  if (restrict_range) then
+    Critter_direction := random(0, 1);
+  else
+    Critter_direction := random(0, 5);
+  call Place_critter;
+  Item := create_object_sid(40, 0, 0, -1);
+  add_obj_to_inven(Critter, Item);
+  Item := create_object_sid(34, 0, 0, -1);
+  add_mult_objs_to_inven(Critter, Item, has_trait(0, dude_obj, 40) + 1);
+  Item := item_caps_adjust(Critter, random(4, 25) * (1 + (2 * has_trait(0, dude_obj, 20))));
+  kill_critter(Critter, 61);
+  call stranger;
+end
+
+procedure Coast2
+begin
+  display_msg(message_str(SCRIPT_RNDDESRT, 313));
+  Tot_Critter_A := random(4, 7);
+  if ((game_time_hour >= 700) and (game_time_hour < 1800)) then
+  begin
+    Outer_ring := 6;
+    Inner_ring := 3;
+  end
+  else
+  begin
+    Outer_ring := 4;
+    Inner_ring := 3;
+  end
+  Critter_type := 16777284;
+  Critter_script := 735;
+  while (Tot_Critter_A) do
+  begin
+    Critter_direction := random(1, 2);
+    call Place_critter;
+    anim(Critter, 1000, rotation_to_tile(tile_num(Critter), tile_num(dude_obj)));
+    Tot_Critter_A := Tot_Critter_A - 1;
+  end
+  call stranger;
+end
+
+procedure Coast3
+begin
+  display_msg(message_str(SCRIPT_RNDCOAST, 101));
+  Outer_ring := 4;
+  Inner_ring := 1;
+  Tot_Critter_A := random(8, 12);
+  Critter_type := 16777264;
+  Critter_script := 222;
+  if (restrict_range) then
+    group_angle := random(0, 1);
+  else
+    group_angle := random(0, 5);
+  while (Tot_Critter_A) do
+  begin
+    if (restrict_range) then
+      Critter_direction := group_angle;
+    else
+      Critter_direction := group_angle + random(0, 1 * 2) - 1;
+    while (Critter_direction < 0) do
+      Critter_direction := Critter_direction + 6;
+    if (Critter_direction > 5) then
+      Critter_direction := Critter_direction % 6;
+    call Place_critter;
+    anim(Critter, 1000, rotation_to_tile(tile_num(Critter), tile_num(dude_obj)));
+    Tot_Critter_A := Tot_Critter_A - 1;
+  end
+  call stranger;
+end
+
+procedure Coast4
+begin
+  display_msg(message_str(SCRIPT_RNDCOAST, 102));
+  set_global_var(GVAR_WATER_THIEF_3, 0);
+  set_global_var(GVAR_WATER_THIEF_4, 0);
+  set_global_var(GVAR_WATER_THIEF_5, 0);
+  group_angle := random(0, 2);
+  MapX := (Dude_tile % 200) + 8;
+  MapY := (Dude_tile / 200) + 6;
+  if ((game_time_hour >= 1900) or (game_time_hour < 600)) then
+  begin
+    Critter := create_object_sid(33555044, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 4) * 200) + (MapX - 2), 0);
+    Critter := create_object_sid(33555044, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 6) * 200) + (MapX + 4), 0);
+    Critter := create_object_sid(33554640, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 5) * 200) + (MapX - 4), 0);
+    Critter := create_object_sid(33554640, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 6) * 200) + (MapX - 7), 0);
+    Critter := create_object_sid(33554641, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 7) * 200) + MapX, 0);
+    Critter := create_object_sid(33554640, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 4) * 200) + (MapX + 2), 0);
+    Critter := create_object_sid(93, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 3) * 200) + (MapX + 3), 0);
+  end
+  else
+  begin
+    Critter := create_object_sid(33554710, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 4) * 200) + (MapX - 3), 0);
+    Critter := create_object_sid(33554711, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 4) * 200) + (MapX - 3), 0);
+    Critter := create_object_sid(33554712, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 4) * 200) + (MapX - 3), 0);
+    Critter := create_object_sid(33554866, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 4) * 200) + (MapX - 3), 0);
+    Critter := create_object_sid(33554710, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 6) * 200) + (MapX + 4), 0);
+    Critter := create_object_sid(33554711, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 6) * 200) + (MapX + 4), 0);
+    Critter := create_object_sid(33554712, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 6) * 200) + (MapX + 4), 0);
+    Critter := create_object_sid(33554866, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 6) * 200) + (MapX + 4), 0);
+    Critter := create_object_sid(33554435, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 5) * 200) + (MapX + 1), 0);
+    Critter := create_object_sid(33554529, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 5) * 200) + (MapX + 2), 0);
+    Critter := create_object_sid(33554530, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 7) * 200) + (MapX + 1), 0);
+    Critter := create_object_sid(33554528, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 2) * 200) + MapX, 0);
+    Critter := create_object_sid(33554527, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 5) * 200) + (MapX - 1), 0);
+    Critter := create_object_sid(33554833 + 1, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 2) * 200) + (MapX - 3), 0);
+    Critter := create_object_sid(33554833 + 1, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 8) * 200) + (MapX + 5), 0);
+    Critter := create_object_sid(33554833 + 2, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 4) * 200) + (MapX + 4), 0);
+    Critter := create_object_sid(46, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 7) * 200) + (MapX + 3), 0);
+    Critter := create_object_sid(93, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 3) * 200) + (MapX + 3), 0);
+  end
+  Outer_ring := 9;
+  Inner_ring := 6;
+  Tot_Critter_A := random(3, 4);
+  set_global_var(GVAR_WATER_THIEF_2, Tot_Critter_A);
+  Critter_script := 750;
+  while (Tot_Critter_A) do
+  begin
+    if (random(0, 1)) then
+    begin
+      Critter_type := 16777247;
+      Item := create_object_sid(7, 0, 0, -1);
+      add_obj_to_inven(Critter, Item);
+    end
+    else
+    begin
+      Critter_type := 16777419;
+      Item := create_object_sid(21, 0, 0, -1);
+      add_obj_to_inven(Critter, Item);
+    end
+    Critter_direction := group_angle + (random(0, 2) - 1);
+    while (Critter_direction < 0) do
+      Critter_direction := Critter_direction + 6;
+    if (Critter_direction > 5) then
+      Critter_direction := Critter_direction % 6;
+    call Place_critter;
+    if (group_angle == 0) then
+      Critter_direction := 3;
+    else if (group_angle == 1) then
+      Critter_direction := 4;
+    else if (group_angle == 2) then
+      Critter_direction := 5;
+    else if (group_angle == 3) then
+      Critter_direction := 0;
+    else if (group_angle == 4) then
+      Critter_direction := 1;
+    else if (group_angle == 5) then
+      Critter_direction := 2;
+    if (random(0, 1) == 0) then
+    begin
+      Critter_direction := Critter_direction + (random(0, 2) - 1);
+      while (Critter_direction < 0) do
+        Critter_direction := Critter_direction + 6;
+      if (Critter_direction > 5) then
+        Critter_direction := Critter_direction % 6;
+    end
+    anim(Critter, 1000, Critter_direction);
+    if (random(0, 2) == 0) then
+      Item := item_caps_adjust(Critter, random(6, 15) * (1 + (1 * has_trait(0, dude_obj, 20))));
+    if (random(0, 1)) then
+    begin
+      if (random(0, 2) == 0) then
+        Item := create_object_sid(125, 0, 0, -1);
+      else
+        Item := create_object_sid(124, 0, 0, -1);
+      add_obj_to_inven(Critter, Item);
+    end
+    Tot_Critter_A := Tot_Critter_A - 1;
+  end
+  victim := Critter;
+  Critter_script := 713;
+  if (group_angle == 0) then
+    group_angle := 3;
+  else if (group_angle == 1) then
+    group_angle := 4;
+  else if (group_angle == 2) then
+    group_angle := 5;
+  else if (group_angle == 3) then
+    group_angle := 0;
+  else if (group_angle == 4) then
+    group_angle := 1;
+  else if (group_angle == 5) then
+    group_angle := 2;
+  Tot_Critter_A := random(3, 5);
+  set_global_var(GVAR_WATER_THIEF_1, 6);
+  while (Tot_Critter_A) do
+  begin
+    Critter_direction := random(0, 5);
+    if (Critter_direction == 0) then
+      Critter_type := 16777386;
+    else if (Critter_direction == 1) then
+      Critter_type := 16777248;
+    else if (Critter_direction == 2) then
+      Critter_type := 16777387;
+    else if (Critter_direction == 3) then
+      Critter_type := 16777388;
+    else
+      Critter_type := 16777236;
+    Critter_direction := group_angle + (random(0, 2) - 1);
+    while (Critter_direction < 0) do
+      Critter_direction := Critter_direction + 6;
+    if (Critter_direction > 5) then
+      Critter_direction := Critter_direction % 6;
+    call Place_critter;
+    if (random(0, 1)) then
+    begin
+      Item := create_object_sid(46, 0, 0, -1);
+      add_obj_to_inven(Critter, Item);
+    end
+    if (random(0, 2) == 0) then
+      Item := item_caps_adjust(Critter, random(2, 4) * (1 + (1 * has_trait(0, dude_obj, 20))));
+    if (group_angle == 0) then
+      Critter_direction := 3;
+    else if (group_angle == 1) then
+      Critter_direction := 4;
+    else if (group_angle == 2) then
+      Critter_direction := 5;
+    else if (group_angle == 3) then
+      Critter_direction := 0;
+    else if (group_angle == 4) then
+      Critter_direction := 1;
+    else if (group_angle == 5) then
+      Critter_direction := 2;
+    if (random(0, 2) == 0) then
+    begin
+      Critter_direction := Critter_direction + (random(0, 2) - 1);
+      while (Critter_direction < 0) do
+        Critter_direction := Critter_direction + 6;
+      if (Critter_direction > 5) then
+        Critter_direction := Critter_direction % 6;
+    end
+    anim(Critter, 1000, Critter_direction);
+    Tot_Critter_A := Tot_Critter_A - 1;
+  end
+  Critter_type := 16777258;
+  Critter_script := 713;
+  set_global_var(GVAR_WATER_THIEF_1, 68);
+  Tot_Critter_A := random(1, 2);
+  while (Tot_Critter_A) do
+  begin
+    Critter_direction := group_angle + (random(0, 2) - 1);
+    while (Critter_direction < 0) do
+      Critter_direction := Critter_direction + 6;
+    if (Critter_direction > 5) then
+      Critter_direction := Critter_direction % 6;
+    call Place_critter;
+    if (random(0, 2) == 0) then
+    begin
+      Item := create_object_sid(163, 0, 0, -1);
+      add_obj_to_inven(Critter, Item);
+    end
+    if (random(0, 2) == 0) then
+      Item := item_caps_adjust(Critter, random(2, 4) * (1 + (1 * has_trait(0, dude_obj, 20))));
+    if (group_angle == 0) then
+      Critter_direction := 3;
+    else if (group_angle == 1) then
+      Critter_direction := 4;
+    else if (group_angle == 2) then
+      Critter_direction := 5;
+    else if (group_angle == 3) then
+      Critter_direction := 0;
+    else if (group_angle == 4) then
+      Critter_direction := 1;
+    else if (group_angle == 5) then
+      Critter_direction := 2;
+    if (random(0, 2) == 0) then
+    begin
+      Critter_direction := Critter_direction + (random(0, 2) - 1);
+      while (Critter_direction < 0) do
+        Critter_direction := Critter_direction + 6;
+      if (Critter_direction > 5) then
+        Critter_direction := Critter_direction % 6;
+    end
+    anim(Critter, 1000, Critter_direction);
+    Tot_Critter_A := Tot_Critter_A - 1;
+  end
+  Critter_type := 16777252;
+  Critter_script := 713;
+  set_global_var(GVAR_WATER_THIEF_1, 8);
+  Critter_direction := group_angle + (random(0, 2) - 1);
+  while (Critter_direction < 0) do
+    Critter_direction := Critter_direction + 6;
+  if (Critter_direction > 5) then
+    Critter_direction := Critter_direction % 6;
+  call Place_critter;
+  if (group_angle == 0) then
+    Critter_direction := 3;
+  else if (group_angle == 1) then
+    Critter_direction := 4;
+  else if (group_angle == 2) then
+    Critter_direction := 5;
+  else if (group_angle == 3) then
+    Critter_direction := 0;
+  else if (group_angle == 4) then
+    Critter_direction := 1;
+  else if (group_angle == 5) then
+    Critter_direction := 2;
+  if (random(0, 2) == 0) then
+  begin
+    Critter_direction := Critter_direction + (random(0, 2) - 1);
+    while (Critter_direction < 0) do
+      Critter_direction := Critter_direction + 6;
+    if (Critter_direction > 5) then
+      Critter_direction := Critter_direction % 6;
+  end
+  anim(Critter, 1000, Critter_direction);
+  attack_setup(victim, Critter);
+  call stranger;
+end
+
+procedure Coast5
+begin
+  display_msg(message_str(SCRIPT_RNDDESRT, 313));
+  Outer_ring := 6;
+  Inner_ring := 4;
+  Tot_Critter_A := random(4, 6);
+  Critter_type := 16777284;
+  Critter_script := 735;
+  if (restrict_range) then
+    group_angle := random(1, 2);
+  else
+    group_angle := random(0, 5);
+  while (Tot_Critter_A) do
+  begin
+    if (restrict_range) then
+      Critter_direction := group_angle;
+    else
+      Critter_direction := group_angle + random(0, 1 * 2) - 1;
+    while (Critter_direction < 0) do
+      Critter_direction := Critter_direction + 6;
+    if (Critter_direction > 5) then
+      Critter_direction := Critter_direction % 6;
+    call Place_critter;
+    anim(Critter, 1000, rotation_to_tile(tile_num(Critter), tile_num(dude_obj)));
+    Tot_Critter_A := Tot_Critter_A - 1;
+  end
+  call stranger;
+end
+
+procedure Coast6
+begin
+  display_msg(message_str(SCRIPT_RNDCOAST, 103));
+  if ((game_time_hour >= 1900) or (game_time_hour < 600)) then
+  begin
+    Critter := create_object_sid(33554640, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY - 4) * 200) + (MapX + 2), 0);
+    Critter := create_object_sid(33554641, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 2) * 200) + (MapX + 2), 0);
+    Critter := create_object_sid(33555044, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY - 1) * 200) + (MapX + 2), 0);
+    Critter := create_object_sid(33554747, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 6) * 200) + (MapX + 6), 0);
+  end
+  else
+  begin
+    Critter := create_object_sid(33554833 + 1, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY - 3) * 200) + (MapX + 3), 0);
+    Critter := create_object_sid(33554833 + 1, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 2) * 200) + (MapX + 2), 0);
+    Critter := create_object_sid(33554710, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY - 1) * 200) + (MapX + 2), 0);
+    Critter := create_object_sid(33554711, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY - 1) * 200) + (MapX + 2), 0);
+    Critter := create_object_sid(33554712, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY - 1) * 200) + (MapX + 2), 0);
+    Critter := create_object_sid(33554866, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY - 1) * 200) + (MapX + 2), 0);
+    Critter := create_object_sid(33554747, 0, 0, -1);
+    critter_attempt_placement(Critter, ((MapY + 6) * 200) + (MapX + 6), 0);
+  end
+  Critter := create_object_sid(16777229, 0, 0, 644);
+  critter_attempt_placement(Critter, ((MapY + 2) * 200) + (MapX + 11), 0);
+  anim(Critter, 1000, 3);
+  Item := create_object_sid(7, 0, 0, -1);
+  add_obj_to_inven(Critter, Item);
+  Item := create_object_sid(109, 0, 0, -1);
+  add_obj_to_inven(Critter, Item);
+  Item := create_object_sid(18, 0, 0, -1);
+  add_obj_to_inven(Critter, Item);
+  Item := create_object_sid(31, 0, 0, -1);
+  add_mult_objs_to_inven(Critter, Item, 2);
+  Item := item_caps_adjust(Critter, random(50, 100) * (has_trait(0, dude_obj, 20) + 1));
+  Item := create_object_sid(81, 0, 0, -1);
+  add_mult_objs_to_inven(Critter, Item, 3);
+  Critter := create_object_sid(16777258, 0, 0, 645);
+  critter_attempt_placement(Critter, ((MapY + 4) * 200) + (MapX + 10), 0);
+  anim(Critter, 1000, 3);
+  Item := create_object_sid(7, 0, 0, -1);
+  add_obj_to_inven(Critter, Item);
+  Item := create_object_sid(103, 0, 0, -1);
+  add_obj_to_inven(Critter, Item);
+  Item := item_caps_adjust(Critter, random(2, 3) * (has_trait(0, dude_obj, 20) + 1));
+end
+
+procedure choose_start
+begin
+  if ((Encounter_Num == 2) or (Encounter_Num == 5)) then
+    override_map_start(92, 97, 0, dude_rot);
+  else if (Encounter_Num == 6) then
+  begin
+    if (cur_map_index == MAP_COAST1) then
+    begin
+      MapX := 113;
+      MapY := 93;
+      override_map_start(MapX, MapY, 0, dude_rot);
+    end
+    else
+    begin
+      MapX := 103;
+      MapY := 94;
+      override_map_start(MapX, MapY, 0, dude_rot);
+    end
+  end
+  else if ((Encounter_Num == 4) or (Encounter_Num == 7)) then
+    override_map_start(94, 98, 0, dude_rot);
+  else if (dude_pos == 0) then
+    override_map_start(99, 102, 0, dude_rot);
+  else
+  begin
+    restrict_range := 1;
+    if (dude_pos == 1) then
+      override_map_start(108, 94, 0, dude_rot);
+    else
+      override_map_start(111, 104, 0, dude_rot);
+  end
+end
+
+procedure add_party
+begin
+  variable LVar1 := 0;
+  variable LVar2 := 0;
+
+  party_elevation := elevation(dude_obj);
+  if (global_var(GVAR_TANDI_STATUS) == 5) then
+  begin
+    if (Tandi_ptr == 0) then
+    begin
+    end
+    critter_add_trait(Tandi_ptr, 1, 6, 0);
+  end
+end
+
+procedure update_party
+begin
+  variable LVar1 := 0;
+  variable LVar2 := 0;
+
+  if (elevation(dude_obj) != party_elevation) then
+  begin
+    party_elevation := elevation(dude_obj);
+    if (global_var(GVAR_IAN_STATUS) == 2) then
+    begin
+      if (Ian_ptr == 0) then
+      begin
+      end
+      else
+        move_to(Ian_ptr, tile_num_in_direction(tile_num(dude_obj), 1, 2), elevation(dude_obj));
+    end
+    if (global_var(GVAR_DOG_EMPATHY)) then
+    begin
+      if (Dog_ptr == 0) then
+      begin
+      end
+      else
+        move_to(Dog_ptr, tile_num_in_direction(tile_num(dude_obj), 2, 1), elevation(dude_obj));
+    end
+    if (global_var(GVAR_HERNANDEZ_STATUS) == 2) then
+    begin
+      if (Tycho_ptr == 0) then
+      begin
+      end
+      else
+        move_to(Tycho_ptr, tile_num_in_direction(tile_num(dude_obj), 3, 2), elevation(dude_obj));
+    end
+    if (global_var(GVAR_KATJA_STATUS) == 2) then
+    begin
+      if (Katja_ptr == 0) then
+      begin
+      end
+      else
+        move_to(Katja_ptr, tile_num_in_direction(tile_num(dude_obj), 4, 2), elevation(dude_obj));
+    end
+    if (global_var(GVAR_TANDI_STATUS) == 5) then
+    begin
+      if (Tandi_ptr == 0) then
+      begin
+      end
+      else
+        move_to(Tandi_ptr, tile_num_in_direction(tile_num(dude_obj), 4, 4), elevation(dude_obj));
+    end
+  end
+end
+
+procedure remove_party
+begin
+  if (global_var(GVAR_IAN_STATUS) == 2) then
+    set_global_var(GVAR_IAN_STATUS, 2);
+  if (global_var(GVAR_DOG_EMPATHY)) then
+    set_global_var(GVAR_DOG_EMPATHY, 1);
+  if (global_var(GVAR_HERNANDEZ_STATUS) == 2) then
+    set_global_var(GVAR_HERNANDEZ_STATUS, 2);
+  if (global_var(GVAR_KATJA_STATUS) == 2) then
+    set_global_var(GVAR_KATJA_STATUS, 2);
+  if (global_var(GVAR_TANDI_STATUS) == 5) then
+  begin
+  end
+end
+
+procedure Darkness
+begin
+  set_light_level(40);
+end
+
+procedure Invasion
+begin
+  if (not(global_var(GVAR_MASTER_BLOWN) == 2)) then
+  begin
+    if (global_var(GVAR_NECROPOLIS_INVADED_DATE) > (game_time / (10 * 60 * 60 * 24))) then
+      set_global_var(GVAR_NECROPOLIS_INVADED, 1);
+    if (global_var(GVAR_THE_HUB_INVADED_DATE) > (game_time / (10 * 60 * 60 * 24))) then
+      set_global_var(GVAR_HUB_INVADED, 1);
+    if (global_var(GVAR_BROTHERHOOD_INVADED_DATE) > (game_time / (10 * 60 * 60 * 24))) then
+      set_global_var(GVAR_BROTHERHOOD_INVADED, 1);
+    if (global_var(GVAR_JUNKTOWN_INVADED_DATE) > (game_time / (10 * 60 * 60 * 24))) then
+      set_global_var(GVAR_JUNKTOWN_INVADED, 1);
+    if (global_var(GVAR_SHADY_SANDS_INVADED_DATE) > (game_time / (10 * 60 * 60 * 24))) then
+      set_global_var(GVAR_SHADY_SANDS_INVADED, 1);
+    if (global_var(GVAR_VAULT_13_INVADED_DATE) <= 0) then
+      set_global_var(GVAR_VAULT_INVADED, 1);
+    if (global_var(GVAR_FOLLOWERS_INVADED_DATE) > (game_time / (10 * 60 * 60 * 24))) then
+      set_global_var(GVAR_FOLLOWERS_INVADED, 1);
+  end
+end

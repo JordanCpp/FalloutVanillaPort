@@ -1,0 +1,191 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+variable GVar0;
+
+procedure start;
+#include <push.h>
+procedure combat_p_proc;
+procedure critter_p_proc;
+procedure description_p_proc;
+procedure talk_p_proc;
+procedure use_skill_on_p_proc;
+procedure MrHandyC00;
+procedure MrHandyC01;
+procedure MrHandyC02;
+procedure MrHandyC03;
+
+import variable field_change;
+
+
+procedure start
+begin
+	if (not(GVar0)) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 34);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_ROBOTS);
+		GVar0 := 1;
+	end
+	if (script_action == critter_proc) then begin
+		call critter_p_proc;
+	end
+	else begin
+		if (script_action == combat_proc) then begin
+			call combat_p_proc;
+		end
+		else begin
+			if (script_action == description_proc) then begin
+				call description_p_proc;
+			end
+			else begin
+				if (script_action == talk_proc) then begin
+					call talk_p_proc;
+				end
+				else begin
+					if (script_action == use_skill_on_proc) then begin
+						call use_skill_on_p_proc;
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure combat_p_proc
+begin
+	if (fixed_param == 4) then begin
+		if ((local_var(0) == 0) or (local_var(1) == 0)) then begin
+			script_overrides;
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (local_var(0) and local_var(1) and (local_var(2) == 0) and (local_var(3) == 0) and (tile_distance_objs(self_obj, dude_obj) < 12)) then begin
+		set_local_var(2, 1);
+		dialogue_system_enter;
+	end
+	if (local_var(3) == 1) then begin
+		if (tile_num(self_obj) != 20530) then begin
+			animate_move_obj_to_tile(self_obj, 20530, ANIMATE_WALK);
+		end
+		else begin
+			field_change := "off";
+			explosion(tile_num(self_obj), elevation(self_obj), 0);
+			explosion(tile_num_in_direction(tile_num(self_obj), 5, 1), elevation(self_obj), 0);
+			explosion(tile_num_in_direction(tile_num(self_obj), 0, 1), elevation(self_obj), 0);
+			explosion(tile_num_in_direction(tile_num(self_obj), 5, 2), elevation(self_obj), 0);
+			explosion(tile_num_in_direction(tile_num(self_obj), 0, 2), elevation(self_obj), 0);
+			display_msg(message_str(SCRIPT_MRHANDYC, 117));
+			give_exp_points(1000);
+			critter_dmg(self_obj, 250, 6);
+			set_local_var(3, 2);
+		end
+	end
+end
+
+procedure description_p_proc
+begin
+	if (not(local_var(0))) then begin
+		display_msg(message_str(SCRIPT_MRHANDYC, 100));
+	end
+	else begin
+		if (not(local_var(1))) then begin
+			display_msg(message_str(SCRIPT_MRHANDYC, 101));
+			if (get_critter_stat(dude_obj, 4) > (get_critter_stat(dude_obj, 1) + has_trait(0, dude_obj, 0))) then begin
+				if (is_success(do_check(dude_obj, 4, 0))) then begin
+					display_msg(message_str(SCRIPT_MRHANDYC, 102));
+				end
+			end
+			else begin
+				if (is_success(do_check(dude_obj, 1, has_trait(0, dude_obj, 0)))) then begin
+					display_msg(message_str(SCRIPT_MRHANDYC, 102));
+				end
+			end
+		end
+	end
+end
+
+procedure talk_p_proc
+begin
+	if (local_var(0) and local_var(1)) then begin
+		start_gdialog(SCRIPT_MRHANDYC, self_obj, 4, -1, -1);
+		gsay_start;
+		call MrHandyC00;
+		gsay_end;
+		end_dialogue;
+	end
+end
+
+procedure use_skill_on_p_proc
+begin
+	if (action_being_used == 10) then begin
+		script_overrides;
+	end
+	if (action_being_used == 12) then begin
+		if (not(local_var(0))) then begin
+			script_overrides;
+			display_msg(message_str(SCRIPT_MRHANDYC, 103));
+		end
+		else begin
+			if (not(local_var(1))) then begin
+				script_overrides;
+				game_time_advance(game_ticks(300));
+				if (is_success(roll_vs_skill(dude_obj, 12, 0))) then begin
+					display_msg(message_str(SCRIPT_MRHANDYC, 105));
+					set_local_var(1, 1);
+				end
+				else begin
+					display_msg(message_str(SCRIPT_MRHANDYC, 106));
+				end
+			end
+		end
+	end
+	else begin
+		if (action_being_used == 13) then begin
+			if (not(local_var(0))) then begin
+				script_overrides;
+				game_time_advance(game_ticks(12000));
+				if (is_success(roll_vs_skill(dude_obj, 13, 0))) then begin
+					display_msg(message_str(SCRIPT_MRHANDYC, 101));
+					set_local_var(0, 1);
+				end
+				else begin
+					display_msg(message_str(SCRIPT_MRHANDYC, 104));
+				end
+			end
+		end
+	end
+end
+
+procedure MrHandyC00
+begin
+	gsay_reply(SCRIPT_MRHANDYC, 107);
+	giq_option(-3, SCRIPT_MRHANDYC, 108, MrHandyC01, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MRHANDYC, 109, MrHandyC02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MRHANDYC, 110, MrHandyC01, NEUTRAL_REACTION);
+end
+
+procedure MrHandyC01
+begin
+	gsay_message(SCRIPT_MRHANDYC, 111, NEUTRAL_REACTION);
+	set_local_var(3, 1);
+end
+
+procedure MrHandyC02
+begin
+	gsay_reply(SCRIPT_MRHANDYC, 112);
+	giq_option(4, SCRIPT_MRHANDYC, 113, MrHandyC01, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_MRHANDYC, 114, MrHandyC03, NEUTRAL_REACTION);
+end
+
+procedure MrHandyC03
+begin
+	gsay_reply(SCRIPT_MRHANDYC, 115);
+	giq_option(6, SCRIPT_MRHANDYC, 116, MrHandyC01, NEUTRAL_REACTION);
+end

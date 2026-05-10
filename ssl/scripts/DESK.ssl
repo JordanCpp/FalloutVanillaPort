@@ -1,0 +1,31 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure do_stuff;
+procedure deskend;
+
+
+procedure start
+begin
+	variable LVar0 := 0;
+	if (script_action == pickup_proc) then begin
+		call do_stuff;
+	end
+end
+
+procedure do_stuff
+begin
+	display_msg(message_str(SCRIPT_DESK, 100));
+end
+
+procedure deskend
+begin
+end

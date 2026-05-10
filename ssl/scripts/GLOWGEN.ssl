@@ -1,0 +1,99 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+
+
+procedure start
+begin
+	if (script_action == look_at_proc) then begin
+		script_overrides;
+		display_msg(message_str(SCRIPT_GLOWGEN, 100));
+	end
+	else begin
+		if (script_action == description_proc) then begin
+			script_overrides;
+			if (global_var(GVAR_START_POWER) == 2) then begin
+				display_msg(message_str(SCRIPT_GLOWGEN, 101));
+			end
+			else begin
+				display_msg(message_str(SCRIPT_GLOWGEN, 102));
+			end
+		end
+		else begin
+			if (script_action == use_skill_on_proc) then begin
+				if (action_being_used == 13) then begin
+					script_overrides;
+					if (has_skill(dude_obj, 13) > 35) then begin
+						set_local_var(0, 0);
+					end
+					if (global_var(GVAR_START_POWER) == 2) then begin
+						display_msg(message_str(SCRIPT_GLOWGEN, 103));
+					end
+					else begin
+						if (local_var(0) == 0) then begin
+							if (is_success(roll_vs_skill(dude_obj, 13, -10))) then begin
+								display_msg(message_str(SCRIPT_GLOWGEN, 104));
+								set_global_var(GVAR_START_POWER, 2);
+								give_exp_points(1000);
+							end
+							else begin
+								if (has_skill(dude_obj, 13) < 35) then begin
+									set_local_var(0, 1);
+								end
+								display_msg(message_str(SCRIPT_GLOWGEN, 105));
+								game_time_advance(game_ticks(1200));
+							end
+						end
+						else begin
+							if (local_var(0) == 1) then begin
+								display_msg(message_str(SCRIPT_GLOWGEN, 106));
+							end
+						end
+					end
+				end
+			end
+			else begin
+				if (script_action == use_obj_on_proc) then begin
+					if (obj_pid(obj_being_used_with) == 75) then begin
+						script_overrides;
+						if (has_skill(dude_obj, 13) > 35) then begin
+							set_local_var(0, 0);
+						end
+						if (global_var(GVAR_START_POWER) == 2) then begin
+							display_msg(message_str(SCRIPT_GLOWGEN, 103));
+						end
+						else begin
+							if (local_var(0) == 0) then begin
+								if (is_success(roll_vs_skill(dude_obj, 13, 10))) then begin
+									display_msg(message_str(SCRIPT_GLOWGEN, 104));
+									set_global_var(GVAR_START_POWER, 2);
+									give_exp_points(1000);
+								end
+								else begin
+									if (has_skill(dude_obj, 13) < 35) then begin
+										set_local_var(0, 1);
+									end
+									display_msg(message_str(SCRIPT_GLOWGEN, 105));
+									game_time_advance(game_ticks(1200));
+								end
+							end
+							else begin
+								if (local_var(0) == 1) then begin
+									display_msg(message_str(SCRIPT_GLOWGEN, 106));
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end

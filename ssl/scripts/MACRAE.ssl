@@ -1,0 +1,425 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure look_at_p_proc;
+procedure description_p_proc;
+procedure talk_p_proc;
+procedure damage_p_proc;
+procedure destroy_p_proc;
+procedure critter_p_proc;
+procedure pickup_p_proc;
+procedure MacRae01;
+procedure MacRae02;
+procedure MacRae03;
+procedure MacRae04;
+procedure MacRae05;
+procedure MacRae06;
+procedure MacRae07;
+procedure MacRae08;
+procedure MacRae09;
+procedure MacRae10;
+procedure MacRae11;
+procedure MacRae12;
+procedure MacRae13;
+procedure MacRae14;
+procedure MacRae15;
+procedure MacRae16;
+procedure MacRaeEnd;
+
+variable Initialize := 1;
+variable DisplayMessage := 100;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure Start
+begin
+	if (Initialize) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 47);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_BLADES);
+		Initialize := 0;
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	if (local_var(4) == 1) then begin
+		display_msg(message_str(SCRIPT_MACRAE, 101));
+	end
+	else begin
+		display_msg(message_str(SCRIPT_MACRAE, 100));
+	end
+end
+
+procedure description_p_proc
+begin
+	script_overrides;
+	if (local_var(4) == 1) then begin
+		display_msg(message_str(SCRIPT_MACRAE, 101));
+	end
+	else begin
+		display_msg(message_str(SCRIPT_MACRAE, 100));
+	end
+end
+
+procedure talk_p_proc
+begin
+	if (global_var(GVAR_ENEMY_BLADES) == 1) then begin
+		float_msg(self_obj, message_str(SCRIPT_ENEMY, random(100, 105)), FLOAT_MSG_RED);
+	end
+	else begin
+		if (local_var(5) == 2) then begin
+			float_msg(self_obj, message_str(SCRIPT_MACRAE, 141), FLOAT_MSG_NORMAL);
+		end
+		else begin
+			call Get_Reaction;
+			start_gdialog(SCRIPT_MACRAE, self_obj, 4, -1, -1);
+			gsay_start;
+			if (global_var(GVAR_BLADES) == 2) then begin
+				call MacRae12;
+			end
+			else begin
+				if (local_var(4) == 0) then begin
+					if (dude_is_male) then begin
+						DisplayMessage := 102;
+					end
+					else begin
+						DisplayMessage := 103;
+					end
+					call MacRae02;
+				end
+				else begin
+					DisplayMessage := 104;
+					call MacRae02;
+				end
+			end
+			gsay_end;
+			end_dialogue;
+		end
+	end
+end
+
+procedure damage_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		set_global_var(GVAR_ENEMY_BLADES, 1);
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		set_global_var(GVAR_ENEMY_BLADES, 1);
+		if (source_obj == dude_obj) then begin
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+				set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+			end
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+				set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+				set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+			end
+			set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+			if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+				set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+			end
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (obj_can_see_obj(self_obj, dude_obj)) then begin
+		if (global_var(GVAR_ENEMY_BLADES) == 1) then begin
+			attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+		end
+	end
+end
+
+procedure pickup_p_proc
+begin
+	set_global_var(GVAR_ENEMY_BLADES, 1);
+end
+
+procedure MacRae01
+begin
+	DisplayMessage := 104;
+	call MacRae02;
+end
+
+procedure MacRae02
+begin
+	gsay_reply(SCRIPT_MACRAE, DisplayMessage);
+	if (local_var(4) == 0) then begin
+		giq_option(4, SCRIPT_MACRAE, 105, MacRae03, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_MACRAE, 106, MacRae11, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MACRAE, 107, MacRaeEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_MACRAE, 141, MacRaeEnd, NEUTRAL_REACTION);
+end
+
+procedure MacRae03
+begin
+	gsay_reply(SCRIPT_MACRAE, 108);
+	gsay_option(SCRIPT_MACRAE, 109, MacRae04, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MACRAE, 110, MacRae08, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MACRAE, 111, MacRae09, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MACRAE, 112, MacRae01, NEUTRAL_REACTION);
+end
+
+procedure MacRae04
+begin
+	gsay_reply(SCRIPT_MACRAE, 113);
+	gsay_option(SCRIPT_MACRAE, 114, MacRae05, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MACRAE, 115, MacRae06, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MACRAE, 116, MacRae01, NEUTRAL_REACTION);
+end
+
+procedure MacRae05
+begin
+	gsay_message(SCRIPT_MACRAE, 117, NEUTRAL_REACTION);
+	call Down_React_Level;
+end
+
+procedure MacRae06
+begin
+	DisplayMessage := 118;
+	set_local_var(5, 1);
+	call MacRae07;
+end
+
+procedure MacRae07
+begin
+	gsay_reply(SCRIPT_MACRAE, DisplayMessage);
+	gsay_option(SCRIPT_MACRAE, 119, MacRae01, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MACRAE, 120, MacRaeEnd, NEUTRAL_REACTION);
+end
+
+procedure MacRae08
+begin
+	DisplayMessage := 121;
+	call MacRae07;
+end
+
+procedure MacRae09
+begin
+	gsay_reply(SCRIPT_MACRAE, 122);
+	gsay_option(SCRIPT_MACRAE, 123, MacRae10, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MACRAE, 124, MacRae01, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MACRAE, 125, MacRaeEnd, NEUTRAL_REACTION);
+end
+
+procedure MacRae10
+begin
+	DisplayMessage := 126;
+	call MacRae07;
+end
+
+procedure MacRae11
+begin
+	DisplayMessage := 127;
+	call MacRae07;
+end
+
+procedure MacRae12
+begin
+	gsay_reply(SCRIPT_MACRAE, 128);
+	if (local_var(5 == 1)) then begin
+		gsay_option(SCRIPT_MACRAE, 129, MacRae15, NEUTRAL_REACTION);
+	end
+	if (local_var(4) == 1) then begin
+		gsay_option(SCRIPT_MACRAE, 130, MacRae13, NEUTRAL_REACTION);
+	end
+	else begin
+		gsay_option(SCRIPT_MACRAE, 131, MacRae16, NEUTRAL_REACTION);
+	end
+	gsay_option(SCRIPT_MACRAE, 132, MacRaeEnd, NEUTRAL_REACTION);
+end
+
+procedure MacRae13
+begin
+	gsay_reply(SCRIPT_MACRAE, 133);
+	gsay_option(SCRIPT_MACRAE, 134, MacRae14, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MACRAE, 135, MacRaeEnd, NEUTRAL_REACTION);
+end
+
+procedure MacRae14
+begin
+	gsay_reply(SCRIPT_MACRAE, 113);
+	gsay_option(SCRIPT_MACRAE, 136, MacRae15, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MACRAE, 137, MacRaeEnd, NEUTRAL_REACTION);
+end
+
+procedure MacRae15
+begin
+	variable LVar0 := 0;
+	gsay_message(SCRIPT_MACRAE, 138, NEUTRAL_REACTION);
+	LVar0 := get_critter_stat(dude_obj, 24);
+	set_critter_stat(dude_obj, 24, 5);
+	LVar0 := get_critter_stat(dude_obj, 11);
+	set_critter_stat(dude_obj, 11, 1);
+	gfade_out(600);
+	game_time_advance(10 * 60 * 60 * 24);
+	gfade_in(600);
+	set_local_var(5, 2);
+	gsay_message(SCRIPT_MACRAE, 139, NEUTRAL_REACTION);
+end
+
+procedure MacRae16
+begin
+	gsay_reply(SCRIPT_MACRAE, 140);
+	gsay_option(SCRIPT_MACRAE, 109, MacRae15, NEUTRAL_REACTION);
+	gsay_option(SCRIPT_MACRAE, 137, MacRaeEnd, NEUTRAL_REACTION);
+end
+
+procedure MacRaeEnd
+begin
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

@@ -1,0 +1,497 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure combat;
+procedure critter_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure damage_p_proc;
+procedure Jake01;
+procedure Jake02;
+procedure Jake03;
+procedure Jake04;
+procedure Jake05;
+procedure Jake06;
+procedure Jake07;
+procedure Jake08;
+procedure Jake09;
+procedure Jake10;
+procedure Jake11;
+procedure Jake12;
+procedure Jake13;
+procedure Jake14;
+procedure Jake15;
+procedure Jake16;
+procedure JakeEnd;
+procedure Barter;
+procedure Get_Stuff;
+procedure Put_Stuff;
+
+variable hostile1;
+variable Only_Once := 1;
+
+import variable Jake_Desk_Ptr;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	variable LVar0 := 0;
+	gdialog_set_barter_mod(-15);
+	if (Only_Once) then begin
+		Only_Once := 0;
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 48);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_MERCHANT);
+	end
+	if (script_action == look_at_proc) then begin
+		call look_at_p_proc;
+	end
+	else begin
+		if (script_action == pickup_proc) then begin
+			call pickup_p_proc;
+		end
+		else begin
+			if (script_action == talk_proc) then begin
+				call talk_p_proc;
+			end
+			else begin
+				if (script_action == critter_proc) then begin
+					call critter_p_proc;
+				end
+				else begin
+					if (script_action == destroy_proc) then begin
+						call destroy_p_proc;
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure combat
+begin
+	hostile1 := 1;
+	set_local_var(5, 1);
+end
+
+procedure critter_p_proc
+begin
+	if (hostile1) then begin
+		hostile1 := 0;
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+end
+
+procedure pickup_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		hostile1 := 1;
+	end
+end
+
+procedure talk_p_proc
+begin
+	variable LVar0 := 0;
+	call Get_Stuff;
+	call Get_Reaction;
+	if ((((game_time / (10 * 60 * 60 * 24)) - local_var(6)) >= 1) or (local_var(6) == 0)) then begin
+		set_local_var(6, game_time / (10 * 60 * 60 * 24));
+		set_local_var(7, 2000 + random(0, 1000));
+		LVar0 := item_caps_adjust(self_obj, local_var(7));
+	end
+	else begin
+		LVar0 := item_caps_adjust(self_obj, local_var(7));
+	end
+	if (local_var(5) == 1) then begin
+		call combat;
+	end
+	else begin
+		if (global_var(GVAR_ENEMY_HUB) == 1) then begin
+			start_gdialog(SCRIPT_HUBJAKE, self_obj, 4, -1, -1);
+			gsay_start;
+			call Jake10;
+			gsay_end;
+			end_dialogue;
+		end
+		else begin
+			if (local_var(4) == 0) then begin
+				set_local_var(4, 1);
+				start_gdialog(SCRIPT_HUBJAKE, self_obj, 4, -1, -1);
+				gsay_start;
+				call Jake01;
+				gsay_end;
+				end_dialogue;
+			end
+			else begin
+				if (local_var(1) == 1) then begin
+					start_gdialog(SCRIPT_HUBJAKE, self_obj, 4, -1, -1);
+					gsay_start;
+					call Jake10;
+					gsay_end;
+					end_dialogue;
+				end
+				else begin
+					start_gdialog(SCRIPT_HUBJAKE, self_obj, 4, -1, -1);
+					gsay_start;
+					call Jake09;
+					gsay_end;
+					end_dialogue;
+				end
+			end
+		end
+	end
+	LVar0 := item_caps_adjust(self_obj, -1 * item_caps_total(self_obj));
+	call Put_Stuff;
+end
+
+procedure destroy_p_proc
+begin
+	move_obj_inven_to_obj(Jake_Desk_Ptr, self_obj);
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+		if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+		end
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	display_msg(message_str(SCRIPT_HUBJAKE, 100));
+end
+
+procedure damage_p_proc
+begin
+	variable LVar0 := 0;
+	LVar0 := obj_pid(source_obj);
+	if (party_member_obj(LVar0) != 0) then begin
+		set_global_var(GVAR_ENEMY_HUB, 1);
+	end
+end
+
+procedure Jake01
+begin
+	gsay_reply(SCRIPT_HUBJAKE, 101);
+	giq_option(4, SCRIPT_HUBJAKE, 102, Barter, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 103, Jake02, NEUTRAL_REACTION);
+	if (global_var(GVAR_FIND_WATER_CHIP) != 2) then begin
+		giq_option(4, SCRIPT_HUBJAKE, 104, Jake03, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_HUBJAKE, 105, Jake04, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 106, Jake13, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_HUBJAKE, 107, Barter, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_HUBJAKE, 108, Jake13, NEUTRAL_REACTION);
+end
+
+procedure Jake02
+begin
+	gsay_reply(SCRIPT_HUBJAKE, 109);
+	giq_option(4, SCRIPT_HUBJAKE, 110, Barter, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 111, Jake05, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 112, Jake06, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 113, Jake13, NEUTRAL_REACTION);
+end
+
+procedure Jake03
+begin
+	gsay_reply(SCRIPT_HUBJAKE, 114);
+	giq_option(4, SCRIPT_HUBJAKE, 115, Barter, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 116, Jake02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 117, Jake04, NEUTRAL_REACTION);
+end
+
+procedure Jake04
+begin
+	gsay_message(SCRIPT_HUBJAKE, 118, NEUTRAL_REACTION);
+	gsay_reply(SCRIPT_HUBJAKE, 162);
+	giq_option(4, SCRIPT_HUBJAKE, 119, Barter, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 120, Jake02, NEUTRAL_REACTION);
+	if (global_var(GVAR_FIND_WATER_CHIP) != 2) then begin
+		giq_option(4, SCRIPT_HUBJAKE, 121, Jake03, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_HUBJAKE, 122, Jake13, NEUTRAL_REACTION);
+end
+
+procedure Jake05
+begin
+	gsay_reply(SCRIPT_HUBJAKE, 123);
+	giq_option(4, SCRIPT_HUBJAKE, 124, Barter, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 125, Jake06, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 126, Jake13, NEUTRAL_REACTION);
+end
+
+procedure Jake06
+begin
+	gsay_reply(SCRIPT_HUBJAKE, 127);
+	giq_option(4, SCRIPT_HUBJAKE, 128, Barter, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 129, Jake07, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 130, Jake08, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 131, Jake14, BAD_REACTION);
+end
+
+procedure Jake07
+begin
+	gsay_reply(SCRIPT_HUBJAKE, 132);
+	giq_option(4, SCRIPT_HUBJAKE, 133, Barter, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 134, Jake08, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 135, Jake12, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 136, Jake04, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 137, Jake13, NEUTRAL_REACTION);
+end
+
+procedure Jake08
+begin
+	gsay_reply(SCRIPT_HUBJAKE, 138);
+	giq_option(4, SCRIPT_HUBJAKE, 139, Barter, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 140, Jake07, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 141, Jake14, BAD_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 142, Jake13, NEUTRAL_REACTION);
+end
+
+procedure Jake09
+begin
+	if (dude_is_male) then begin
+		gsay_reply(SCRIPT_HUBJAKE, 163);
+	end
+	else begin
+		gsay_reply(SCRIPT_HUBJAKE, 164);
+	end
+	giq_option(-3, SCRIPT_HUBJAKE, 144, Barter, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_HUBJAKE, 145, Jake13, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 146, Barter, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 165, Jake16, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 147, Jake13, NEUTRAL_REACTION);
+end
+
+procedure Jake10
+begin
+	gsay_reply(SCRIPT_HUBJAKE, 148);
+	giq_option(-3, SCRIPT_HUBJAKE, 149, Barter, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_HUBJAKE, 150, Jake13, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 151, Barter, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 165, Jake16, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 152, Jake15, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 153, Jake13, NEUTRAL_REACTION);
+end
+
+procedure Jake11
+begin
+	float_msg(self_obj, message_str(SCRIPT_HUBJAKE, 154), FLOAT_MSG_RED);
+	call combat;
+end
+
+procedure Jake12
+begin
+	set_global_var(GVAR_MASTER_FILLER_9, 1);
+	gsay_reply(SCRIPT_HUBJAKE, 155);
+	giq_option(4, SCRIPT_HUBJAKE, 156, Jake08, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HUBJAKE, 157, Jake13, NEUTRAL_REACTION);
+end
+
+procedure Jake13
+begin
+end
+
+procedure Jake14
+begin
+	call Bottom_React;
+end
+
+procedure Jake15
+begin
+	call Bottom_React;
+	call combat;
+end
+
+procedure Jake16
+begin
+	if (global_var(GVAR_BROTHERHOOD_OF_STEEL) == 0) then begin
+		set_global_var(GVAR_BROTHERHOOD_OF_STEEL, 1);
+	end
+	if (global_var(GVAR_ANGELS_BONEYARD) == 0) then begin
+		set_global_var(GVAR_ANGELS_BONEYARD, 1);
+	end
+	gsay_message(SCRIPT_HUBJAKE, 166, NEUTRAL_REACTION);
+end
+
+procedure JakeEnd
+begin
+end
+
+procedure Barter
+begin
+	gsay_message(SCRIPT_HUBJAKE, 158, NEUTRAL_REACTION);
+	gdialog_mod_barter(-15);
+	gsay_reply(SCRIPT_HUBJAKE, 159);
+	giq_option(4, SCRIPT_HUBJAKE, 160, JakeEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_HUBJAKE, 161, JakeEnd, NEUTRAL_REACTION);
+end
+
+procedure Get_Stuff
+begin
+	move_obj_inven_to_obj(Jake_Desk_Ptr, self_obj);
+end
+
+procedure Put_Stuff
+begin
+	move_obj_inven_to_obj(self_obj, Jake_Desk_Ptr);
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

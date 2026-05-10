@@ -1,0 +1,25 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure damage_p_proc;
+
+
+procedure start
+begin
+	if (script_action == damage_proc) then begin
+		call damage_p_proc;
+	end
+end
+
+procedure damage_p_proc
+begin
+	set_obj_visibility(self_obj, 1);
+end

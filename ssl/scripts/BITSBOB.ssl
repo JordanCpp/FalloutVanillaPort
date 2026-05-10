@@ -1,0 +1,910 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure combat;
+procedure critter_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure destroy_p_proc;
+procedure damage_p_proc;
+procedure look_at_p_proc;
+procedure BobStandardQuestions;
+procedure BobBlackmailQuestions;
+procedure BBQa;
+procedure Bob00;
+procedure Bob01;
+procedure Bob01a;
+procedure Bob02;
+procedure Bob03;
+procedure Bob04;
+procedure Bob05;
+procedure Bob06;
+procedure Bob07;
+procedure Bob08;
+procedure Bob09;
+procedure Bob09a;
+procedure Bob09b;
+procedure Bob09c;
+procedure Bob09d;
+procedure Bob10;
+procedure Bob11;
+procedure Bob12;
+procedure Bob13;
+procedure Bob14;
+procedure Bob15;
+procedure Bob16;
+procedure Bob18;
+procedure Bob19;
+procedure Bob20;
+procedure Bob20a;
+procedure Bob21;
+procedure Bob22;
+procedure Bob23;
+procedure Bob25;
+procedure Bob27;
+procedure Bob28;
+procedure Bob30;
+procedure Bob31;
+procedure Bob32;
+procedure Bob33;
+procedure Bob34;
+procedure Bob35;
+procedure Bob36;
+procedure Bob38;
+procedure Bob39;
+procedure Bob42;
+procedure Bob43;
+procedure Bob44;
+procedure Bob44a;
+procedure Bob44b;
+procedure Bob44c;
+procedure Bob44d;
+procedure Bob44e;
+procedure Bob45;
+procedure Bob46;
+procedure Bob47;
+procedure Bob48;
+procedure Bob49;
+procedure Bob50;
+procedure BobEnd;
+procedure BobCombat;
+
+variable hostile1;
+variable Only_Once := 1;
+variable ToldRumor1;
+variable ToldRumor2;
+variable ToldRumor3;
+variable ToldRumor4;
+variable ToldRumor5;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	if (Only_Once) then begin
+		Only_Once := 0;
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 19);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_MERCHANT);
+	end
+	if (script_action == look_at_proc) then begin
+		call look_at_p_proc;
+	end
+	else begin
+		if (script_action == pickup_proc) then begin
+			call pickup_p_proc;
+		end
+		else begin
+			if (script_action == talk_proc) then begin
+				call talk_p_proc;
+			end
+			else begin
+				if (script_action == critter_proc) then begin
+					call critter_p_proc;
+				end
+				else begin
+					if (script_action == destroy_proc) then begin
+						call destroy_p_proc;
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure combat
+begin
+	hostile1 := 1;
+end
+
+procedure critter_p_proc
+begin
+	if (hostile1) then begin
+		hostile1 := 0;
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+end
+
+procedure pickup_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		hostile1 := 1;
+	end
+end
+
+procedure talk_p_proc
+begin
+	call Get_Reaction;
+	if (local_var(5) == 0) then begin
+		if (local_var(1) == 1) then begin
+			start_gdialog(SCRIPT_BITSBOB, self_obj, 4, -1, -1);
+			gsay_start;
+			call Bob04;
+			gsay_end;
+			end_dialogue;
+		end
+		else begin
+			start_gdialog(SCRIPT_BITSBOB, self_obj, 4, -1, -1);
+			gsay_start;
+			call Bob05;
+			gsay_end;
+			end_dialogue;
+		end
+	end
+	else begin
+		if (local_var(5) == 1) then begin
+			if (local_var(6) <= (game_time / (10 * 60 * 60 * 24))) then begin
+				if (do_check(dude_obj, 0, 0) or do_check(dude_obj, 3, 0)) then begin
+					start_gdialog(SCRIPT_BITSBOB, self_obj, 4, -1, -1);
+					gsay_start;
+					call Bob00;
+					gsay_end;
+					end_dialogue;
+				end
+				else begin
+					start_gdialog(SCRIPT_BITSBOB, self_obj, 4, -1, -1);
+					gsay_start;
+					call Bob01;
+					gsay_end;
+					end_dialogue;
+				end
+			end
+			else begin
+				start_gdialog(SCRIPT_BITSBOB, self_obj, 4, -1, -1);
+				gsay_start;
+				call Bob02;
+				gsay_end;
+				end_dialogue;
+			end
+		end
+		else begin
+			call Bob03;
+		end
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+		if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+		end
+	end
+end
+
+procedure damage_p_proc
+begin
+	variable LVar0 := 0;
+	LVar0 := obj_pid(source_obj);
+	if (party_member_obj(LVar0) != 0) then begin
+		set_global_var(GVAR_ENEMY_HUB, 1);
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	display_msg(message_str(SCRIPT_BITSBOB, 100));
+end
+
+procedure BobStandardQuestions
+begin
+	giq_option(4, SCRIPT_BITSBOB, 231, Bob11, NEUTRAL_REACTION);
+	if (global_var(GVAR_FIND_WATER_CHIP) != 2) then begin
+		giq_option(4, SCRIPT_BITSBOB, 232, Bob18, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_DECKER_KNOWN) == 1) then begin
+		if (global_var(GVAR_DECKER_STATUS) != 0) then begin
+			giq_option(4, SCRIPT_BITSBOB, 233, Bob23, NEUTRAL_REACTION);
+		end
+		else begin
+			giq_option(4, SCRIPT_BITSBOB, 233, Bob19, NEUTRAL_REACTION);
+		end
+	end
+	if (global_var(GVAR_DESTROY_MASTER_1) == 1) then begin
+		giq_option(4, SCRIPT_BITSBOB, 234, Bob20, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_MISSING_CARAVAN) == 1) then begin
+		giq_option(4, SCRIPT_BITSBOB, 235, Bob21, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_BITSBOB, 237, Bob25, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 240, BobEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_BITSBOB, 238, Bob11, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_BITSBOB, 241, BobEnd, NEUTRAL_REACTION);
+end
+
+procedure BobBlackmailQuestions
+begin
+	giq_option(4, SCRIPT_BITSBOB, 102, BBQa, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 103, Bob06, BAD_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 104, Bob07, NEUTRAL_REACTION);
+	if (global_var(GVAR_DECKER_KNOWN) == 1) then begin
+		if (global_var(GVAR_DECKER_STATUS) != 0) then begin
+			giq_option(4, SCRIPT_BITSBOB, 233, Bob23, NEUTRAL_REACTION);
+		end
+		else begin
+			giq_option(4, SCRIPT_BITSBOB, 233, Bob08, NEUTRAL_REACTION);
+		end
+	end
+	giq_option(4, SCRIPT_BITSBOB, 106, Bob10, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 240, BobEnd, NEUTRAL_REACTION);
+end
+
+procedure BBQa
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, -15))) then begin
+		call Bob09;
+	end
+	else begin
+		call Bob13;
+	end
+end
+
+procedure Bob00
+begin
+	variable LVar0 := 0;
+	LVar0 := item_caps_adjust(dude_obj, local_var(7));
+	set_local_var(6, (game_time / (10 * 60 * 60 * 24)) + 5);
+	gsay_reply(SCRIPT_BITSBOB, 101);
+	call BobBlackmailQuestions;
+end
+
+procedure Bob01
+begin
+	gsay_reply(SCRIPT_BITSBOB, 108);
+	giq_option(6, SCRIPT_BITSBOB, 109, Bob01a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 110, Bob01a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 111, Bob14, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 112, Bob15, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 113, Bob16, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 114, BobCombat, NEUTRAL_REACTION);
+end
+
+procedure Bob01a
+begin
+	if (local_var(7) > 250) then begin
+		call Bob13;
+	end
+	else begin
+		if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+			call Bob12;
+		end
+		else begin
+			call Bob13;
+		end
+	end
+end
+
+procedure Bob02
+begin
+	gsay_reply(SCRIPT_BITSBOB, 115);
+	call BobBlackmailQuestions;
+end
+
+procedure Bob03
+begin
+	float_msg(self_obj, message_str(SCRIPT_BITSBOB, 116), FLOAT_MSG_RED);
+end
+
+procedure Bob04
+begin
+	gsay_reply(SCRIPT_BITSBOB, 117);
+	giq_option(4, SCRIPT_BITSBOB, 236, Bob22, NEUTRAL_REACTION);
+	call BobStandardQuestions;
+end
+
+procedure Bob05
+begin
+	gsay_reply(SCRIPT_BITSBOB, 118);
+	call BobStandardQuestions;
+end
+
+procedure Bob06
+begin
+	gsay_message(SCRIPT_BITSBOB, 119, BAD_REACTION);
+	call BobCombat;
+end
+
+procedure Bob07
+begin
+	set_local_var(5, 3);
+	gsay_message(SCRIPT_BITSBOB, 120, NEUTRAL_REACTION);
+end
+
+procedure Bob08
+begin
+	gsay_reply(SCRIPT_BITSBOB, 121);
+	giq_option(4, SCRIPT_BITSBOB, 106, Bob10, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 107, Bob11, NEUTRAL_REACTION);
+end
+
+procedure Bob09
+begin
+	gsay_reply(SCRIPT_BITSBOB, 122);
+	giq_option(4, SCRIPT_BITSBOB, message_str(SCRIPT_BITSBOB, 123) + (local_var(7) + 25) + message_str(SCRIPT_BITSBOB, 124), Bob09a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, message_str(SCRIPT_BITSBOB, 123) + (local_var(7) + 50) + message_str(SCRIPT_BITSBOB, 124), Bob09b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, message_str(SCRIPT_BITSBOB, 123) + (local_var(7) + 75) + message_str(SCRIPT_BITSBOB, 124), Bob09c, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, message_str(SCRIPT_BITSBOB, 123) + (local_var(7) + 100) + message_str(SCRIPT_BITSBOB, 124), Bob09d, NEUTRAL_REACTION);
+end
+
+procedure Bob09a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0)) or is_success(do_check(dude_obj, 3, 0))) then begin
+		set_local_var(7, local_var(7) + 25);
+		call Bob46;
+	end
+	else begin
+		call Bob47;
+	end
+end
+
+procedure Bob09b
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, -15)) or is_success(do_check(dude_obj, 3, -1))) then begin
+		set_local_var(7, local_var(7) + 50);
+		call Bob46;
+	end
+	else begin
+		call Bob47;
+	end
+end
+
+procedure Bob09c
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, -30)) or is_success(do_check(dude_obj, 3, -3))) then begin
+		set_local_var(7, local_var(7) + 75);
+		call Bob46;
+	end
+	else begin
+		call Bob47;
+	end
+end
+
+procedure Bob09d
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, -45)) or is_success(do_check(dude_obj, 3, -4))) then begin
+		set_local_var(7, local_var(7) + 100);
+		call Bob46;
+	end
+	else begin
+		call Bob47;
+	end
+end
+
+procedure Bob10
+begin
+	gsay_message(SCRIPT_BITSBOB, 125, NEUTRAL_REACTION);
+end
+
+procedure Bob11
+begin
+	gsay_reply(SCRIPT_BITSBOB, 142);
+	giq_option(4, SCRIPT_BITSBOB, 129, Bob27, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 131, Bob28, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 130, Bob30, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_BITSBOB, 203, Bob27, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_BITSBOB, 204, Bob28, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_BITSBOB, 133, Bob30, NEUTRAL_REACTION);
+end
+
+procedure Bob12
+begin
+	variable LVar0 := 0;
+	LVar0 := item_caps_adjust(dude_obj, local_var(7));
+	set_local_var(6, (game_time / (10 * 60 * 60 * 24)) + 5);
+	gsay_message(SCRIPT_BITSBOB, 134, BAD_REACTION);
+end
+
+procedure Bob13
+begin
+	set_local_var(5, 2);
+	gsay_message(SCRIPT_BITSBOB, 135, BAD_REACTION);
+end
+
+procedure Bob14
+begin
+	set_local_var(5, 2);
+	gsay_message(SCRIPT_BITSBOB, 136, BAD_REACTION);
+end
+
+procedure Bob15
+begin
+	set_local_var(5, 2);
+	gsay_message(SCRIPT_BITSBOB, 137, BAD_REACTION);
+end
+
+procedure Bob16
+begin
+	set_local_var(5, 2);
+	gsay_message(SCRIPT_BITSBOB, 138, BAD_REACTION);
+end
+
+procedure Bob18
+begin
+	gsay_reply(SCRIPT_BITSBOB, 148);
+	giq_option(4, SCRIPT_BITSBOB, 149, Bob32, NEUTRAL_REACTION);
+	call BobStandardQuestions;
+end
+
+procedure Bob19
+begin
+	set_global_var(GVAR_DECKER_KNOWN, 1);
+	gsay_reply(SCRIPT_BITSBOB, 150);
+	giq_option(4, SCRIPT_BITSBOB, 152, Bob33, NEUTRAL_REACTION);
+	call BobStandardQuestions;
+end
+
+procedure Bob20
+begin
+	gsay_reply(SCRIPT_BITSBOB, 153);
+	giq_option(4, SCRIPT_BITSBOB, 154, Bob20a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 155, Bob34, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 156, Bob35, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 157, Bob36, NEUTRAL_REACTION);
+end
+
+procedure Bob20a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 20))) then begin
+		call Bob36;
+	end
+	else begin
+		call Bob34;
+	end
+end
+
+procedure Bob21
+begin
+	gsay_reply(SCRIPT_BITSBOB, 239);
+	call BobStandardQuestions;
+end
+
+procedure Bob22
+begin
+	gsay_reply(SCRIPT_BITSBOB, 158);
+	call BobStandardQuestions;
+end
+
+procedure Bob23
+begin
+	gsay_reply(SCRIPT_BITSBOB, 159);
+	call BobStandardQuestions;
+end
+
+procedure Bob25
+begin
+	if ((global_var(GVAR_DECKER_STATUS) != 0) and (ToldRumor1 == 0)) then begin
+		ToldRumor1 := 1;
+		set_global_var(GVAR_DECKER_KNOWN, 1);
+		gsay_message(SCRIPT_BITSBOB, 160, NEUTRAL_REACTION);
+	end
+	else begin
+		if ((global_var(GVAR_GREENE_DEAD) == 1) and (ToldRumor2 == 0)) then begin
+			ToldRumor2 := 1;
+			gsay_message(SCRIPT_BITSBOB, 161, NEUTRAL_REACTION);
+		end
+		else begin
+			if ((global_var(GVAR_KILL_MERCHANT) == 2) and (ToldRumor3 == 0)) then begin
+				ToldRumor3 := 1;
+				gsay_message(SCRIPT_BITSBOB, 162, NEUTRAL_REACTION);
+			end
+			else begin
+				if ((global_var(GVAR_STEAL_NECKLACE) == 2) and (ToldRumor4 == 0)) then begin
+					ToldRumor4 := 1;
+					gsay_message(SCRIPT_BITSBOB, 163, NEUTRAL_REACTION);
+				end
+				else begin
+					if ((global_var(GVAR_KILL_JAIN) == 2) and (ToldRumor5 == 0)) then begin
+						ToldRumor5 := 1;
+						gsay_message(SCRIPT_BITSBOB, 164, NEUTRAL_REACTION);
+					end
+					else begin
+						gsay_message(SCRIPT_BITSBOB, 165, NEUTRAL_REACTION);
+					end
+				end
+			end
+		end
+	end
+	gsay_message(SCRIPT_BITSBOB, 166, NEUTRAL_REACTION);
+	call BobStandardQuestions;
+end
+
+procedure Bob27
+begin
+	variable LVar0 := 0;
+	variable LVar1 := 0;
+	if (item_caps_total(dude_obj) < 20) then begin
+		gsay_message(SCRIPT_BITSBOB, 169, NEUTRAL_REACTION);
+	end
+	else begin
+		LVar1 := item_caps_adjust(dude_obj, -20);
+		LVar0 := create_object_sid(81, 0, 0, -1);
+		add_obj_to_inven(dude_obj, LVar0);
+		gsay_message(SCRIPT_BITSBOB, 170, NEUTRAL_REACTION);
+	end
+	call BobStandardQuestions;
+end
+
+procedure Bob28
+begin
+	variable LVar0 := 0;
+	variable LVar1 := 0;
+	if (item_caps_total(dude_obj) < 8) then begin
+		gsay_message(SCRIPT_BITSBOB, 173, NEUTRAL_REACTION);
+	end
+	else begin
+		LVar1 := item_caps_adjust(dude_obj, -8);
+		LVar0 := create_object_sid(103, 0, 0, -1);
+		add_obj_to_inven(dude_obj, LVar0);
+		if (local_var(5) > 0) then begin
+			gsay_message(SCRIPT_BITSBOB, 171, NEUTRAL_REACTION);
+			giq_option(4, SCRIPT_BITSBOB, 172, Bob38, NEUTRAL_REACTION);
+		end
+		else begin
+			gsay_message(SCRIPT_BITSBOB, 174, NEUTRAL_REACTION);
+		end
+	end
+	call BobStandardQuestions;
+end
+
+procedure Bob30
+begin
+	gsay_message(SCRIPT_BITSBOB, 175, NEUTRAL_REACTION);
+end
+
+procedure Bob31
+begin
+	gsay_reply(SCRIPT_BITSBOB, 176);
+	giq_option(4, SCRIPT_BITSBOB, 177, Bob42, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 178, Bob43, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 179, Bob44, NEUTRAL_REACTION);
+end
+
+procedure Bob32
+begin
+	gsay_reply(SCRIPT_BITSBOB, 180);
+	call BobStandardQuestions;
+end
+
+procedure Bob33
+begin
+	set_global_var(GVAR_DECKER_KNOWN, 1);
+	gsay_reply(SCRIPT_BITSBOB, 182);
+	call BobStandardQuestions;
+end
+
+procedure Bob34
+begin
+	set_local_var(5, 2);
+	gsay_message(SCRIPT_BITSBOB, 183, BAD_REACTION);
+end
+
+procedure Bob35
+begin
+	gsay_reply(SCRIPT_BITSBOB, 184);
+	giq_option(4, SCRIPT_BITSBOB, 185, Bob42, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 186, Bob43, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 187, Bob44, NEUTRAL_REACTION);
+end
+
+procedure Bob36
+begin
+	gsay_reply(SCRIPT_BITSBOB, 188);
+	giq_option(4, SCRIPT_BITSBOB, 189, Bob42, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 190, Bob43, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 191, Bob44, NEUTRAL_REACTION);
+end
+
+procedure Bob38
+begin
+	gsay_message(SCRIPT_BITSBOB, 194, BAD_REACTION);
+end
+
+procedure Bob39
+begin
+	gsay_message(SCRIPT_BITSBOB, 195, NEUTRAL_REACTION);
+end
+
+procedure Bob42
+begin
+	gsay_message(SCRIPT_BITSBOB, 207, NEUTRAL_REACTION);
+end
+
+procedure Bob43
+begin
+	gsay_reply(SCRIPT_BITSBOB, 208);
+	giq_option(4, SCRIPT_BITSBOB, 209, BobCombat, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 210, Bob45, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 211, Bob44, NEUTRAL_REACTION);
+end
+
+procedure Bob44
+begin
+	gsay_reply(SCRIPT_BITSBOB, 212);
+	giq_option(4, SCRIPT_BITSBOB, message_str(SCRIPT_BITSBOB, 213) + message_str(SCRIPT_BITSBOB, 214) + message_str(SCRIPT_BITSBOB, 219), Bob44a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, message_str(SCRIPT_BITSBOB, 213) + message_str(SCRIPT_BITSBOB, 215) + message_str(SCRIPT_BITSBOB, 219), Bob44b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, message_str(SCRIPT_BITSBOB, 213) + message_str(SCRIPT_BITSBOB, 216) + message_str(SCRIPT_BITSBOB, 219), Bob44c, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, message_str(SCRIPT_BITSBOB, 213) + message_str(SCRIPT_BITSBOB, 217) + message_str(SCRIPT_BITSBOB, 219), Bob44d, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, message_str(SCRIPT_BITSBOB, 213) + message_str(SCRIPT_BITSBOB, 218) + message_str(SCRIPT_BITSBOB, 219), Bob44e, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 220, Bob48, NEUTRAL_REACTION);
+end
+
+procedure Bob44a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 20)) or is_success(do_check(dude_obj, 3, 2))) then begin
+		set_local_var(7, 50);
+		call Bob46;
+	end
+	else begin
+		call Bob13;
+	end
+end
+
+procedure Bob44b
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0)) or is_success(do_check(dude_obj, 3, 0))) then begin
+		set_local_var(7, 75);
+		call Bob46;
+	end
+	else begin
+		call Bob13;
+	end
+end
+
+procedure Bob44c
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, -10)) or is_success(do_check(dude_obj, 3, -1))) then begin
+		set_local_var(7, 100);
+		call Bob46;
+	end
+	else begin
+		call Bob13;
+	end
+end
+
+procedure Bob44d
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, -30)) or is_success(do_check(dude_obj, 3, -3))) then begin
+		set_local_var(7, 150);
+		call Bob46;
+	end
+	else begin
+		call Bob13;
+	end
+end
+
+procedure Bob44e
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, -60)) or is_success(do_check(dude_obj, 3, -6))) then begin
+		set_local_var(7, 200);
+		call Bob46;
+	end
+	else begin
+		call Bob13;
+	end
+end
+
+procedure Bob45
+begin
+	gsay_message(SCRIPT_BITSBOB, 221, BAD_REACTION);
+end
+
+procedure Bob46
+begin
+	if (local_var(5) != 1) then begin
+		give_exp_points(500);
+		display_msg(message_str(SCRIPT_GENCHAT, 103) + 500 + message_str(SCRIPT_GENCHAT, 104));
+	end
+	set_local_var(5, 1);
+	set_local_var(6, (game_time / (10 * 60 * 60 * 24)) + 5);
+	set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 2);
+	gsay_message(SCRIPT_BITSBOB, message_str(SCRIPT_BITSBOB, 222) + local_var(7) + message_str(SCRIPT_BITSBOB, 223), NEUTRAL_REACTION);
+end
+
+procedure Bob47
+begin
+	gsay_reply(SCRIPT_BITSBOB, 224);
+	giq_option(4, SCRIPT_BITSBOB, 225, Bob49, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 226, Bob50, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_BITSBOB, 227, Bob13, NEUTRAL_REACTION);
+end
+
+procedure Bob48
+begin
+	gsay_message(SCRIPT_BITSBOB, 228, BAD_REACTION);
+end
+
+procedure Bob49
+begin
+	gsay_message(SCRIPT_BITSBOB, 229, BAD_REACTION);
+end
+
+procedure Bob50
+begin
+	gsay_message(SCRIPT_BITSBOB, 230, NEUTRAL_REACTION);
+end
+
+procedure BobEnd
+begin
+end
+
+procedure BobCombat
+begin
+	call combat;
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

@@ -1,0 +1,20 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+
+
+procedure start
+begin
+	if (script_action == use_proc) then begin
+		script_overrides;
+		move_to(dude_obj, 19101, 0);
+	end
+end

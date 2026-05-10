@@ -1,0 +1,564 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure critter_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure heather0;
+procedure heather0a;
+procedure heather0b;
+procedure heather1;
+procedure heather1a;
+procedure heather2;
+procedure heather3;
+procedure heather3a;
+procedure heather3b;
+procedure heather3c;
+procedure heather4;
+procedure heather5;
+procedure heather5a;
+procedure heather6;
+procedure heather7;
+procedure heather8;
+procedure heather9;
+procedure heather10;
+procedure heather11;
+procedure heather12;
+procedure heather13;
+procedure heather14;
+procedure heather15;
+procedure heather16;
+procedure heather17;
+procedure heather18;
+procedure heather19;
+procedure heather20;
+procedure heather21;
+procedure heather22;
+procedure heather22a;
+procedure heather23;
+procedure heather24;
+procedure heather25;
+procedure heather26;
+procedure heather27;
+procedure heather28;
+procedure HeatherEnd;
+procedure combat;
+
+variable hostile1;
+variable initialized1;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	if (not(initialized1)) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 20);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_CHILDREN_TRUE);
+		initialized1 := 1;
+	end
+	else begin
+		if (script_action == critter_proc) then begin
+			call critter_p_proc;
+		end
+		else begin
+			if (script_action == destroy_proc) then begin
+				call destroy_p_proc;
+			end
+			else begin
+				if (script_action == look_at_proc) then begin
+					call look_at_p_proc;
+				end
+				else begin
+					if (script_action == pickup_proc) then begin
+						call pickup_p_proc;
+					end
+					else begin
+						if (script_action == talk_proc) then begin
+							call talk_p_proc;
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (global_var(GVAR_DESTROY_FOLLOWERS) == 2) then begin
+		kill_critter(self_obj, 57);
+	end
+	else begin
+		if (hostile1) then begin
+			hostile1 := 0;
+			attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+		end
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_BAD_MONSTER, global_var(GVAR_BAD_MONSTER) + 1);
+		if ((global_var(GVAR_BAD_MONSTER) % 6) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) + 1);
+		end
+	end
+	set_global_var(GVAR_FIND_AGENT, 2);
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	display_msg(message_str(SCRIPT_HEATHER, 100));
+end
+
+procedure pickup_p_proc
+begin
+	hostile1 := 1;
+end
+
+procedure talk_p_proc
+begin
+	script_overrides;
+	call Get_Reaction;
+	if ((game_time_hour >= 700) and (game_time_hour < 1800)) then begin
+		start_gdialog(SCRIPT_HEATHER, self_obj, 4, -1, -1);
+		gsay_start;
+		call heather0;
+		gsay_end;
+		end_dialogue;
+	end
+	else begin
+		call heather28;
+	end
+end
+
+procedure heather0
+begin
+	gsay_reply(SCRIPT_HEATHER, 101);
+	giq_option(-3, SCRIPT_HEATHER, 102, combat, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_HEATHER, 103, HeatherEnd, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HEATHER, 104, heather0a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HEATHER, 105, combat, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_HEATHER, 106, heather0b, NEUTRAL_REACTION);
+end
+
+procedure heather0a
+begin
+	if (local_var(1) < 2) then begin
+		call heather19;
+	end
+	else begin
+		call heather1;
+	end
+end
+
+procedure heather0b
+begin
+	if (local_var(1) < 2) then begin
+		call heather27;
+	end
+	else begin
+		call heather21;
+	end
+end
+
+procedure heather1
+begin
+	gsay_reply(SCRIPT_HEATHER, 107);
+	if (dude_is_male) then begin
+		giq_option(4, SCRIPT_HEATHER, 108, heather2, NEUTRAL_REACTION);
+	end
+	if (global_var(GVAR_FIND_AGENT) == 1) then begin
+		giq_option(4, SCRIPT_HEATHER, 109, heather1a, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_HEATHER, 110, heather19, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HEATHER, 111, heather20, NEUTRAL_REACTION);
+end
+
+procedure heather1a
+begin
+	call Big_Down_React;
+	call heather3;
+end
+
+procedure heather2
+begin
+	gsay_message(SCRIPT_HEATHER, 112, NEUTRAL_REACTION);
+end
+
+procedure heather3
+begin
+	gsay_reply(SCRIPT_HEATHER, 113);
+	giq_option(5, SCRIPT_HEATHER, 114, heather3a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HEATHER, 115, heather3b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HEATHER, 116, heather3c, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HEATHER, 117, HeatherEnd, NEUTRAL_REACTION);
+end
+
+procedure heather3a
+begin
+	call Down_React;
+	call heather4;
+end
+
+procedure heather3b
+begin
+	call Up_React;
+	call heather10;
+end
+
+procedure heather3c
+begin
+	call Big_Down_React;
+	call heather8;
+end
+
+procedure heather4
+begin
+	gsay_reply(SCRIPT_HEATHER, 118);
+	giq_option(5, SCRIPT_HEATHER, 119, heather5, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_HEATHER, 120, heather10, NEUTRAL_REACTION);
+	giq_option(7, SCRIPT_HEATHER, 121, heather17, NEUTRAL_REACTION);
+end
+
+procedure heather5
+begin
+	gsay_reply(SCRIPT_HEATHER, 122);
+	giq_option(5, SCRIPT_HEATHER, 123, heather5a, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_HEATHER, 124, heather7, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_HEATHER, 125, heather9, NEUTRAL_REACTION);
+end
+
+procedure heather5a
+begin
+	call Big_Up_React;
+	call heather6;
+end
+
+procedure heather6
+begin
+	gsay_message(SCRIPT_HEATHER, 126, NEUTRAL_REACTION);
+end
+
+procedure heather7
+begin
+	gsay_reply(SCRIPT_HEATHER, 127);
+	giq_option(4, SCRIPT_HEATHER, 128, heather6, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HEATHER, 129, heather8, NEUTRAL_REACTION);
+end
+
+procedure heather8
+begin
+	gsay_message(SCRIPT_HEATHER, 130, NEUTRAL_REACTION);
+	call combat;
+end
+
+procedure heather9
+begin
+	gsay_reply(SCRIPT_HEATHER, 131);
+	giq_option(4, SCRIPT_HEATHER, 132, heather6, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HEATHER, 133, heather8, NEUTRAL_REACTION);
+end
+
+procedure heather10
+begin
+	gsay_reply(SCRIPT_HEATHER, 134);
+	giq_option(4, SCRIPT_HEATHER, 135, heather11, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_HEATHER, 136, heather12, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HEATHER, 137, HeatherEnd, NEUTRAL_REACTION);
+end
+
+procedure heather11
+begin
+	gsay_reply(SCRIPT_HEATHER, 138);
+	giq_option(4, SCRIPT_HEATHER, 139, HeatherEnd, NEUTRAL_REACTION);
+end
+
+procedure heather12
+begin
+	gsay_reply(SCRIPT_HEATHER, 140);
+	giq_option(4, SCRIPT_HEATHER, 141, heather6, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HEATHER, 142, heather13, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HEATHER, 143, HeatherEnd, NEUTRAL_REACTION);
+end
+
+procedure heather13
+begin
+	gsay_reply(SCRIPT_HEATHER, 144);
+	giq_option(4, SCRIPT_HEATHER, 145, heather14, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HEATHER, 146, heather15, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HEATHER, 147, heather16, NEUTRAL_REACTION);
+end
+
+procedure heather14
+begin
+	gsay_reply(SCRIPT_HEATHER, 148);
+	giq_option(4, SCRIPT_HEATHER, 149, heather6, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HEATHER, 150, heather8, NEUTRAL_REACTION);
+end
+
+procedure heather15
+begin
+	gsay_reply(SCRIPT_HEATHER, 151);
+	giq_option(4, SCRIPT_HEATHER, 152, heather8, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HEATHER, 153, combat, NEUTRAL_REACTION);
+end
+
+procedure heather16
+begin
+	gsay_message(SCRIPT_HEATHER, 154, NEUTRAL_REACTION);
+end
+
+procedure heather17
+begin
+	gsay_reply(SCRIPT_HEATHER, 155);
+	giq_option(4, SCRIPT_HEATHER, 156, heather8, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HEATHER, 157, heather18, NEUTRAL_REACTION);
+end
+
+procedure heather18
+begin
+	gsay_reply(SCRIPT_HEATHER, 158);
+	giq_option(4, SCRIPT_HEATHER, 159, heather8, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HEATHER, 160, heather6, NEUTRAL_REACTION);
+end
+
+procedure heather19
+begin
+	gsay_message(SCRIPT_HEATHER, 161, NEUTRAL_REACTION);
+end
+
+procedure heather20
+begin
+	gsay_message(SCRIPT_HEATHER, 162, NEUTRAL_REACTION);
+end
+
+procedure heather21
+begin
+	gsay_reply(SCRIPT_HEATHER, 163);
+	giq_option(6, SCRIPT_HEATHER, 164, heather22, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_HEATHER, 165, heather26, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_HEATHER, 166, heather25, NEUTRAL_REACTION);
+end
+
+procedure heather22
+begin
+	gsay_reply(SCRIPT_HEATHER, 167);
+	giq_option(6, SCRIPT_HEATHER, 168, heather22a, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_HEATHER, 169, heather25, NEUTRAL_REACTION);
+end
+
+procedure heather22a
+begin
+	variable LVar0 := 0;
+	if (item_caps_total(dude_obj) >= 300) then begin
+		item_caps_adjust(dude_obj, -300);
+		item_caps_adjust(self_obj, 300);
+		call heather23;
+	end
+	else begin
+		call heather24;
+	end
+end
+
+procedure heather23
+begin
+	gsay_message(SCRIPT_HEATHER, 170, NEUTRAL_REACTION);
+end
+
+procedure heather24
+begin
+	gsay_message(SCRIPT_HEATHER, 171, NEUTRAL_REACTION);
+	call combat;
+end
+
+procedure heather25
+begin
+	gsay_message(SCRIPT_HEATHER, 172, NEUTRAL_REACTION);
+end
+
+procedure heather26
+begin
+	gsay_reply(SCRIPT_HEATHER, 173);
+	giq_option(6, SCRIPT_HEATHER, 174, heather22a, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_HEATHER, 175, heather25, NEUTRAL_REACTION);
+end
+
+procedure heather27
+begin
+	gsay_message(SCRIPT_HEATHER, 176, NEUTRAL_REACTION);
+end
+
+procedure heather28
+begin
+	float_msg(self_obj, message_str(SCRIPT_HEATHER, 177), FLOAT_MSG_NORMAL);
+end
+
+procedure HeatherEnd
+begin
+end
+
+procedure combat
+begin
+	hostile1 := 1;
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

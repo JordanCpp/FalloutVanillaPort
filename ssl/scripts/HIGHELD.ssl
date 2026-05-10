@@ -1,0 +1,539 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure combat;
+procedure critter_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure Meeting01;
+procedure Meeting02;
+procedure Meeting02a;
+procedure Meeting03;
+procedure Meeting04;
+procedure Meeting05;
+procedure Meeting05a;
+procedure Meeting06;
+procedure Meeting07;
+procedure Meeting08;
+procedure Meeting09;
+procedure Meeting10;
+procedure Meeting11;
+procedure Meeting12;
+procedure Meeting13;
+procedure Elder01;
+procedure Elder02;
+procedure Elder03;
+procedure Elder04;
+procedure Elder05;
+procedure Elder06;
+procedure Elder07;
+procedure Elder07a;
+procedure Elder08;
+procedure Elder09;
+procedure Elder10;
+procedure Elder11;
+procedure Elder12;
+procedure ElderEnd;
+
+variable hostile1;
+variable Only_Once := 1;
+variable awardex;
+variable temp;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	if (Only_Once) then begin
+		Only_Once := 0;
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 44);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_BOS_ELDERS);
+	end
+	if (script_action == look_at_proc) then begin
+		call look_at_p_proc;
+	end
+	else begin
+		if (script_action == pickup_proc) then begin
+			call pickup_p_proc;
+		end
+		else begin
+			if (script_action == talk_proc) then begin
+				call talk_p_proc;
+			end
+			else begin
+				if (script_action == critter_proc) then begin
+					call critter_p_proc;
+				end
+				else begin
+					if (script_action == destroy_proc) then begin
+						call destroy_p_proc;
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure combat
+begin
+	hostile1 := 1;
+end
+
+procedure critter_p_proc
+begin
+	if (obj_can_see_obj(self_obj, dude_obj) and (tile_distance_objs(self_obj, dude_obj) < 3)) then begin
+		if ((map_var(19) == 1) and (local_var(5) == 0)) then begin
+			dialogue_system_enter;
+		end
+	end
+	if (global_var(GVAR_ENEMY_BROTHERHOOD)) then begin
+		hostile1 := 1;
+	end
+	if (tile_distance_objs(self_obj, dude_obj) > 12) then begin
+		hostile1 := 0;
+	end
+	if (hostile1) then begin
+		set_global_var(GVAR_ENEMY_BROTHERHOOD, 1);
+		hostile1 := 0;
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+end
+
+procedure pickup_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		hostile1 := 1;
+	end
+end
+
+procedure talk_p_proc
+begin
+	call Get_Reaction;
+	if (global_var(GVAR_VATS_BLOWN) == 1) then begin
+		start_gdialog(SCRIPT_HIGHELD, self_obj, 4, -1, -1);
+		gsay_start;
+		call Elder10;
+		gsay_end;
+		end_dialogue;
+	end
+	else begin
+		if (local_var(1) == 1) then begin
+			call Elder12;
+		end
+		else begin
+			if (local_var(5) == 1) then begin
+				float_msg(self_obj, message_str(SCRIPT_HIGHELD, 165), FLOAT_MSG_RED);
+			end
+			else begin
+				if ((map_var(19) == 1) and (local_var(5) == 0)) then begin
+					set_local_var(5, 1);
+					start_gdialog(SCRIPT_HIGHELD, self_obj, 4, -1, -1);
+					gsay_start;
+					call Meeting01;
+					gsay_end;
+					end_dialogue;
+				end
+				else begin
+					if (local_var(4) == 0) then begin
+						set_local_var(4, 1);
+						start_gdialog(SCRIPT_HIGHELD, self_obj, 4, -1, -1);
+						gsay_start;
+						call Elder01;
+						gsay_end;
+						end_dialogue;
+					end
+					else begin
+						start_gdialog(SCRIPT_HIGHELD, self_obj, 4, -1, -1);
+						gsay_start;
+						call Elder04;
+						gsay_end;
+						end_dialogue;
+					end
+				end
+			end
+		end
+	end
+	if (awardex) then begin
+		if (local_var(6) == 0) then begin
+			set_local_var(6, 1);
+			temp := 1500;
+			display_msg(message_str(SCRIPT_HIGHELD, 166) + temp + message_str(SCRIPT_HIGHELD, 167));
+			give_exp_points(temp);
+		end
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+		if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+		end
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	display_msg(message_str(SCRIPT_HIGHELD, 100));
+end
+
+procedure Meeting01
+begin
+	gsay_reply(SCRIPT_HIGHELD, message_str(SCRIPT_HIGHELD, 134) + proto_data(obj_pid(dude_obj), 1) + message_str(SCRIPT_HIGHELD, 135) + proto_data(obj_pid(dude_obj), 1) + message_str(SCRIPT_HIGHELD, 136));
+	giq_option(4, SCRIPT_HIGHELD, 137, Meeting02, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_HIGHELD, 138, Meeting13, BAD_REACTION);
+end
+
+procedure Meeting02
+begin
+	gsay_reply(SCRIPT_HIGHELD, 139);
+	giq_option(6, SCRIPT_HIGHELD, 140, Meeting02a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HIGHELD, 141, Meeting04, NEUTRAL_REACTION);
+end
+
+procedure Meeting02a
+begin
+	if (global_var(GVAR_VREE_DISK) == 1) then begin
+		call Meeting03;
+	end
+	else begin
+		call Meeting04;
+	end
+end
+
+procedure Meeting03
+begin
+	gsay_reply(SCRIPT_HIGHELD, 142);
+	giq_option(6, SCRIPT_HIGHELD, 143, Meeting04, NEUTRAL_REACTION);
+end
+
+procedure Meeting04
+begin
+	gsay_reply(SCRIPT_HIGHELD, 144);
+	giq_option(4, SCRIPT_HIGHELD, 145, Meeting05, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_HIGHELD, 138, Meeting13, BAD_REACTION);
+end
+
+procedure Meeting05
+begin
+	gsay_reply(SCRIPT_HIGHELD, 146);
+	if ((global_var(GVAR_NECROPOLIS_INVADED_DATE) < (game_time / (10 * 60 * 60 * 24))) and (global_var(GVAR_NECROPOLIS) == 2)) then begin
+		giq_option(4, SCRIPT_HIGHELD, 147, Meeting06, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_HIGHELD, 148, Meeting05a, NEUTRAL_REACTION);
+end
+
+procedure Meeting05a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call Meeting06;
+	end
+	else begin
+		call Meeting07;
+	end
+end
+
+procedure Meeting06
+begin
+	gsay_reply(SCRIPT_HIGHELD, 149);
+	giq_option(4, SCRIPT_HIGHELD, 150, Meeting08, NEUTRAL_REACTION);
+end
+
+procedure Meeting07
+begin
+	gsay_reply(SCRIPT_HIGHELD, 151);
+	giq_option(4, SCRIPT_HIGHELD, message_str(SCRIPT_HIGHELD, 152) + message_str(SCRIPT_HIGHELD, 153), Meeting08, NEUTRAL_REACTION);
+end
+
+procedure Meeting08
+begin
+	gsay_reply(SCRIPT_HIGHELD, 154);
+	giq_option(4, SCRIPT_HIGHELD, 155, Meeting09, NEUTRAL_REACTION);
+	if (global_var(GVAR_CATHEDRAL) == 1) then begin
+		giq_option(4, SCRIPT_HIGHELD, 156, Meeting10, NEUTRAL_REACTION);
+	end
+end
+
+procedure Meeting09
+begin
+	awardex := 1;
+	set_global_var(GVAR_BROTHERHOOD_INVASION, 2);
+	gsay_message(SCRIPT_HIGHELD, 157, NEUTRAL_REACTION);
+end
+
+procedure Meeting10
+begin
+	gsay_reply(SCRIPT_HIGHELD, message_str(SCRIPT_HIGHELD, 158) + message_str(SCRIPT_HIGHELD, 159));
+	giq_option(4, SCRIPT_HIGHELD, 160, Meeting09, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HIGHELD, 161, Meeting11, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_HIGHELD, 138, Meeting13, BAD_REACTION);
+end
+
+procedure Meeting11
+begin
+	set_global_var(GVAR_BROTHERHOOD_INVASION, 1);
+	gsay_message(SCRIPT_HIGHELD, 162, NEUTRAL_REACTION);
+end
+
+procedure Meeting12
+begin
+	set_global_var(GVAR_BROTHERHOOD_INVASION, 2);
+end
+
+procedure Meeting13
+begin
+	gsay_message(SCRIPT_HIGHELD, 164, BAD_REACTION);
+end
+
+procedure Elder01
+begin
+	gsay_reply(SCRIPT_HIGHELD, 101);
+	giq_option(4, SCRIPT_HIGHELD, 102, Elder02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HIGHELD, 103, Elder08, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_HIGHELD, 104, Elder11, BAD_REACTION);
+end
+
+procedure Elder02
+begin
+	gsay_reply(SCRIPT_HIGHELD, message_str(SCRIPT_HIGHELD, 105) + message_str(SCRIPT_HIGHELD, 106) + message_str(SCRIPT_HIGHELD, 107));
+	giq_option(4, SCRIPT_HIGHELD, 108, Elder03, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HIGHELD, 109, Elder09, NEUTRAL_REACTION);
+	if (global_var(GVAR_THE_VATS) == 2) then begin
+		giq_option(4, SCRIPT_HIGHELD, 110, Elder07, NEUTRAL_REACTION);
+	end
+end
+
+procedure Elder03
+begin
+	gsay_reply(SCRIPT_HIGHELD, 111);
+	giq_option(4, SCRIPT_HIGHELD, 112, ElderEnd, NEUTRAL_REACTION);
+end
+
+procedure Elder04
+begin
+	gsay_reply(SCRIPT_HIGHELD, 113);
+	if (global_var(GVAR_THE_VATS) == 2) then begin
+		giq_option(4, SCRIPT_HIGHELD, 114, Elder05, NEUTRAL_REACTION);
+	end
+	else begin
+		giq_option(4, SCRIPT_HIGHELD, 115, Elder06, NEUTRAL_REACTION);
+	end
+end
+
+procedure Elder05
+begin
+	gsay_reply(SCRIPT_HIGHELD, 116);
+	giq_option(4, SCRIPT_HIGHELD, 117, Elder07, NEUTRAL_REACTION);
+end
+
+procedure Elder06
+begin
+	gsay_reply(SCRIPT_HIGHELD, 118);
+	giq_option(4, SCRIPT_HIGHELD, 119, ElderEnd, NEUTRAL_REACTION);
+end
+
+procedure Elder07
+begin
+	gsay_reply(SCRIPT_HIGHELD, 120);
+	giq_option(4, SCRIPT_HIGHELD, 121, ElderEnd, NEUTRAL_REACTION);
+end
+
+procedure Elder07a
+begin
+	set_local_var(1, 1);
+end
+
+procedure Elder08
+begin
+	gsay_reply(SCRIPT_HIGHELD, 122);
+	giq_option(4, SCRIPT_HIGHELD, 123, Elder02, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_HIGHELD, 124, Elder07a, BAD_REACTION);
+	giq_option(4, SCRIPT_HIGHELD, 125, Elder07a, BAD_REACTION);
+end
+
+procedure Elder09
+begin
+	gsay_reply(SCRIPT_HIGHELD, 126);
+	giq_option(4, SCRIPT_HIGHELD, 127, ElderEnd, NEUTRAL_REACTION);
+end
+
+procedure Elder10
+begin
+	gsay_reply(SCRIPT_HIGHELD, 128);
+	giq_option(4, SCRIPT_HIGHELD, 129, ElderEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_HIGHELD, 104, Elder11, BAD_REACTION);
+end
+
+procedure Elder11
+begin
+	gsay_message(SCRIPT_HIGHELD, 130, BAD_REACTION);
+end
+
+procedure Elder12
+begin
+	float_msg(self_obj, message_str(SCRIPT_HIGHELD, random(131, 133)), FLOAT_MSG_RED);
+end
+
+procedure ElderEnd
+begin
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

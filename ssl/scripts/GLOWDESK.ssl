@@ -1,0 +1,38 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+
+
+procedure start
+begin
+	if (script_action == pickup_proc) then begin
+		if (local_var(0) == 0) then begin
+			script_overrides;
+			display_msg(message_str(SCRIPT_GLOWDESK, 100));
+		end
+	end
+	else begin
+		if (script_action == use_skill_on_proc) then begin
+			if (action_being_used == 9) then begin
+				if (is_success(roll_vs_skill(dude_obj, 9, 0))) then begin
+					set_local_var(0, 1);
+					display_msg(message_str(SCRIPT_GLOWDESK, 101));
+				end
+				else begin
+					display_msg(message_str(SCRIPT_GLOWDESK, 102));
+				end
+			end
+			else begin
+				display_msg(message_str(SCRIPT_GLOWDESK, 103));
+			end
+		end
+	end
+end

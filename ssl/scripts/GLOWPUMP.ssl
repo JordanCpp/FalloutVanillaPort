@@ -1,0 +1,34 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+
+
+procedure start
+begin
+	if (script_action == look_at_proc) then begin
+		script_overrides;
+		display_msg(message_str(SCRIPT_GLOWPUMP, 100));
+	end
+	else begin
+		if (script_action == description_proc) then begin
+			script_overrides;
+			display_msg(message_str(SCRIPT_GLOWPUMP, 101));
+		end
+		else begin
+			if (script_action == use_skill_on_proc) then begin
+				if (action_being_used == 13) then begin
+					script_overrides;
+					display_msg(message_str(SCRIPT_GLOWPUMP, 102));
+				end
+			end
+		end
+	end
+end

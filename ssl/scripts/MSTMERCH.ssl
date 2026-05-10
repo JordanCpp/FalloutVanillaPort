@@ -1,0 +1,509 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure combat;
+procedure critter_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure damage_p_proc;
+procedure MasterMerch00;
+procedure MasterMerch01;
+procedure MasterMerch02;
+procedure MasterMerch03;
+procedure MasterMerch04;
+procedure MasterMerch05;
+procedure MasterMerch06;
+procedure MasterMerch07;
+procedure MasterMerch08;
+procedure MasterMerch09;
+procedure MasterMerch10;
+procedure MasterMerch11;
+procedure MasterMerch12;
+procedure MasterMerch13;
+procedure MasterMerch14;
+procedure MasterMerch15;
+procedure MasterMerch16;
+procedure MasterMerch17;
+procedure MasterMerch18;
+procedure MasterMerch19;
+procedure MasterMerch20;
+procedure MasterMerchEnd;
+
+variable hostile1;
+variable Only_Once := 1;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	if (Only_Once) then begin
+		Only_Once := 0;
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 35);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_MERCHANT);
+	end
+	if (script_action == look_at_proc) then begin
+		call look_at_p_proc;
+	end
+	else begin
+		if (script_action == pickup_proc) then begin
+			call pickup_p_proc;
+		end
+		else begin
+			if (script_action == talk_proc) then begin
+				call talk_p_proc;
+			end
+			else begin
+				if (script_action == critter_proc) then begin
+					call critter_p_proc;
+				end
+				else begin
+					if (script_action == destroy_proc) then begin
+						call destroy_p_proc;
+					end
+					else begin
+						if (script_action == damage_proc) then begin
+							call damage_p_proc;
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure combat
+begin
+	hostile1 := 1;
+end
+
+procedure critter_p_proc
+begin
+	if (hostile1) then begin
+		hostile1 := 0;
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+end
+
+procedure pickup_p_proc
+begin
+	call MasterMerch00;
+	if (source_obj == dude_obj) then begin
+		hostile1 := 1;
+	end
+end
+
+procedure talk_p_proc
+begin
+	call Get_Reaction;
+	if (map_var(2) == 0) then begin
+		float_msg(self_obj, message_str(SCRIPT_MSTMERCH, 156), FLOAT_MSG_RED);
+	end
+	else begin
+		if (local_var(4) == 0) then begin
+			set_local_var(4, 1);
+			start_gdialog(SCRIPT_MSTMERCH, self_obj, 4, -1, -1);
+			gsay_start;
+			call MasterMerch01;
+			gsay_end;
+			end_dialogue;
+		end
+		else begin
+			if ((local_var(5) > 0) and (global_var(GVAR_FIND_WATER_CHIP) != 1)) then begin
+				start_gdialog(SCRIPT_MSTMERCH, self_obj, 4, -1, -1);
+				gsay_start;
+				call MasterMerch19;
+				gsay_end;
+				end_dialogue;
+			end
+			else begin
+				start_gdialog(SCRIPT_MSTMERCH, self_obj, 4, -1, -1);
+				gsay_start;
+				call MasterMerch10;
+				gsay_end;
+				end_dialogue;
+			end
+		end
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+		if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+		end
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	display_msg(message_str(SCRIPT_MSTMERCH, 100));
+end
+
+procedure damage_p_proc
+begin
+	variable LVar0 := 0;
+	LVar0 := obj_pid(source_obj);
+	if (party_member_obj(LVar0) != 0) then begin
+		set_global_var(GVAR_ENEMY_HUB, 1);
+	end
+end
+
+procedure MasterMerch00
+begin
+	float_msg(self_obj, message_str(SCRIPT_MSTMERCH, 101), FLOAT_MSG_RED);
+	call combat;
+end
+
+procedure MasterMerch01
+begin
+	gsay_reply(SCRIPT_MSTMERCH, 102);
+	giq_option(4, SCRIPT_MSTMERCH, 103, MasterMerch02, NEUTRAL_REACTION);
+	if ((global_var(GVAR_FIND_WATER_CHIP) != 2) or ((global_var(GVAR_NECROP_WATER_CHIP_TAKEN) == 1) and (global_var(GVAR_NECROP_WATER_PUMP_FIXED) == 0))) then begin
+		giq_option(4, SCRIPT_MSTMERCH, 104, MasterMerch04, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_MSTMERCH, 105, MasterMerchEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_MSTMERCH, 106, MasterMerch03, NEUTRAL_REACTION);
+end
+
+procedure MasterMerch02
+begin
+	set_map_var(1, 1);
+	gsay_reply(SCRIPT_MSTMERCH, 107);
+	giq_option(4, SCRIPT_MSTMERCH, 108, MasterMerchEnd, NEUTRAL_REACTION);
+	if ((global_var(GVAR_FIND_WATER_CHIP) != 2) or ((global_var(GVAR_NECROP_WATER_CHIP_TAKEN) == 1) and (global_var(GVAR_NECROP_WATER_PUMP_FIXED) == 0))) then begin
+		giq_option(4, SCRIPT_MSTMERCH, 109, MasterMerch04, NEUTRAL_REACTION);
+	end
+	giq_option(-3, SCRIPT_MSTMERCH, 110, MasterMerch03, NEUTRAL_REACTION);
+end
+
+procedure MasterMerch03
+begin
+	gsay_message(SCRIPT_MSTMERCH, 111, NEUTRAL_REACTION);
+end
+
+procedure MasterMerch04
+begin
+	if (global_var(GVAR_NECROPOLIS) == 0) then begin
+		set_global_var(GVAR_NECROPOLIS, 1);
+	end
+	gsay_reply(SCRIPT_MSTMERCH, 112);
+	giq_option(4, SCRIPT_MSTMERCH, 113, MasterMerch13, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MSTMERCH, 114, MasterMerch05, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MSTMERCH, 115, MasterMerch06, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MSTMERCH, 116, MasterMerch07, NEUTRAL_REACTION);
+end
+
+procedure MasterMerch05
+begin
+	set_local_var(6, 1);
+	gsay_reply(SCRIPT_MSTMERCH, 117);
+	giq_option(4, SCRIPT_MSTMERCH, 118, MasterMerch14, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MSTMERCH, 119, MasterMerch08, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MSTMERCH, 120, MasterMerch07, NEUTRAL_REACTION);
+end
+
+procedure MasterMerch06
+begin
+	gsay_message(SCRIPT_MSTMERCH, 121, NEUTRAL_REACTION);
+end
+
+procedure MasterMerch07
+begin
+	gsay_message(SCRIPT_MSTMERCH, 122, NEUTRAL_REACTION);
+end
+
+procedure MasterMerch08
+begin
+	gsay_reply(SCRIPT_MSTMERCH, 123);
+	giq_option(4, SCRIPT_MSTMERCH, 124, MasterMerch14, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MSTMERCH, 125, MasterMerch09, NEUTRAL_REACTION);
+end
+
+procedure MasterMerch09
+begin
+	gsay_message(SCRIPT_MSTMERCH, 126, NEUTRAL_REACTION);
+end
+
+procedure MasterMerch10
+begin
+	gsay_reply(SCRIPT_MSTMERCH, 127);
+	if ((global_var(GVAR_FIND_WATER_CHIP) != 2) and (global_var(GVAR_FIND_WATER_CHIP) != 1) and (local_var(6) == 0)) then begin
+		giq_option(4, SCRIPT_MSTMERCH, 128, MasterMerch04, NEUTRAL_REACTION);
+	end
+	else begin
+		if ((global_var(GVAR_FIND_WATER_CHIP) != 2) and (global_var(GVAR_FIND_WATER_CHIP) != 1) and (local_var(6) == 1)) then begin
+			giq_option(4, SCRIPT_MSTMERCH, 129, MasterMerch12, NEUTRAL_REACTION);
+		end
+	end
+	giq_option(4, SCRIPT_MSTMERCH, 130, MasterMerch11, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MSTMERCH, 131, MasterMerchEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_MSTMERCH, 106, MasterMerch03, NEUTRAL_REACTION);
+end
+
+procedure MasterMerch11
+begin
+	set_map_var(1, 1);
+	gsay_message(SCRIPT_MSTMERCH, 132, NEUTRAL_REACTION);
+end
+
+procedure MasterMerch12
+begin
+	gsay_reply(SCRIPT_MSTMERCH, 133);
+	giq_option(4, SCRIPT_MSTMERCH, 134, MasterMerch13, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MSTMERCH, 135, MasterMerch14, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MSTMERCH, 136, MasterMerchEnd, NEUTRAL_REACTION);
+end
+
+procedure MasterMerch13
+begin
+	gsay_reply(SCRIPT_MSTMERCH, 137);
+	giq_option(4, SCRIPT_MSTMERCH, 138, MasterMerch14, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MSTMERCH, 139, MasterMerch07, NEUTRAL_REACTION);
+end
+
+procedure MasterMerch14
+begin
+	gsay_reply(SCRIPT_MSTMERCH, 140);
+	call MasterMerch15;
+end
+
+procedure MasterMerch15
+begin
+	if (local_var(5) == 0) then begin
+		set_local_var(5, 2000);
+	end
+	giq_option(4, SCRIPT_MSTMERCH, 141, MasterMerch16, NEUTRAL_REACTION);
+	if (local_var(7) == 0) then begin
+		giq_option(4, SCRIPT_MSTMERCH, 142, MasterMerch17, NEUTRAL_REACTION);
+	end
+	if (local_var(7) == 0) then begin
+		giq_option(4, SCRIPT_MSTMERCH, 143, MasterMerch18, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_MSTMERCH, 144, MasterMerchEnd, NEUTRAL_REACTION);
+end
+
+procedure MasterMerch16
+begin
+	if (item_caps_total(dude_obj) < local_var(5)) then begin
+		gsay_message(SCRIPT_MSTMERCH, message_str(SCRIPT_MSTMERCH, 145) + local_var(5) + message_str(SCRIPT_MSTMERCH, 146), NEUTRAL_REACTION);
+		call MasterMerchEnd;
+	end
+	else begin
+		gsay_reply(SCRIPT_MSTMERCH, 147);
+		giq_option(4, SCRIPT_MSTMERCH, 148, MasterMerchEnd, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_MSTMERCH, 149, MasterMerch20, NEUTRAL_REACTION);
+	end
+end
+
+procedure MasterMerch17
+begin
+	set_local_var(7, 1);
+	if (is_success(roll_vs_skill(dude_obj, 15, -15))) then begin
+		set_local_var(5, 1000);
+		gsay_message(SCRIPT_MSTMERCH, 150, NEUTRAL_REACTION);
+		call MasterMerch16;
+	end
+	else begin
+		gsay_reply(SCRIPT_MSTMERCH, 151);
+		call MasterMerch15;
+	end
+end
+
+procedure MasterMerch18
+begin
+	set_local_var(7, 1);
+	if (is_success(roll_vs_skill(dude_obj, 15, -30))) then begin
+		set_local_var(5, 500);
+		gsay_message(SCRIPT_MSTMERCH, 152, NEUTRAL_REACTION);
+		call MasterMerch16;
+	end
+	else begin
+		gsay_reply(SCRIPT_MSTMERCH, 153);
+		call MasterMerch15;
+	end
+end
+
+procedure MasterMerch19
+begin
+	gsay_reply(SCRIPT_MSTMERCH, message_str(SCRIPT_MSTMERCH, 157) + local_var(5) + message_str(SCRIPT_MSTMERCH, 158));
+	call MasterMerch15;
+end
+
+procedure MasterMerch20
+begin
+	variable LVar0 := 0;
+	LVar0 := item_caps_adjust(dude_obj, -1 * local_var(5));
+	set_global_var(GVAR_FIND_WATER_CHIP, 1);
+	set_global_var(GVAR_VAULT_WATER, global_var(GVAR_VAULT_WATER) + 100);
+	if (global_var(GVAR_VAULT_13_INVADED_DATE) >= 100) then begin
+		set_global_var(GVAR_VAULT_13_INVADED_DATE, global_var(GVAR_VAULT_13_INVADED_DATE) - 90);
+	end
+	give_exp_points(1000);
+	display_msg(message_str(SCRIPT_GENCHAT, 103) + 1000 + message_str(SCRIPT_GENCHAT, 104));
+	gsay_message(SCRIPT_MSTMERCH, 155, NEUTRAL_REACTION);
+end
+
+procedure MasterMerchEnd
+begin
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

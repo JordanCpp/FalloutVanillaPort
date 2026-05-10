@@ -1,0 +1,106 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure critter_p_proc;
+procedure destroy_p_proc;
+procedure pickup_p_proc;
+procedure flee_dude;
+
+variable hostile1;
+variable initialized1;
+variable scared;
+
+
+procedure start
+begin
+	if (not(initialized1)) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 86);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_GENERIC_RAIDER + random(0, 1));
+		hostile1 := global_var(GVAR_SAVE_TANDI_5);
+		initialized1 := 1;
+	end
+	else begin
+		if (script_action == critter_proc) then begin
+			call critter_p_proc;
+		end
+		else begin
+			if (script_action == destroy_proc) then begin
+				call destroy_p_proc;
+			end
+			else begin
+				if (script_action == pickup_proc) then begin
+					call pickup_p_proc;
+				end
+			end
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (hostile1) then begin
+		hostile1 := 0;
+		scared := 1;
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+	else begin
+		if (tile_distance_objs(self_obj, dude_obj) < 12) then begin
+			if (scared) then begin
+				call flee_dude;
+			end
+			else begin
+				hostile1 := 1;
+				set_global_var(GVAR_SAVE_TANDI_5, 1);
+			end
+		end
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_BAD_MONSTER, global_var(GVAR_BAD_MONSTER) + 1);
+		if ((global_var(GVAR_BAD_MONSTER) % 6) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) + 1);
+		end
+	end
+end
+
+procedure pickup_p_proc
+begin
+	if (not(scared)) then begin
+		hostile1 := 1;
+		set_global_var(GVAR_SAVE_TANDI_5, 1);
+	end
+end
+
+procedure flee_dude
+begin
+	variable LVar0 := 0;
+	variable LVar1 := 0;
+	variable LVar2 := 0;
+	while(LVar1 < 5) do begin
+		if (tile_distance(tile_num(dude_obj), tile_num_in_direction(tile_num(self_obj), LVar1, 3)) > LVar2) then begin
+			LVar0 := tile_num_in_direction(tile_num(self_obj), LVar1, 3);
+			LVar2 := tile_distance(tile_num(dude_obj), LVar0);
+		end
+		LVar1 := LVar1 + 1;
+	end
+	animate_move_obj_to_tile(self_obj, LVar0, ANIMATE_RUN);
+end

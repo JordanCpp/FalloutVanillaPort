@@ -1,0 +1,1004 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure combat_p_proc;
+procedure critter_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure talk_p_proc;
+procedure timed_event_p_proc;
+procedure Ltcbt;
+procedure Lt01;
+procedure Lt01a;
+procedure Lt01b;
+procedure Lt02;
+procedure Lt03;
+procedure Lt04;
+procedure Lt05;
+procedure Lt06;
+procedure Lt07;
+procedure Lt08;
+procedure Lt08a;
+procedure Lt09;
+procedure Lt10;
+procedure Lt11;
+procedure Lt12;
+procedure Lt13;
+procedure Lt14;
+procedure Lt15;
+procedure Lt16;
+procedure Lt17;
+procedure Lt18;
+procedure Lt18a;
+procedure Lt19;
+procedure Lt20;
+procedure Lt21;
+procedure Lt22;
+procedure Lt23;
+procedure Lt24;
+procedure Lt25;
+procedure Lt26;
+procedure Lt27;
+procedure Lt28;
+procedure Lt29;
+procedure Lt30;
+procedure Lt31;
+procedure Lt32;
+procedure Lt33;
+procedure Lt34;
+procedure Lt35;
+procedure Lt35a;
+procedure Lt36;
+procedure Lt37;
+procedure Lt37b;
+procedure Lt38;
+procedure Lt39;
+procedure Lt39a;
+procedure Lt39b;
+procedure Lt40;
+procedure Lt40a;
+procedure Lt41;
+procedure Lt42;
+procedure Lt43;
+procedure Lt44;
+procedure Lt45;
+procedure Lt46;
+procedure Lt48;
+procedure Ltx1;
+procedure Ltx2;
+procedure Ltx3;
+procedure Ltx4;
+procedure Ltx6;
+procedure Torture;
+
+variable rndx;
+variable rndy;
+variable rndz;
+variable hostile1;
+variable HEREBEFORE;
+variable go_to_cell;
+variable DESTROYED;
+variable KILLEDANY;
+variable initialized1;
+variable hit_dude;
+variable torture_setting;
+variable End_The_Game;
+
+import variable Lt_ptr;
+import variable VWeapLocker_ptr;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+procedure Lt40_5;
+procedure Lt50;
+procedure Lt51;
+procedure Lt52;
+procedure Lt53;
+procedure Lt54;
+procedure Lt55;
+procedure Lt56;
+procedure Lt57;
+procedure Lt58;
+procedure Lt59;
+procedure Lt60;
+procedure Lt61;
+procedure Lt62;
+procedure Lt63;
+procedure Lt64;
+procedure Lt65;
+procedure Lt66;
+
+
+procedure start
+begin
+variable LVar0 := 0;
+  if (not(initialized1)) then begin
+    critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 34);
+    critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_SUPER_MUTANT_SGT);
+    Lt_ptr := self_obj;
+    if (local_var(6) == 0) then begin
+      LVar0 := create_object_sid(58, 0, 0, 947);
+      add_obj_to_inven(self_obj, LVar0);
+      set_local_var(6, 1);
+    end
+    initialized1 := 1;
+  end
+  else begin
+    if (script_action == critter_proc) then begin
+      call critter_p_proc;
+    end
+    else begin
+      if (script_action == destroy_proc) then begin
+        call destroy_p_proc;
+      end
+      else begin
+        if (script_action == look_at_proc) then begin
+          call look_at_p_proc;
+        end
+        else begin
+          if (script_action == talk_proc) then begin
+            call talk_p_proc;
+          end
+          else begin
+            if (script_action == timed_event_proc) then begin
+              call timed_event_p_proc;
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+procedure combat_p_proc
+begin
+  if (fixed_param == 2) then begin
+    if (global_var(GVAR_DESTROY_VATS_4)) then begin
+      if (random(0, 3) == 3) then begin
+        critter_injure(dude_obj, 1);
+      end
+    end
+  end
+end
+
+procedure critter_p_proc
+begin
+  if (hostile1) then begin
+    hostile1 := 0;
+    attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+  end
+  else begin
+    if (obj_can_see_obj(self_obj, dude_obj)) then begin
+      if (torture_setting > 0) then begin
+        if (hit_dude == 0) then begin
+          call Torture;
+        end
+      end
+      else begin
+        if (tile_distance_objs(self_obj, dude_obj) < 12) then begin
+          if (not(global_var(GVAR_DESTROY_VATS_4))) then begin
+            if (not(local_var(4))) then begin
+              dialogue_system_enter;
+            end
+            else begin
+              if (not(local_var(5))) then begin
+                dialogue_system_enter;
+              end
+            end
+          end
+          else begin
+            hostile1 := 1;
+          end
+        end
+      end
+    end
+  end
+end
+
+procedure destroy_p_proc
+begin
+  if (source_obj == dude_obj) then begin
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+      set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+      set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+    end
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+      set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+      set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+    end
+    set_global_var(GVAR_BAD_MONSTER, global_var(GVAR_BAD_MONSTER) + 1);
+    if ((global_var(GVAR_BAD_MONSTER) % 6) == 0) then begin
+      set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) + 1);
+    end
+  end
+  set_global_var(GVAR_LIEUTENANTS_DEAD, 1);
+end
+
+procedure look_at_p_proc
+begin
+  script_overrides;
+  display_msg(message_str(SCRIPT_LT, 100));
+end
+
+procedure talk_p_proc
+begin
+  call Get_Reaction;
+  if (local_var(7) == 0) then begin
+    start_gdialog(SCRIPT_LT, self_obj, 4, HEAD_LIEUTENANT, BACKGROUND_MILITARY_BASE);
+    gsay_start;
+    if (torture_setting == 2) then begin
+      call Lt36;
+      torture_setting := 3;
+    end
+    else begin
+      if (torture_setting == 3) then begin
+        call Lt37b;
+        torture_setting := 4;
+      end
+      else begin
+        if (torture_setting == 4) then begin
+          call Lt38;
+          torture_setting := 5;
+        end
+        else begin
+          if (global_var(GVAR_ENTERING_VATS_HOW) == 1) then begin
+            call Lt01;
+          end
+          else begin
+            if (global_var(GVAR_ENTERING_VATS_HOW) == 2) then begin
+              call Lt41;
+            end
+            else begin
+              if (global_var(GVAR_ENTERING_VATS_HOW) == 3) then begin
+                call Lt46;
+              end
+              else begin
+                call Lt45;
+              end
+            end
+          end
+        end
+      end
+    end
+    gsay_end;
+    end_dialogue;
+  end
+  else begin
+    float_msg(self_obj, message_str(SCRIPT_LT, 236), FLOAT_MSG_RED);
+    hostile1 := 1;
+  end
+  if (local_var(7) == 1) then begin
+    set_local_var(7, 2);
+    gfade_out(600);
+    move_obj_inven_to_obj(dude_obj, VWeapLocker_ptr);
+    move_to(dude_obj, 25543, 0);
+    critter_injure(dude_obj, 2);
+    reg_anim_func(2, dude_obj);
+    reg_anim_func(1, 1);
+    reg_anim_animate(dude_obj, 48, -1);
+    reg_anim_animate(dude_obj, 37, -1);
+    reg_anim_func(3, 0);
+    gfade_in(600);
+  end
+  if (End_The_Game == 1) then begin
+    set_obj_visibility(dude_obj, 1);
+    move_to(dude_obj, 12528, 1);
+    move_to(self_obj, 12528, 1);
+    play_gmovie(10);
+    play_gmovie(7);
+    metarule(13, 0);
+  end
+end
+
+procedure timed_event_p_proc
+begin
+  if (fixed_param == 1) then begin
+    if (torture_setting == 1) then begin
+      critter_dmg(dude_obj, get_critter_stat(dude_obj, 35) / 3, 0);
+    end
+    else begin
+      if (torture_setting == 2) then begin
+        critter_dmg(dude_obj, get_critter_stat(dude_obj, 35) / 2, 0);
+      end
+      else begin
+        if (torture_setting == 3) then begin
+          critter_dmg(dude_obj, get_critter_stat(dude_obj, 35) - 1, 0);
+        end
+      end
+    end
+    anim(dude_obj, 37, 0);
+    torture_setting := torture_setting + 1;
+    add_timer_event(self_obj, game_ticks(3), 2);
+  end
+  else begin
+    if (fixed_param == 2) then begin
+      hit_dude := 0;
+      game_ui_enable;
+      dialogue_system_enter;
+    end
+  end
+end
+
+procedure Ltcbt
+begin
+  hostile1 := 1;
+end
+
+procedure Lt01
+begin
+  gsay_reply(SCRIPT_LT, 101);
+  giq_option(4, SCRIPT_LT, 102, Lt02, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 103, Lt01a, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_LT, 104, Lt03, NEUTRAL_REACTION);
+  giq_option(-3, SCRIPT_LT, 105, Lt48, NEUTRAL_REACTION);
+end
+
+procedure Lt01a
+begin
+  gsay_reply(SCRIPT_LT, 106);
+  giq_option(4, SCRIPT_LT, 107, Lt35, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 108, Lt03, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 109, Lt01b, GOOD_REACTION);
+end
+
+procedure Lt01b
+begin
+  gsay_message(SCRIPT_LT, 110, NEUTRAL_REACTION);
+  call Ltx3;
+end
+
+procedure Lt02
+begin
+  gsay_reply(SCRIPT_LT, 111);
+  giq_option(4, SCRIPT_LT, 112, Lt35a, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 113, Lt03, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 114, Lt35, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 115, Lt40, NEUTRAL_REACTION);
+end
+
+procedure Lt03
+begin
+  gsay_reply(SCRIPT_LT, 116);
+  giq_option(4, SCRIPT_LT, 117, Lt04, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 118, Lt04, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 119, Lt05, NEUTRAL_REACTION);
+end
+
+procedure Lt04
+begin
+  gsay_reply(SCRIPT_LT, 120);
+  giq_option(4, SCRIPT_LT, 121, Lt05, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 122, Lt35, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_LT, 123, Lt35a, NEUTRAL_REACTION);
+end
+
+procedure Lt05
+begin
+  gsay_message(SCRIPT_LT, 124, NEUTRAL_REACTION);
+  call Lt06;
+end
+
+procedure Lt06
+begin
+  giq_option(5, SCRIPT_LT, 125, Lt07, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_LT, 126, Lt20, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 127, Lt27, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 128, Lt34, NEUTRAL_REACTION);
+end
+
+procedure Lt07
+begin
+  gsay_reply(SCRIPT_LT, 129);
+  giq_option(5, SCRIPT_LT, 130, Lt10, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_LT, 131, Lt08, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 132, Lt20, NEUTRAL_REACTION);
+end
+
+procedure Lt08
+begin
+  gsay_reply(SCRIPT_LT, 133);
+  giq_option(4, SCRIPT_LT, 134, Lt08a, NEUTRAL_REACTION);
+end
+
+procedure Lt08a
+begin
+  gsay_message(SCRIPT_LT, 135, NEUTRAL_REACTION);
+  call Lt06;
+end
+
+procedure Lt09
+begin
+  gsay_message(SCRIPT_LT, 136, NEUTRAL_REACTION);
+  call Lt06;
+end
+
+procedure Lt10
+begin
+  gsay_reply(SCRIPT_LT, 137);
+  giq_option(4, SCRIPT_LT, 138, Lt11, NEUTRAL_REACTION);
+end
+
+procedure Lt11
+begin
+  gsay_reply(SCRIPT_LT, 139);
+  giq_option(4, SCRIPT_LT, 140, Lt12, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_LT, 141, Lt14, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_LT, 142, Lt13, NEUTRAL_REACTION);
+end
+
+procedure Lt12
+begin
+  gsay_reply(SCRIPT_LT, 143);
+  giq_option(6, SCRIPT_LT, 144, Lt13, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 145, Lt19, NEUTRAL_REACTION);
+end
+
+procedure Lt13
+begin
+  gsay_reply(SCRIPT_LT, 146);
+  giq_option(6, SCRIPT_LT, 147, Lt14, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_LT, 148, Lt18a, BAD_REACTION);
+end
+
+procedure Lt14
+begin
+  gsay_reply(SCRIPT_LT, 149);
+  giq_option(6, SCRIPT_LT, 150, Lt15, NEUTRAL_REACTION);
+end
+
+procedure Lt15
+begin
+  gsay_reply(SCRIPT_LT, 151);
+  giq_option(6, SCRIPT_LT, 152, Lt16, NEUTRAL_REACTION);
+end
+
+procedure Lt16
+begin
+  gsay_reply(SCRIPT_LT, 153);
+  giq_option(6, SCRIPT_LT, 154, Lt17, NEUTRAL_REACTION);
+end
+
+procedure Lt17
+begin
+  gsay_reply(SCRIPT_LT, 155);
+  giq_option(6, SCRIPT_LT, 156, Lt09, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_LT, 157, Lt18a, BAD_REACTION);
+end
+
+procedure Lt18
+begin
+  gsay_reply(SCRIPT_LT, 158);
+  giq_option(6, SCRIPT_LT, 159, Lt35, BAD_REACTION);
+  giq_option(6, SCRIPT_LT, 160, Lt09, NEUTRAL_REACTION);
+end
+
+procedure Lt18a
+begin
+  call Down_React;
+  call Lt18;
+end
+
+procedure Lt19
+begin
+  gsay_reply(SCRIPT_LT, 161);
+  giq_option(4, SCRIPT_LT, 162, Lt18, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 163, Lt14, NEUTRAL_REACTION);
+end
+
+procedure Lt20
+begin
+  gsay_reply(SCRIPT_LT, 164);
+  giq_option(6, SCRIPT_LT, 165, Lt21, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 166, Lt10, NEUTRAL_REACTION);
+end
+
+procedure Lt21
+begin
+  gsay_reply(SCRIPT_LT, 167);
+  giq_option(6, SCRIPT_LT, 168, Lt22, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_LT, 169, Lt29, NEUTRAL_REACTION);
+end
+
+procedure Lt22
+begin
+  gsay_reply(SCRIPT_LT, 170);
+  giq_option(6, SCRIPT_LT, 171, Lt23, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_LT, 172, Lt26, NEUTRAL_REACTION);
+end
+
+procedure Lt23
+begin
+  gsay_reply(SCRIPT_LT, 173);
+  giq_option(6, SCRIPT_LT, 174, Lt24, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_LT, 175, Lt25, NEUTRAL_REACTION);
+end
+
+procedure Lt24
+begin
+  gsay_reply(SCRIPT_LT, 176);
+  giq_option(6, SCRIPT_LT, 177, Lt18a, BAD_REACTION);
+  giq_option(6, SCRIPT_LT, 178, Lt09, NEUTRAL_REACTION);
+end
+
+procedure Lt25
+begin
+  gsay_reply(SCRIPT_LT, 179);
+  giq_option(4, SCRIPT_LT, 180, Lt18, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_LT, 181, Lt28, NEUTRAL_REACTION);
+end
+
+procedure Lt26
+begin
+  gsay_reply(SCRIPT_LT, 182);
+  giq_option(5, SCRIPT_LT, 183, Lt27, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_LT, 184, Lt28, NEUTRAL_REACTION);
+end
+
+procedure Lt27
+begin
+  gsay_reply(SCRIPT_LT, 185);
+  giq_option(4, SCRIPT_LT, 186, Lt35, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_LT, 187, Lt08a, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_LT, 188, Lt30, NEUTRAL_REACTION);
+end
+
+procedure Lt28
+begin
+  gsay_reply(SCRIPT_LT, 189);
+  call Lt06;
+end
+
+procedure Lt29
+begin
+  gsay_reply(SCRIPT_LT, 190);
+  giq_option(4, SCRIPT_LT, 191, Lt22, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 192, Lt28, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 193, Lt23, NEUTRAL_REACTION);
+end
+
+procedure Lt30
+begin
+  gsay_reply(SCRIPT_LT, 194);
+  giq_option(6, SCRIPT_LT, 195, Lt31, NEUTRAL_REACTION);
+  giq_option(7, SCRIPT_LT, 196, Lt33, NEUTRAL_REACTION);
+end
+
+procedure Lt31
+begin
+  gsay_reply(SCRIPT_LT, 197);
+  giq_option(6, SCRIPT_LT, 198, Lt32, NEUTRAL_REACTION);
+end
+
+procedure Lt32
+begin
+  gsay_reply(SCRIPT_LT, 199);
+  giq_option(6, SCRIPT_LT, 200, Lt35, BAD_REACTION);
+  giq_option(6, SCRIPT_LT, 201, Lt28, NEUTRAL_REACTION);
+end
+
+procedure Lt33
+begin
+  gsay_reply(SCRIPT_LT, 202);
+  giq_option(6, SCRIPT_LT, 203, Lt35, BAD_REACTION);
+  giq_option(6, SCRIPT_LT, 204, Lt08a, NEUTRAL_REACTION);
+end
+
+procedure Lt34
+begin
+  gsay_reply(SCRIPT_LT, 205);
+  giq_option(4, SCRIPT_LT, 206, Lt35, BAD_REACTION);
+end
+
+procedure Lt35
+begin
+  gsay_message(SCRIPT_LT, 207, BAD_REACTION);
+  torture_setting := 1;
+end
+
+procedure Lt35a
+begin
+  gsay_message(SCRIPT_LT, 208, NEUTRAL_REACTION);
+  torture_setting := 1;
+end
+
+procedure Lt36
+begin
+  gsay_reply(SCRIPT_LT, 209);
+  giq_option(4, SCRIPT_LT, 210, Lt37, BAD_REACTION);
+  giq_option(4, SCRIPT_LT, 211, Lt40, GOOD_REACTION);
+end
+
+procedure Lt37
+begin
+  gsay_message(SCRIPT_LT, 212, GOOD_REACTION);
+  torture_setting := 2;
+end
+
+procedure Lt37b
+begin
+  gsay_reply(SCRIPT_LT, 213);
+  giq_option(4, SCRIPT_LT, 214, Ltx1, BAD_REACTION);
+  giq_option(4, SCRIPT_LT, 215, Lt40, GOOD_REACTION);
+end
+
+procedure Lt38
+begin
+  gsay_reply(SCRIPT_LT, 216);
+  giq_option(4, SCRIPT_LT, 217, Lt39, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 218, Lt40, NEUTRAL_REACTION);
+end
+
+procedure Lt39
+begin
+  if (dude_is_male) then begin
+    gsay_reply(SCRIPT_LT, 272);
+  end
+  else begin
+    gsay_reply(SCRIPT_LT, 271);
+  end
+  giq_option(6, SCRIPT_LT, 220, Lt39a, NEUTRAL_REACTION);
+end
+
+procedure Lt39a
+begin
+  gsay_reply(SCRIPT_LT, 221);
+  giq_option(7, SCRIPT_LT, 222, Lt39b, NEUTRAL_REACTION);
+  giq_option(6, SCRIPT_LT, 223, Ltx2, BAD_REACTION);
+end
+
+procedure Lt39b
+begin
+  gsay_reply(SCRIPT_LT, 224);
+  giq_option(7, SCRIPT_LT, 225, Lt40, GOOD_REACTION);
+  giq_option(7, SCRIPT_LT, 226, Ltx2, BAD_REACTION);
+end
+
+procedure Lt40
+begin
+  gsay_reply(SCRIPT_LT, 227);
+  giq_option(4, SCRIPT_LT, 228, Ltx3, GOOD_REACTION);
+  giq_option(4, SCRIPT_LT, 229, Lt35, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_LT, 230, Lt09, NEUTRAL_REACTION);
+end
+
+procedure Lt40a
+begin
+  call Lt40;
+end
+
+procedure Lt41
+begin
+  gsay_reply(SCRIPT_LT, 235);
+  giq_option(4, SCRIPT_LT, 236, Lt42, BAD_REACTION);
+  giq_option(5, SCRIPT_LT, 237, Lt43, NEUTRAL_REACTION);
+  giq_option(-3, SCRIPT_LT, 238, Lt48, NEUTRAL_REACTION);
+end
+
+procedure Lt42
+begin
+  gsay_reply(SCRIPT_LT, 239);
+  giq_option(6, SCRIPT_LT, 240, Lt43, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 241, Lt44, NEUTRAL_REACTION);
+end
+
+procedure Lt43
+begin
+  gsay_reply(SCRIPT_LT, 242);
+  giq_option(4, SCRIPT_LT, 243, Lt35, NEUTRAL_REACTION);
+  giq_option(5, SCRIPT_LT, 244, Lt03, NEUTRAL_REACTION);
+end
+
+procedure Lt44
+begin
+  gsay_reply(SCRIPT_LT, 245);
+  giq_option(4, SCRIPT_LT, 246, Lt35, NEUTRAL_REACTION);
+  giq_option(4, SCRIPT_LT, 247, Lt03, NEUTRAL_REACTION);
+end
+
+procedure Lt45
+begin
+  set_global_var(GVAR_ENTERING_VATS_HOW, 3);
+  set_local_var(4, 1);
+  if (dude_is_female) then begin
+    gsay_message(SCRIPT_LT, 248, NEUTRAL_REACTION);
+  end
+  else begin
+    gsay_message(SCRIPT_LT, 270, NEUTRAL_REACTION);
+  end
+  call Ltx4;
+end
+
+procedure Lt46
+begin
+  set_local_var(5, 1);
+  gsay_reply(SCRIPT_LT, 249);
+  giq_option(4, SCRIPT_LT, 251, Lt43, NEUTRAL_REACTION);
+end
+
+procedure Lt48
+begin
+  gsay_message(SCRIPT_LT, 252, NEUTRAL_REACTION);
+  call Ltx2;
+end
+
+procedure Ltx1
+begin
+  torture_setting := 3;
+end
+
+procedure Ltx2
+begin
+  torture_setting := 0;
+  set_local_var(7, 1);
+end
+
+procedure Ltx3
+begin
+  End_The_Game := 1;
+end
+
+procedure Ltx4
+begin
+  set_global_var(GVAR_DESTROY_VATS_4, 1);
+end
+
+procedure Ltx6
+begin
+  torture_setting := 0;
+  set_local_var(7, 1);
+end
+
+procedure Torture
+begin
+  if (tile_num(self_obj) != tile_num_in_direction(tile_num(dude_obj), 1, 1)) then begin
+    animate_move_obj_to_tile(self_obj, tile_num_in_direction(tile_num(dude_obj), 1, 1), ANIMATE_WALK);
+  end
+  else begin
+    game_ui_disable;
+    anim(self_obj, 1000, 4);
+    anim(self_obj, 16, 0);
+    anim(dude_obj, 20, 0);
+    add_timer_event(self_obj, game_ticks(torture_setting), 1);
+    hit_dude := 1;
+  end
+end
+
+procedure Get_Reaction
+begin
+  if (local_var(2) == 0) then begin
+    set_local_var(0, 50);
+    set_local_var(1, 2);
+    set_local_var(2, 1);
+    set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+    set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+    if (has_trait(0, dude_obj, 39)) then begin
+      if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+        set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+      end
+      else begin
+        set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+      end
+    end
+    else begin
+      if (local_var(3) == 1) then begin
+        set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+      end
+      else begin
+        set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+      end
+    end
+    if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+      set_local_var(0, local_var(0) - 30);
+    end
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+      set_local_var(0, local_var(0) + 20);
+    end
+    if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+      set_local_var(0, local_var(0) - 20);
+    end
+    call React_To_Level;
+  end
+end
+
+procedure React_To_Level
+begin
+  if (local_var(0) <= 25) then begin
+    set_local_var(1, 1);
+  end
+  else begin
+    if (local_var(0) <= 75) then begin
+      set_local_var(1, 2);
+    end
+    else begin
+      set_local_var(1, 3);
+    end
+  end
+end
+
+procedure Level_To_React
+begin
+  if (local_var(1) == 1) then begin
+    set_local_var(0, random(1, 25));
+  end
+  else begin
+    if (local_var(1) == 2) then begin
+      set_local_var(0, random(26, 75));
+    end
+    else begin
+      set_local_var(0, random(76, 100));
+    end
+  end
+end
+
+procedure Up_React
+begin
+  set_local_var(0, local_var(0) + 10);
+  call React_To_Level;
+end
+
+procedure Down_React
+begin
+  set_local_var(0, local_var(0) - 10);
+  call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+  set_local_var(1, 1);
+  set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+  set_local_var(0, 100);
+  set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+  set_local_var(0, local_var(0) + 25);
+  call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+  set_local_var(0, local_var(0) - 25);
+  call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+  set_local_var(1, local_var(1) + 1);
+  if (local_var(1) > 3) then begin
+    set_local_var(1, 3);
+  end
+  call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+  set_local_var(1, local_var(1) - 1);
+  if (local_var(1) < 1) then begin
+    set_local_var(1, 1);
+  end
+  call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+  exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end
+
+procedure Lt40_5
+begin
+  gsay_reply(SCRIPT_LT, 231);
+  giq_option(4, SCRIPT_LT, 232, Ltx3, GOOD_REACTION);
+  giq_option(4, SCRIPT_LT, 233, Ltx2, BAD_REACTION);
+  giq_option(5, SCRIPT_LT, 234, Lt09, NEUTRAL_REACTION);
+end
+
+procedure Lt50
+begin
+  gsay_message(SCRIPT_LT, 253, NEUTRAL_REACTION);
+end
+
+procedure Lt51
+begin
+  gsay_message(SCRIPT_LT, 254, NEUTRAL_REACTION);
+end
+
+procedure Lt52
+begin
+  gsay_message(SCRIPT_LT, 255, NEUTRAL_REACTION);
+end
+
+procedure Lt53
+begin
+  gsay_message(SCRIPT_LT, 256, NEUTRAL_REACTION);
+end
+
+procedure Lt54
+begin
+  gsay_message(SCRIPT_LT, 257, NEUTRAL_REACTION);
+end
+
+procedure Lt55
+begin
+  gsay_message(SCRIPT_LT, 258, NEUTRAL_REACTION);
+end
+
+procedure Lt56
+begin
+  gsay_message(SCRIPT_LT, 259, NEUTRAL_REACTION);
+end
+
+procedure Lt57
+begin
+  gsay_message(SCRIPT_LT, 260, NEUTRAL_REACTION);
+end
+
+procedure Lt58
+begin
+  gsay_message(SCRIPT_LT, 261, NEUTRAL_REACTION);
+end
+
+procedure Lt59
+begin
+  gsay_message(SCRIPT_LT, 262, NEUTRAL_REACTION);
+end
+
+procedure Lt60
+begin
+  gsay_message(SCRIPT_LT, 263, NEUTRAL_REACTION);
+end
+
+procedure Lt61
+begin
+  gsay_message(SCRIPT_LT, 264, NEUTRAL_REACTION);
+end
+
+procedure Lt62
+begin
+  gsay_message(SCRIPT_LT, 265, NEUTRAL_REACTION);
+end
+
+procedure Lt63
+begin
+  gsay_message(SCRIPT_LT, 266, NEUTRAL_REACTION);
+end
+
+procedure Lt64
+begin
+  gsay_message(SCRIPT_LT, 267, NEUTRAL_REACTION);
+end
+
+procedure Lt65
+begin
+  gsay_message(SCRIPT_LT, 268, NEUTRAL_REACTION);
+end
+
+procedure Lt66
+begin
+  gsay_message(SCRIPT_LT, 269, NEUTRAL_REACTION);
+end

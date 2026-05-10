@@ -1,0 +1,66 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+
+
+procedure start
+begin
+	variable LVar0 := 0;
+	variable LVar1 := 0;
+	if (script_action == spatial_proc) then begin
+		if ((local_var(0) == 0) and (obj_type(source_obj) == dude_obj)) then begin
+			display_msg(message_str(SCRIPT_SENTRYGN, 100));
+			set_local_var(0, 1);
+		end
+		if ((local_var(1) == 0) and (obj_type(source_obj) == dude_obj) and global_var(GVAR_START_POWER) and global_var(GVAR_WEAPONS_ARMED)) then begin
+			display_msg(message_str(SCRIPT_SENTRYGN, 101));
+			set_local_var(1, 1);
+			add_timer_event(self_obj, game_ticks(7), 1);
+		end
+	end
+	else begin
+		if (script_action == timed_event_proc) then begin
+			LVar0 := random(1, 6) + 2;
+			LVar1 := do_check(source_obj, 5, 0);
+			if (is_success(LVar1)) then begin
+				if (is_critical(LVar1)) then begin
+					if (obj_type(source_obj) == dude_obj) then begin
+						display_msg(message_str(SCRIPT_SENTRYGN, 102));
+					end
+				end
+				else begin
+					if (obj_type(source_obj) == dude_obj) then begin
+						display_msg(message_str(SCRIPT_SENTRYGN, 103));
+					end
+					critter_dmg(source_obj, LVar0, 0);
+					display_msg(message_str(SCRIPT_SENTRYGN, 104) + LVar0 + message_str(SCRIPT_SENTRYGN, 105));
+				end
+			end
+			else begin
+				if (is_critical(LVar1)) then begin
+					if (obj_type(source_obj) == dude_obj) then begin
+						display_msg(message_str(SCRIPT_SENTRYGN, 106));
+					end
+					critter_dmg(source_obj, LVar0, 0);
+					display_msg(message_str(SCRIPT_SENTRYGN, 107) + LVar0 + message_str(SCRIPT_SENTRYGN, 108));
+				end
+				else begin
+					if (obj_type(source_obj) == dude_obj) then begin
+						display_msg(message_str(SCRIPT_SENTRYGN, 109));
+					end
+					critter_dmg(source_obj, LVar0, 0);
+					display_msg(message_str(SCRIPT_SENTRYGN, 110) + LVar0 + message_str(SCRIPT_SENTRYGN, 111));
+				end
+			end
+			set_local_var(1, 0);
+		end
+	end
+end

@@ -1,0 +1,394 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+variable GVar0;
+variable GVar1;
+variable GVar2;
+variable GVar3;
+variable GVar4;
+
+procedure start;
+#include <push.h>
+procedure critter_p_proc;
+procedure look_at_p_proc;
+procedure talk_p_proc;
+procedure destroy_p_proc;
+procedure ChocTech00;
+procedure ChocTech01;
+procedure ChocTech02;
+procedure ChocTech02a;
+procedure ChocTech03;
+procedure ChocTech04;
+procedure ChocTech05;
+procedure ChocTech06;
+procedure ChocTech06a;
+procedure ChocTech07;
+procedure ChocTech08;
+procedure ChocTech09;
+procedure ChocTech10;
+procedure ChocTech11;
+procedure combat;
+procedure ChocTechend;
+
+import variable Team9_Count;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+
+procedure start
+begin
+	if (not(GVar3)) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 34);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_CHILDREN_TRUE);
+		GVar3 := 1;
+	end
+	if (script_action == critter_proc) then begin
+		call critter_p_proc;
+	end
+	else begin
+		if (script_action == look_at_proc) then begin
+			call look_at_p_proc;
+		end
+		else begin
+			if (script_action == talk_proc) then begin
+				call talk_p_proc;
+			end
+			else begin
+				if (script_action == destroy_proc) then begin
+					call destroy_p_proc;
+				end
+			end
+		end
+	end
+end
+
+procedure critter_p_proc
+begin
+	if (GVar0) then begin
+		GVar0 := 0;
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+	else begin
+		if (GVar2) then begin
+			critter_dmg(self_obj, random(200, 250), 6);
+		end
+		else begin
+			if (obj_can_see_obj(self_obj, dude_obj)) then begin
+				if ((obj_item_subtype(critter_inven_obj(dude_obj, 1)) == 3) or (obj_item_subtype(critter_inven_obj(dude_obj, 2)) == 3)) then begin
+					if (not(GVar1)) then begin
+						GVar1 := 1;
+						if (Team9_Count > 0) then begin
+							call ChocTech00;
+						end
+						else begin
+							call ChocTech01;
+						end
+					end
+				end
+			end
+			else begin
+				GVar1 := 0;
+			end
+		end
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	display_msg(message_str(SCRIPT_CHOCTECH, 100));
+end
+
+procedure talk_p_proc
+begin
+	if (global_var(GVAR_MASTER_DEAD) == 1) then begin
+		start_gdialog(SCRIPT_CHOCTECH, self_obj, 4, -1, -1);
+		gsay_start;
+		call ChocTech10;
+		gsay_end;
+		end_dialogue;
+	end
+	else begin
+		if (global_var(GVAR_LIEUTENANTS_DEAD) == 1) then begin
+			call ChocTech09;
+		end
+		else begin
+			if (Team9_Count > 0) then begin
+				start_gdialog(SCRIPT_CHOCTECH, self_obj, 4, -1, -1);
+				gsay_start;
+				call ChocTech02;
+				gsay_end;
+				end_dialogue;
+			end
+			else begin
+				call ChocTech01;
+			end
+		end
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_BAD_MONSTER, global_var(GVAR_BAD_MONSTER) + 1);
+		if ((global_var(GVAR_BAD_MONSTER) % 6) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) + 1);
+		end
+	end
+	set_global_var(GVAR_VATS_ALERT, 1);
+end
+
+procedure ChocTech00
+begin
+	float_msg(self_obj, message_str(SCRIPT_CHOCTECH, random(101, 104)), FLOAT_MSG_NORMAL);
+end
+
+procedure ChocTech01
+begin
+	float_msg(self_obj, message_str(SCRIPT_CHOCTECH, random(105, 107)), FLOAT_MSG_NORMAL);
+end
+
+procedure ChocTech02
+begin
+	gsay_reply(SCRIPT_CHOCTECH, 108);
+	giq_option(-3, SCRIPT_CHOCTECH, 109, ChocTech03, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHOCTECH, 110, ChocTech04, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHOCTECH, 111, combat, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_CHOCTECH, 112, ChocTech02a, NEUTRAL_REACTION);
+end
+
+procedure ChocTech02a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call ChocTech06;
+	end
+	else begin
+		call ChocTech05;
+	end
+end
+
+procedure ChocTech03
+begin
+	gsay_message(SCRIPT_CHOCTECH, 113, NEUTRAL_REACTION);
+end
+
+procedure ChocTech04
+begin
+	gsay_message(SCRIPT_CHOCTECH, 114, NEUTRAL_REACTION);
+end
+
+procedure ChocTech05
+begin
+	gsay_message(SCRIPT_CHOCTECH, 115, NEUTRAL_REACTION);
+	call combat;
+end
+
+procedure ChocTech06
+begin
+	gsay_reply(SCRIPT_CHOCTECH, 116);
+	giq_option(5, SCRIPT_CHOCTECH, 117, combat, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_CHOCTECH, 118, ChocTech06a, NEUTRAL_REACTION);
+end
+
+procedure ChocTech06a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 0))) then begin
+		call ChocTech07;
+	end
+	else begin
+		call ChocTech05;
+	end
+end
+
+procedure ChocTech07
+begin
+	gsay_reply(SCRIPT_CHOCTECH, 119);
+	giq_option(6, SCRIPT_CHOCTECH, 120, ChocTechend, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_CHOCTECH, 121, ChocTech08, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_CHOCTECH, 122, ChocTech05, NEUTRAL_REACTION);
+end
+
+procedure ChocTech08
+begin
+	gsay_reply(SCRIPT_CHOCTECH, 123);
+	giq_option(6, SCRIPT_CHOCTECH, 124, ChocTech05, NEUTRAL_REACTION);
+end
+
+procedure ChocTech09
+begin
+	float_msg(self_obj, message_str(SCRIPT_CHOCTECH, 125), FLOAT_MSG_NORMAL);
+	GVar2 := 1;
+end
+
+procedure ChocTech10
+begin
+	gsay_reply(SCRIPT_CHOCTECH, 126);
+	giq_option(-3, SCRIPT_CHOCTECH, 127, ChocTech11, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHOCTECH, 128, ChocTech11, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_CHOCTECH, 129, combat, NEUTRAL_REACTION);
+end
+
+procedure ChocTech11
+begin
+	gsay_message(SCRIPT_CHOCTECH, 130, NEUTRAL_REACTION);
+	GVar2 := 1;
+end
+
+procedure combat
+begin
+	GVar0 := 1;
+end
+
+procedure ChocTechend
+begin
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	GVar4 := message_str(SCRIPT_MODREACT, random(100, 105));
+end

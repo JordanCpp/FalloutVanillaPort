@@ -1,0 +1,362 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+variable GVar0;
+variable GVar1;
+variable GVar2;
+variable GVar3;
+variable GVar4;
+
+procedure start;
+#include <push.h>
+procedure do_dialogue;
+procedure run_away;
+procedure weapon_check;
+procedure go_forward;
+procedure Phil00;
+procedure Phil01;
+procedure Phil02;
+procedure Phil03;
+procedure Phil04;
+procedure Phil05;
+procedure Phil06;
+procedure Phil07;
+procedure Phil08;
+procedure Phil09;
+procedure PhilEnd;
+
+import variable dog_is_angry;
+import variable Phil_approaches;
+import variable growling;
+import variable smartass;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+
+procedure start
+begin
+	if (not(GVar3)) then begin
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 5);
+		add_timer_event(self_obj, game_ticks(10), 1);
+		GVar3 := 1;
+	end
+	else begin
+		if (script_action == talk_proc) then begin
+			call do_dialogue;
+		end
+		else begin
+			if ((script_action == look_at_proc) or (script_action == description_proc)) then begin
+				script_overrides;
+				if (GVar0) then begin
+					display_msg(message_str(SCRIPT_DEMOPHIL, 100));
+				end
+				else begin
+					display_msg(message_str(SCRIPT_DEMOPHIL, 101));
+				end
+			end
+			else begin
+				if (script_action == critter_proc) then begin
+					if (growling) then begin
+						call run_away;
+					end
+					if (smartass) then begin
+						add_timer_event(self_obj, game_ticks(2), 2);
+						smartass := 0;
+					end
+					if (not(dog_is_angry)) then begin
+						animate_move_obj_to_tile(self_obj, 15686, ANIMATE_WALK);
+					end
+				end
+				else begin
+					if (script_action == pickup_proc) then begin
+						attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+					end
+					else begin
+						if (script_action == timed_event_proc) then begin
+							if (fixed_param == 2) then begin
+								float_msg(self_obj, message_str(SCRIPT_DEMOPHIL, 102), FLOAT_MSG_NORMAL);
+							end
+							else begin
+								if (dog_is_angry) then begin
+									call go_forward;
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure do_dialogue
+begin
+	call weapon_check;
+	if (global_var(GVAR_DOG_EMPATHY)) then begin
+		call Phil01;
+	end
+	else begin
+		if (not(dog_is_angry)) then begin
+			call Phil09;
+		end
+		else begin
+			if (GVar2) then begin
+				call Phil00;
+			end
+			else begin
+				if (not(GVar0)) then begin
+					start_gdialog(SCRIPT_DEMOPHIL, self_obj, 4, -1, -1);
+					gsay_start;
+					call Phil02;
+					gsay_end;
+					end_dialogue;
+				end
+				else begin
+					call Phil08;
+				end
+			end
+		end
+	end
+end
+
+procedure run_away
+begin
+	animate_move_obj_to_tile(self_obj, 16892, ANIMATE_RUN);
+	growling := 0;
+	add_timer_event(self_obj, game_ticks(random(10, 30)), 1);
+end
+
+procedure weapon_check
+begin
+	if ((obj_item_subtype(critter_inven_obj(dude_obj, 1)) == 3) or (obj_item_subtype(critter_inven_obj(dude_obj, 2)) == 3)) then begin
+		GVar2 := 1;
+	end
+	else begin
+		GVar2 := 0;
+	end
+end
+
+procedure go_forward
+begin
+	Phil_approaches := 1;
+	animate_move_obj_to_tile(self_obj, 16886, ANIMATE_WALK);
+end
+
+procedure Phil00
+begin
+	float_msg(self_obj, message_str(SCRIPT_DEMOPHIL, 103), FLOAT_MSG_NORMAL);
+end
+
+procedure Phil01
+begin
+	float_msg(self_obj, message_str(SCRIPT_DEMOPHIL, 104), FLOAT_MSG_NORMAL);
+end
+
+procedure Phil02
+begin
+	variable LVar0 := 0;
+	GVar0 := 1;
+	if (dude_is_male) then begin
+		LVar0 := message_str(SCRIPT_DEMOPHIL, 105);
+	end
+	else begin
+		LVar0 := message_str(SCRIPT_DEMOPHIL, 106);
+	end
+	gsay_reply(SCRIPT_DEMOPHIL, LVar0 + message_str(SCRIPT_DEMOPHIL, 107));
+	giq_option(4, SCRIPT_DEMOPHIL, 108, Phil04, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_DEMOPHIL, 109, PhilEnd, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_DEMOPHIL, 110, Phil05, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_DEMOPHIL, 111, Phil03, NEUTRAL_REACTION);
+end
+
+procedure Phil03
+begin
+	gsay_message(SCRIPT_DEMOPHIL, 112, NEUTRAL_REACTION);
+end
+
+procedure Phil04
+begin
+	gsay_reply(SCRIPT_DEMOPHIL, 113);
+	giq_option(4, SCRIPT_DEMOPHIL, 114, PhilEnd, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_DEMOPHIL, 115, Phil05, NEUTRAL_REACTION);
+end
+
+procedure Phil05
+begin
+	gsay_reply(SCRIPT_DEMOPHIL, 116);
+	giq_option(4, SCRIPT_DEMOPHIL, 117, PhilEnd, NEUTRAL_REACTION);
+	giq_option(5, SCRIPT_DEMOPHIL, 118, Phil06, NEUTRAL_REACTION);
+	giq_option(6, SCRIPT_DEMOPHIL, 119, Phil07, NEUTRAL_REACTION);
+end
+
+procedure Phil06
+begin
+	gsay_message(SCRIPT_DEMOPHIL, 120, NEUTRAL_REACTION);
+	gsay_reply(SCRIPT_DEMOPHIL, 121);
+	call Goodbyes;
+	giq_option(7, SCRIPT_DEMOPHIL, 122, Phil07, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_MODREACT, GVar4, PhilEnd, NEUTRAL_REACTION);
+end
+
+procedure Phil07
+begin
+	gsay_message(SCRIPT_DEMOPHIL, 123, NEUTRAL_REACTION);
+	gsay_reply(SCRIPT_DEMOPHIL, 124);
+	giq_option(4, SCRIPT_DEMOPHIL, 125, PhilEnd, NEUTRAL_REACTION);
+end
+
+procedure Phil08
+begin
+	float_msg(self_obj, message_str(SCRIPT_DEMOPHIL, 126), FLOAT_MSG_NORMAL);
+end
+
+procedure Phil09
+begin
+	float_msg(self_obj, message_str(SCRIPT_DEMOPHIL, 127), FLOAT_MSG_NORMAL);
+end
+
+procedure PhilEnd
+begin
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	GVar4 := message_str(SCRIPT_MODREACT, random(100, 105));
+end

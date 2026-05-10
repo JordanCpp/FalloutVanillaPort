@@ -1,0 +1,17 @@
+{100}{}{Voici le Doyen.}
+{101}{}{Je suis ravi de vous rencontrer. J'espère que vous appréciez notre petit village.}
+{102}{}{Oui.}
+{103}{}{Nan, il n'y a pas assez d'action par ici.}
+{104}{}{Excellent. J'ai une faveur à vous demander. Je vous assure que vous serez bien récompensé pour vos services envers cette communauté.}
+{105}{}{J'écoute. . .}
+{106}{}{C'est juste un extrait, mais peut-être que vous aimeriez entendre ce qui suit.}
+{107}{}{Je suis tout ouïe. . .}
+{108}{}{Depuis quelques temps, on est infestés par les radscorpions. Tous ceux qui ont été envoyés détruire ces monstres ne sont jamais revenus. Je vous donnerai des armes et armures si vous allez jusqu'à leur repaire et les exterminez.}
+{109}{}{Ca semble correct.}
+{110}{}{Non merci. C'est pas mon genre.}
+{111}{}{C'est une honte ! Partez.}
+{112}{}{Excellent. Seth vous guidera jusqu'au repaire. Prenez ces objets, ils seront utiles.}
+{113}{}{Merci de nous aider le plus vite possible. Le temps presse.}
+{114}{}{Je ne parle pas à des gens comme vous, étranger.}
+{115}{}{Merci ! Vous avez sauvé notre village d'un grand péril. Il est maintenant possible de voyager sans risques aux alentours. Acceptez ceci comme une preuve de notre gratitude. [Il vous donne des caps]}
+{116}{}{Merci ! Nous vous devons tant !}

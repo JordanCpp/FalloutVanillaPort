@@ -1,0 +1,891 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure combat;
+procedure critter_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure destroy_p_proc;
+procedure look_at_p_proc;
+procedure RecalcDate;
+procedure RecalcDateString;
+procedure damage_p_proc;
+procedure WMDriver00;
+procedure WMDriver01;
+procedure WMDriver02;
+procedure WMDriver03;
+procedure WMDriver04;
+procedure WMDriver04a;
+procedure WMDriver05;
+procedure WMDriver06;
+procedure WMDriver07;
+procedure WMDriver08;
+procedure WMDriver10;
+procedure WMDriver10a;
+procedure WMDriver11;
+procedure WMDriver12;
+procedure WMDriver13;
+procedure WMDriver14;
+procedure WMDriver15;
+procedure WMDriver17;
+procedure WMDriver18;
+procedure WMDriver19;
+procedure WMDriver20;
+procedure WMDriver21a;
+procedure WMDriver21b;
+procedure WMDriver27;
+procedure WMDriver28;
+procedure WMDriver29;
+procedure WMDriver30;
+procedure WMDriver31;
+procedure WMDriver32;
+procedure WMDriver33;
+procedure WMDriver34;
+procedure WMDriver35;
+
+variable hostile1;
+variable Only_Once := 1;
+variable DayString := "None";
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	if (Only_Once) then begin
+		Only_Once := 0;
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 35);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_MERCHANT);
+	end
+	if (script_action == look_at_proc) then begin
+		call look_at_p_proc;
+	end
+	else begin
+		if (script_action == pickup_proc) then begin
+			call pickup_p_proc;
+		end
+		else begin
+			if (script_action == talk_proc) then begin
+				call talk_p_proc;
+			end
+			else begin
+				if (script_action == critter_proc) then begin
+					call critter_p_proc;
+				end
+				else begin
+					if (script_action == destroy_proc) then begin
+						call destroy_p_proc;
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure combat
+begin
+	hostile1 := 1;
+end
+
+procedure critter_p_proc
+begin
+	if (hostile1) then begin
+		hostile1 := 0;
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+end
+
+procedure pickup_p_proc
+begin
+	call WMDriver10;
+end
+
+procedure talk_p_proc
+begin
+	variable LVar0 := 0;
+	call Get_Reaction;
+	if (local_var(10) == 1) then begin
+		if (local_var(7) < (game_time / (10 * 60 * 60 * 24 * 365))) then begin
+			set_local_var(10, 0);
+		end
+		else begin
+			if ((local_var(6) < get_month) or (local_var(6) == 12) and (get_month == 1) and ((local_var(6) != 1) or (get_month != 12))) then begin
+				set_local_var(10, 0);
+			end
+			else begin
+				if ((local_var(5) < get_day) and ((local_var(6) != 1) or (get_month != 12))) then begin
+					set_local_var(10, 0);
+				end
+			end
+		end
+	end
+	call RecalcDate;
+	LVar0 := local_var(5);
+	if (local_var(8) > 0) then begin
+		call WMDriver14;
+	end
+	else begin
+		if (map_var(2) == 0) then begin
+			call WMDriver15;
+		end
+		else begin
+			if (global_var(GVAR_WATER_JOB) == 3) then begin
+				start_gdialog(SCRIPT_WMCARVN, self_obj, 4, -1, -1);
+				gsay_start;
+				call WMDriver19;
+				gsay_end;
+				end_dialogue;
+			end
+			else begin
+				if (global_var(GVAR_WATER_JOB) == 4) then begin
+					start_gdialog(SCRIPT_WMCARVN, self_obj, 4, -1, -1);
+					gsay_start;
+					call WMDriver27;
+					gsay_end;
+					end_dialogue;
+				end
+				else begin
+					if (map_var(1) == 0) then begin
+						call WMDriver00;
+					end
+					else begin
+						if ((map_var(1) == 1) and (local_var(10) == 0)) then begin
+							start_gdialog(SCRIPT_WMCARVN, self_obj, 4, -1, -1);
+							gsay_start;
+							if (local_var(9) == 0) then begin
+								call WMDriver01;
+							end
+							else begin
+								call WMDriver03;
+							end
+							gsay_end;
+							end_dialogue;
+						end
+						else begin
+							if ((local_var(10) == 1) and (LVar0 == get_day)) then begin
+								start_gdialog(SCRIPT_WMCARVN, self_obj, 4, -1, -1);
+								gsay_start;
+								call WMDriver28;
+								gsay_end;
+								end_dialogue;
+							end
+							else begin
+								if ((local_var(10) == 1) and (LVar0 != get_day)) then begin
+									start_gdialog(SCRIPT_WMCARVN, self_obj, 4, -1, -1);
+									gsay_start;
+									call WMDriver29;
+									gsay_end;
+									end_dialogue;
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	set_local_var(4, 1);
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+		if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+		end
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	display_msg(message_str(SCRIPT_WMCARVN, 100));
+end
+
+procedure RecalcDate
+begin
+	variable LVar0 := 0;
+	variable LVar1 := 0;
+	variable LVar2 := 0;
+	LVar0 := get_day;
+	if ((LVar0 > 1) and (LVar0 <= 5)) then begin
+		LVar0 := 5;
+		LVar1 := get_month;
+		LVar2 := game_time / (10 * 60 * 60 * 24 * 365);
+	end
+	else begin
+		if ((LVar0 > 5) and (LVar0 <= 10)) then begin
+			LVar0 := 10;
+			LVar1 := get_month;
+			LVar2 := game_time / (10 * 60 * 60 * 24 * 365);
+		end
+		else begin
+			if ((LVar0 > 10) and (LVar0 <= 15)) then begin
+				LVar0 := 15;
+				LVar1 := get_month;
+				LVar2 := game_time / (10 * 60 * 60 * 24 * 365);
+			end
+			else begin
+				if ((LVar0 > 15) and (LVar0 <= 20)) then begin
+					LVar0 := 20;
+					LVar1 := get_month;
+					LVar2 := game_time / (10 * 60 * 60 * 24 * 365);
+				end
+				else begin
+					if ((LVar0 > 20) and (LVar0 <= 25)) then begin
+						LVar0 := 25;
+						LVar1 := get_month;
+						LVar2 := game_time / (10 * 60 * 60 * 24 * 365);
+					end
+					else begin
+						if (LVar0 > 25) then begin
+							LVar0 := 1;
+							LVar1 := get_month;
+							if (LVar1 == 12) then begin
+								LVar1 := 1;
+								LVar2 := (game_time / (10 * 60 * 60 * 24 * 365)) + 1;
+							end
+							else begin
+								LVar1 := LVar1 + 1;
+								LVar2 := game_time / (10 * 60 * 60 * 24 * 365);
+							end
+						end
+						else begin
+							if (LVar0 == 1) then begin
+								LVar1 := get_month;
+								LVar2 := game_time / (10 * 60 * 60 * 24 * 365);
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	set_local_var(5, LVar0);
+	set_local_var(6, LVar1);
+	set_local_var(7, LVar2);
+end
+
+procedure RecalcDateString
+begin
+	variable LVar0 := 0;
+	variable LVar1 := 0;
+	call RecalcDate;
+	LVar0 := local_var(6);
+	LVar1 := local_var(5);
+	if (LVar0 == 1) then begin
+		DayString := message_str(SCRIPT_WMCARVN, 204);
+	end
+	else begin
+		if (LVar0 == 2) then begin
+			DayString := message_str(SCRIPT_WMCARVN, 205);
+		end
+		else begin
+			if (LVar0 == 3) then begin
+				DayString := message_str(SCRIPT_WMCARVN, 206);
+			end
+			else begin
+				if (LVar0 == 4) then begin
+					DayString := message_str(SCRIPT_WMCARVN, 207);
+				end
+				else begin
+					if (LVar0 == 5) then begin
+						DayString := message_str(SCRIPT_WMCARVN, 208);
+					end
+					else begin
+						if (LVar0 == 6) then begin
+							DayString := message_str(SCRIPT_WMCARVN, 209);
+						end
+						else begin
+							if (LVar0 == 7) then begin
+								DayString := message_str(SCRIPT_WMCARVN, 210);
+							end
+							else begin
+								if (LVar0 == 8) then begin
+									DayString := message_str(SCRIPT_WMCARVN, 211);
+								end
+								else begin
+									if (LVar0 == 9) then begin
+										DayString := message_str(SCRIPT_WMCARVN, 212);
+									end
+									else begin
+										if (LVar0 == 10) then begin
+											DayString := message_str(SCRIPT_WMCARVN, 213);
+										end
+										else begin
+											if (LVar0 == 11) then begin
+												DayString := message_str(SCRIPT_WMCARVN, 214);
+											end
+											else begin
+												if (LVar0 == 12) then begin
+													DayString := message_str(SCRIPT_WMCARVN, 215);
+												end
+											end
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	if (LVar1 == 1) then begin
+		DayString := DayString + message_str(SCRIPT_WMCARVN, 197);
+	end
+	else begin
+		if (LVar1 == 5) then begin
+			DayString := DayString + message_str(SCRIPT_WMCARVN, 198);
+		end
+		else begin
+			if (LVar1 == 10) then begin
+				DayString := DayString + message_str(SCRIPT_WMCARVN, 199);
+			end
+			else begin
+				if (LVar1 == 15) then begin
+					DayString := DayString + message_str(SCRIPT_WMCARVN, 200);
+				end
+				else begin
+					if (LVar1 == 20) then begin
+						DayString := DayString + message_str(SCRIPT_WMCARVN, 201);
+					end
+					else begin
+						if (LVar1 == 25) then begin
+							DayString := DayString + message_str(SCRIPT_WMCARVN, 202);
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure damage_p_proc
+begin
+	variable LVar0 := 0;
+	LVar0 := obj_pid(source_obj);
+	if (party_member_obj(LVar0) != 0) then begin
+		set_global_var(GVAR_ENEMY_HUB, 1);
+	end
+end
+
+procedure WMDriver00
+begin
+	if (local_var(4) == 0) then begin
+		float_msg(self_obj, message_str(SCRIPT_WMCARVN, 101), FLOAT_MSG_RED);
+		set_local_var(4, 1);
+	end
+	else begin
+		float_msg(self_obj, message_str(SCRIPT_WMCARVN, 102), FLOAT_MSG_RED);
+	end
+end
+
+procedure WMDriver01
+begin
+	if (global_var(GVAR_JUNKTOWN) == 0) then begin
+		set_global_var(GVAR_JUNKTOWN, 1);
+	end
+	if (global_var(GVAR_ANGELS_BONEYARD) == 0) then begin
+		set_global_var(GVAR_ANGELS_BONEYARD, 1);
+	end
+	gsay_reply(SCRIPT_WMCARVN, 103);
+	giq_option(4, SCRIPT_WMCARVN, 104, WMDriver02, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_WMCARVN, 105, WMDriver02, NEUTRAL_REACTION);
+end
+
+procedure WMDriver02
+begin
+	variable LVar0 := 0;
+	call RecalcDateString;
+	LVar0 := local_var(5);
+	if (LVar0 == get_day) then begin
+		gsay_reply(SCRIPT_WMCARVN, message_str(SCRIPT_WMCARVN, 106) + message_str(SCRIPT_WMCARVN, 107));
+	end
+	else begin
+		gsay_reply(SCRIPT_WMCARVN, message_str(SCRIPT_WMCARVN, 106) + message_str(SCRIPT_WMCARVN, 108) + DayString + message_str(SCRIPT_WMCARVN, 111));
+	end
+	call WMDriver04;
+end
+
+procedure WMDriver03
+begin
+	variable LVar0 := 0;
+	if (local_var(1) != 1) then begin
+		call RecalcDateString;
+		LVar0 := local_var(5);
+		if (LVar0 == get_day) then begin
+			gsay_reply(SCRIPT_WMCARVN, message_str(SCRIPT_WMCARVN, 107));
+		end
+		else begin
+			gsay_reply(SCRIPT_WMCARVN, message_str(SCRIPT_WMCARVN, 108) + DayString + message_str(SCRIPT_WMCARVN, 111));
+		end
+		call WMDriver04;
+	end
+	else begin
+		gsay_reply(SCRIPT_WMCARVN, 112);
+		call WMDriver04;
+	end
+end
+
+procedure WMDriver04
+begin
+	giq_option(4, SCRIPT_WMCARVN, 113, WMDriver04a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_WMCARVN, 114, WMDriver05, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_WMCARVN, 115, WMDriver06, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_WMCARVN, 116, WMDriver07, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_WMCARVN, 117, WMDriver07, NEUTRAL_REACTION);
+end
+
+procedure WMDriver04a
+begin
+	variable LVar0 := 0;
+	set_local_var(10, 1);
+	call RecalcDate;
+	LVar0 := local_var(5);
+	if (LVar0 == get_day) then begin
+		call WMDriver17;
+	end
+	else begin
+		call WMDriver18;
+	end
+end
+
+procedure WMDriver05
+begin
+	set_local_var(10, 0);
+	gsay_message(SCRIPT_WMCARVN, 118, NEUTRAL_REACTION);
+end
+
+procedure WMDriver06
+begin
+	set_local_var(10, 0);
+	gsay_message(SCRIPT_WMCARVN, 120, NEUTRAL_REACTION);
+end
+
+procedure WMDriver07
+begin
+	gsay_message(SCRIPT_WMCARVN, 121, NEUTRAL_REACTION);
+end
+
+procedure WMDriver08
+begin
+	gsay_message(SCRIPT_WMCARVN, 123, NEUTRAL_REACTION);
+end
+
+procedure WMDriver10
+begin
+	if (local_var(8) == 0) then begin
+		set_local_var(8, 1);
+		set_map_var(2, 0);
+		gsay_reply(SCRIPT_WMCARVN, 125);
+		giq_option(4, SCRIPT_WMCARVN, 126, WMDriver08, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_WMCARVN, 127, WMDriver10a, NEUTRAL_REACTION);
+		giq_option(4, SCRIPT_WMCARVN, 128, WMDriver31, BAD_REACTION);
+		giq_option(-3, SCRIPT_WMCARVN, 130, WMDriver31, BAD_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_WMCARVN, 131, BAD_REACTION);
+		call combat;
+	end
+end
+
+procedure WMDriver10a
+begin
+	if (is_success(roll_vs_skill(dude_obj, 14, 20)) == 1) then begin
+		call WMDriver11;
+	end
+	else begin
+		call WMDriver12;
+	end
+end
+
+procedure WMDriver11
+begin
+	set_map_var(1, 0);
+	set_map_var(2, 0);
+	gsay_message(SCRIPT_WMCARVN, 132, NEUTRAL_REACTION);
+end
+
+procedure WMDriver12
+begin
+	gsay_message(SCRIPT_WMCARVN, 133, BAD_REACTION);
+	call combat;
+end
+
+procedure WMDriver13
+begin
+	float_msg(self_obj, message_str(SCRIPT_WMCARVN, 137), FLOAT_MSG_RED);
+end
+
+procedure WMDriver14
+begin
+	if (local_var(8) > 0) then begin
+		float_msg(self_obj, message_str(SCRIPT_WMCARVN, 138), FLOAT_MSG_RED);
+	end
+	else begin
+		float_msg(self_obj, message_str(SCRIPT_WMCARVN, 139), FLOAT_MSG_RED);
+		call WMDriver31;
+	end
+end
+
+procedure WMDriver15
+begin
+	variable LVar0 := 0;
+	LVar0 := random(1, 4);
+	if (LVar0 == 1) then begin
+		float_msg(self_obj, message_str(SCRIPT_WMCARVN, 140), FLOAT_MSG_RED);
+	end
+	else begin
+		if (LVar0 == 2) then begin
+			float_msg(self_obj, message_str(SCRIPT_WMCARVN, 141), FLOAT_MSG_RED);
+		end
+		else begin
+			if (LVar0 == 3) then begin
+				float_msg(self_obj, message_str(SCRIPT_WMCARVN, 142), FLOAT_MSG_RED);
+			end
+			else begin
+				if (LVar0 == 4) then begin
+					float_msg(self_obj, message_str(SCRIPT_WMCARVN, 143), FLOAT_MSG_RED);
+				end
+			end
+		end
+	end
+end
+
+procedure WMDriver17
+begin
+	gsay_reply(SCRIPT_WMCARVN, 145);
+	call WMDriver33;
+	call WMDriver20;
+end
+
+procedure WMDriver18
+begin
+	call RecalcDateString;
+	gsay_reply(SCRIPT_WMCARVN, message_str(SCRIPT_WMCARVN, 146) + DayString + message_str(SCRIPT_WMCARVN, 153));
+	giq_option(4, SCRIPT_WMCARVN, 154, WMDriver30, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_WMCARVN, 155, WMDriver34, NEUTRAL_REACTION);
+end
+
+procedure WMDriver19
+begin
+	set_map_var(2, 0);
+	set_global_var(GVAR_WATER_JOB, 0);
+	gsay_message(SCRIPT_WMCARVN, 156, BAD_REACTION);
+end
+
+procedure WMDriver20
+begin
+	giq_option(4, SCRIPT_WMCARVN, 157, WMDriver21a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_WMCARVN, 158, WMDriver21b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_WMCARVN, 159, WMDriver34, NEUTRAL_REACTION);
+end
+
+procedure WMDriver21a
+begin
+	variable LVar0 := 0;
+	set_global_var(GVAR_WATER_MERCHANTS_STATUS, 1);
+	LVar0 := random(1, 7);
+	if (LVar0 == 1) then begin
+		gsay_message(SCRIPT_WMCARVN, 160, NEUTRAL_REACTION);
+	end
+	else begin
+		if (LVar0 == 2) then begin
+			gsay_message(SCRIPT_WMCARVN, 161, NEUTRAL_REACTION);
+		end
+		else begin
+			if (LVar0 == 3) then begin
+				gsay_message(SCRIPT_WMCARVN, 162, NEUTRAL_REACTION);
+			end
+			else begin
+				if (LVar0 == 4) then begin
+					gsay_message(SCRIPT_WMCARVN, 163, NEUTRAL_REACTION);
+				end
+				else begin
+					if (LVar0 == 5) then begin
+						gsay_message(SCRIPT_WMCARVN, 167, NEUTRAL_REACTION);
+					end
+					else begin
+						if (LVar0 == 6) then begin
+							gsay_message(SCRIPT_WMCARVN, 168, NEUTRAL_REACTION);
+						end
+						else begin
+							if (LVar0 == 7) then begin
+								gsay_message(SCRIPT_WMCARVN, 169, NEUTRAL_REACTION);
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	LVar0 := random(1, 4);
+	if (LVar0 < 4) then begin
+		load_map(58, 3);
+	end
+	else begin
+		load_map(10, 1);
+	end
+end
+
+procedure WMDriver21b
+begin
+	variable LVar0 := 0;
+	set_global_var(GVAR_WATER_MERCHANTS_STATUS, 1);
+	LVar0 := random(1, 7);
+	if (LVar0 == 1) then begin
+		gsay_message(SCRIPT_WMCARVN, 160, NEUTRAL_REACTION);
+	end
+	else begin
+		if (LVar0 == 2) then begin
+			gsay_message(SCRIPT_WMCARVN, 161, NEUTRAL_REACTION);
+		end
+		else begin
+			if (LVar0 == 3) then begin
+				gsay_message(SCRIPT_WMCARVN, 162, NEUTRAL_REACTION);
+			end
+			else begin
+				if (LVar0 == 4) then begin
+					gsay_message(SCRIPT_WMCARVN, 163, NEUTRAL_REACTION);
+				end
+				else begin
+					if (LVar0 == 5) then begin
+						gsay_message(SCRIPT_WMCARVN, 164, NEUTRAL_REACTION);
+					end
+					else begin
+						if (LVar0 == 6) then begin
+							gsay_message(SCRIPT_WMCARVN, 165, NEUTRAL_REACTION);
+						end
+						else begin
+							if (LVar0 == 7) then begin
+								gsay_message(SCRIPT_WMCARVN, 166, NEUTRAL_REACTION);
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	LVar0 := random(1, 4);
+	if (LVar0 < 3) then begin
+		load_map(56, 3);
+	end
+	else begin
+		load_map(28, 1);
+	end
+end
+
+procedure WMDriver27
+begin
+	gsay_reply(SCRIPT_WMCARVN, 185);
+	giq_option(4, SCRIPT_WMCARVN, 186, WMDriver04a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_WMCARVN, 187, WMDriver05, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_WMCARVN, 188, WMDriver06, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_WMCARVN, 189, WMDriver07, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_WMCARVN, 190, WMDriver07, NEUTRAL_REACTION);
+end
+
+procedure WMDriver28
+begin
+	gsay_reply(SCRIPT_WMCARVN, 191);
+	giq_option(4, SCRIPT_WMCARVN, 192, WMDriver17, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_WMCARVN, 193, WMDriver35, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_WMCARVN, 194, WMDriver07, NEUTRAL_REACTION);
+end
+
+procedure WMDriver29
+begin
+	variable LVar0 := 0;
+	call RecalcDateString;
+	LVar0 := local_var(5);
+	gsay_message(SCRIPT_WMCARVN, message_str(SCRIPT_WMCARVN, 196) + DayString + message_str(SCRIPT_WMCARVN, 203) + message_str(SCRIPT_WMCARVN, 195), NEUTRAL_REACTION);
+end
+
+procedure WMDriver30
+begin
+	set_local_var(10, 1);
+end
+
+procedure WMDriver31
+begin
+	call combat;
+end
+
+procedure WMDriver32
+begin
+end
+
+procedure WMDriver33
+begin
+	variable LVar0 := 0;
+	set_local_var(10, 0);
+	set_global_var(GVAR_WATER_JOB, 1);
+	LVar0 := local_var(9);
+	set_local_var(9, LVar0 + 1);
+end
+
+procedure WMDriver34
+begin
+	set_local_var(10, 0);
+end
+
+procedure WMDriver35
+begin
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end

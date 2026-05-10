@@ -1,0 +1,63 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+variable GVar0;
+
+procedure start;
+#include <push.h>
+procedure skills;
+procedure reset;
+
+
+procedure start
+begin
+	if (script_action == look_at_proc) then begin
+		script_overrides;
+		display_msg(message_str(SCRIPT_MVNUKE, 100));
+	end
+	else begin
+		if (script_action == use_skill_on_proc) then begin
+			set_map_var(5, 1);
+			GVar0 := action_being_used;
+			script_overrides;
+			call skills;
+		end
+	end
+end
+
+procedure skills
+begin
+	if (GVar0 == 12) then begin
+		display_msg(message_str(SCRIPT_MVNUKE, 108));
+	end
+	else begin
+		if (GVar0 == 13) then begin
+			display_msg(message_str(SCRIPT_MVNUKE, 109));
+		end
+		else begin
+			if (GVar0 == 9) then begin
+				display_msg(message_str(SCRIPT_MVNUKE, 110));
+			end
+			else begin
+				if (GVar0 == 11) then begin
+					display_msg(message_str(SCRIPT_MVNUKE, 111));
+				end
+				else begin
+					display_msg(message_str(SCRIPT_MVNUKE, 105));
+				end
+			end
+		end
+	end
+end
+
+procedure reset
+begin
+	display_msg(message_str(SCRIPT_MVNUKE, 103));
+	set_global_var(GVAR_COUNTDOWN_TO_DESTRUCTION, 0);
+	set_global_var(GVAR_MASTER_BLOWN, 0);
+end

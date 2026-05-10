@@ -1,0 +1,28 @@
+# Alchemist: Warning! Achtung! Uwaga!
+# Beca's script is bounf to the ol' black male at the Blades map, but this is
+# temporary measure. Actually Quatermistress IS a women! So she must be
+# referenced as 'SHE/HER' NOT 'he/his/him'.  'Jade' stands for nickname and
+# 'Bec'a stands for the real one.
+
+{100}{}{Voici Jade.}
+{101}{}{Voici Beca.}
+{102}{}{}
+{103}{}{}
+{104}{}{Tu vois un membre des Ecorcheurs.}
+{105}{}{Tu vois un membre des Ecorcheurs.}
+{106}{}{Tu penses que ça pourrait être Books.}
+{107}{}{Tu penses que ça pourrait être Scars.}
+{108}{}{Tu penses que ça pourrait être Gunner.}
+{109}{}{Tu penses que ça pourrait être Twitch.}
+{110}{}{Tu penses que ça pourrait être Hammer.}
+{111}{}{Tu penses que ça pourrait être Razor.}
+{112}{}{Ici c'est les dortoirs. Maintenant dégage d'ici avant que je te botte le cul.}
+{113}{}{Sois mon invité.}
+{114}{}{Je suis désolé. Au revoir.}
+{115}{}{Je peux me pieuter ici ?}
+{116}{}{Non. Ici, c'est pour les vrais Ecorcheurs, pas les lopettes.}
+{117}{}{Hey, mon pote! Comment va? Calle toi ici si t'as besoin d'un endroit sûr.}
+{118}{}{Alors comme ça t'as proposé ton aide. Je reconnais que c'est mieux que rien. Merci. J'vais passer le mot.}
+{119}{}{Ouais. J'vais y aller et voir ce que je peux faire.}
+{120}{}{Salut. J'ai entendu dire que tu nous a aidés. T'es effectivement digne de notre respect. Nous sommes libres maintenant. [Tu es maintenant membre du gang des Ecorcheurs.]}
+{121}{}{J'peux pas t'aider pour ça. Vas parler à Razor.}

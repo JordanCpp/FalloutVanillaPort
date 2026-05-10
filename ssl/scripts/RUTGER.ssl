@@ -1,0 +1,1286 @@
+#include <define.h>
+
+//#define NAME                    SCRIPT_
+
+#include <command.h>
+//#include <ModReact.h>
+
+
+
+procedure start;
+#include <push.h>
+procedure combat;
+procedure critter_p_proc;
+procedure pickup_p_proc;
+procedure talk_p_proc;
+procedure destroy_p_proc;
+procedure damage_p_proc;
+procedure look_at_p_proc;
+procedure Rutger00;
+procedure Rutger00a;
+procedure Rutger00b;
+procedure Rutger01;
+procedure Rutger02;
+procedure Rutger03;
+procedure Rutger04;
+procedure Rutger05;
+procedure Rutger06;
+procedure Rutger07;
+procedure Rutger08;
+procedure Rutger09;
+procedure Rutger10;
+procedure Rutger11;
+procedure Rutger11a;
+procedure Rutger12;
+procedure Rutger13;
+procedure Rutger14;
+procedure Rutger15;
+procedure Rutger16;
+procedure Rutger17;
+procedure Rutger17a;
+procedure Rutger18;
+procedure Rutger19;
+procedure Rutger20;
+procedure Rutger21;
+procedure Rutger22;
+procedure Rutger22a;
+procedure Rutger23;
+procedure Rutger24;
+procedure Rutger25;
+procedure Rutger26;
+procedure Rutger27;
+procedure Rutger28;
+procedure Rutger29;
+procedure Rutger29a;
+procedure Rutger29b;
+procedure Rutger30;
+procedure Rutger31;
+procedure Rutger32;
+procedure Rutger33;
+procedure Rutger34;
+procedure Rutger35;
+procedure Rutger36;
+procedure Rutger37;
+procedure Rutger38;
+procedure Rutger39;
+procedure Rutger39a;
+procedure Rutger40;
+procedure Rutger40a;
+procedure Rutger40b;
+procedure Rutger41;
+procedure Rutger42;
+procedure Rutger43;
+procedure Rutger44;
+procedure Rutger45;
+procedure Rutger46;
+procedure Rutger47;
+procedure Rutger48;
+procedure Rutger49;
+procedure Rutger50;
+procedure Rutger51;
+procedure Rutger52;
+procedure Rutger53;
+procedure Rutger54;
+procedure Rutger55;
+procedure Rutger55a;
+procedure Rutger56;
+procedure Rutger56a;
+procedure Rutger57;
+procedure Rutger58;
+procedure Rutger59;
+procedure Rutger60;
+procedure Rutger61;
+procedure Rutger62;
+procedure Rutger63;
+procedure Rutger64;
+procedure Rutger65;
+procedure Rutger67;
+procedure Rutger68;
+procedure Rutger69;
+procedure Rutger70;
+procedure Rutger71;
+procedure Rutger72;
+procedure Rutger73;
+procedure Rutger74;
+procedure Rutger75;
+procedure Rutger76;
+procedure RutgerEnd;
+procedure RutgerEndBad;
+
+variable hostile1;
+variable Only_Once := 1;
+
+procedure Get_Reaction;
+procedure React_To_Level;
+procedure Level_To_React;
+procedure Up_React;
+procedure Down_React;
+procedure Bottom_React;
+procedure Top_React;
+procedure Big_Up_React;
+procedure Big_Down_React;
+procedure Up_React_Level;
+procedure Down_React_Level;
+procedure Goodbyes;
+
+variable exit_line;
+
+
+procedure start
+begin
+	if (Only_Once) then begin
+		Only_Once := 0;
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_TEAM_NUM, 36);
+		critter_add_trait(self_obj, TRAIT_OBJECT, OBJECT_AI_PACKET, AI_GUARD_HUMOROUS);
+	end
+	if (script_action == look_at_proc) then begin
+		call look_at_p_proc;
+	end
+	else begin
+		if (script_action == pickup_proc) then begin
+			call pickup_p_proc;
+		end
+		else begin
+			if (script_action == talk_proc) then begin
+				call talk_p_proc;
+			end
+			else begin
+				if (script_action == critter_proc) then begin
+					call critter_p_proc;
+				end
+				else begin
+					if (script_action == destroy_proc) then begin
+						call destroy_p_proc;
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure combat
+begin
+	hostile1 := 1;
+end
+
+procedure critter_p_proc
+begin
+	if (hostile1) then begin
+		hostile1 := 0;
+		attack_complex(dude_obj, 0, 1, 0, 0, 30000, 0, 0);
+	end
+end
+
+procedure pickup_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		hostile1 := 1;
+	end
+end
+
+procedure talk_p_proc
+begin
+	call Get_Reaction;
+	if (get_critter_stat(dude_obj, 4) < 4) then begin
+		float_msg(dude_obj, message_str(SCRIPT_RUTGER, 314), FLOAT_MSG_GREEN);
+		float_msg(self_obj, message_str(SCRIPT_RUTGER, 315), FLOAT_MSG_RED);
+	end
+	else begin
+		if ((global_var(GVAR_MASTER_BLOWN) == 1) and (global_var(GVAR_VATS_BLOWN) != 1) and (local_var(8) == 0)) then begin
+			set_local_var(8, 1);
+			set_local_var(4, 1);
+			start_gdialog(SCRIPT_RUTGER, self_obj, 4, -1, -1);
+			gsay_start;
+			call Rutger55;
+			gsay_end;
+			end_dialogue;
+		end
+		else begin
+			if ((global_var(GVAR_MASTER_BLOWN) != 1) and (global_var(GVAR_VATS_BLOWN) == 1) and (local_var(8) == 0)) then begin
+				set_local_var(8, 1);
+				set_local_var(4, 1);
+				start_gdialog(SCRIPT_RUTGER, self_obj, 4, -1, -1);
+				gsay_start;
+				call Rutger58;
+				gsay_end;
+				end_dialogue;
+			end
+			else begin
+				if ((map_var(40) == 1) or (map_var(35) == 1)) then begin
+					set_local_var(4, 1);
+					start_gdialog(SCRIPT_RUTGER, self_obj, 4, -1, -1);
+					gsay_start;
+					call Rutger74;
+					gsay_end;
+					end_dialogue;
+				end
+				else begin
+					if (local_var(4) == 0) then begin
+						set_local_var(4, 1);
+						start_gdialog(SCRIPT_RUTGER, self_obj, 4, -1, -1);
+						gsay_start;
+						call Rutger00;
+						gsay_end;
+						end_dialogue;
+					end
+					else begin
+						if (map_var(34) == 0) then begin
+							if (local_var(1) >= 2) then begin
+								start_gdialog(SCRIPT_RUTGER, self_obj, 4, -1, -1);
+								gsay_start;
+								call Rutger73;
+								gsay_end;
+								end_dialogue;
+							end
+							else begin
+								start_gdialog(SCRIPT_RUTGER, self_obj, 4, -1, -1);
+								gsay_start;
+								call Rutger74;
+								gsay_end;
+								end_dialogue;
+							end
+						end
+						else begin
+							if ((map_var(34) == 1) and (map_var(41) == 0)) then begin
+								call Rutger21;
+							end
+							else begin
+								if (map_var(41) == 3) then begin
+									start_gdialog(SCRIPT_RUTGER, self_obj, 4, -1, -1);
+									gsay_start;
+									call Rutger54;
+									gsay_end;
+									end_dialogue;
+								end
+								else begin
+									if (map_var(41) == 4) then begin
+										start_gdialog(SCRIPT_RUTGER, self_obj, 4, -1, -1);
+										gsay_start;
+										call Rutger56;
+										gsay_end;
+										end_dialogue;
+									end
+									else begin
+										if (local_var(6) == 0) then begin
+											if (map_var(41) == 2) then begin
+												start_gdialog(SCRIPT_RUTGER, self_obj, 4, -1, -1);
+												gsay_start;
+												call Rutger17;
+												gsay_end;
+												end_dialogue;
+											end
+											else begin
+												if (map_var(41) == 1) then begin
+													start_gdialog(SCRIPT_RUTGER, self_obj, 4, -1, -1);
+													gsay_start;
+													call Rutger25;
+													gsay_end;
+													end_dialogue;
+												end
+												else begin
+													if (map_var(41) == 0) then begin
+														call Rutger21;
+													end
+												end
+											end
+										end
+										else begin
+											if ((local_var(6) == 1) and (map_var(41) == 1)) then begin
+												start_gdialog(SCRIPT_RUTGER, self_obj, 4, -1, -1);
+												gsay_start;
+												call Rutger22;
+												gsay_end;
+												end_dialogue;
+											end
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+procedure destroy_p_proc
+begin
+	if (source_obj == dude_obj) then begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_BERSERKER_REPUTATION, 1);
+			set_global_var(GVAR_CHAMPION_REPUTATION, 0);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_global_var(GVAR_CHAMPION_REPUTATION, 1);
+			set_global_var(GVAR_BERSERKER_REPUTATION, 0);
+		end
+		set_global_var(GVAR_GOOD_MONSTER, global_var(GVAR_GOOD_MONSTER) + 1);
+		if ((global_var(GVAR_GOOD_MONSTER) % 2) == 0) then begin
+			set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) - 1);
+		end
+	end
+end
+
+procedure damage_p_proc
+begin
+	variable LVar0 := 0;
+	LVar0 := obj_pid(source_obj);
+	if (party_member_obj(LVar0) != 0) then begin
+		set_global_var(GVAR_ENEMY_HUB, 1);
+	end
+end
+
+procedure look_at_p_proc
+begin
+	script_overrides;
+	display_msg(message_str(SCRIPT_RUTGER, 100));
+end
+
+procedure Rutger00
+begin
+	gsay_reply(SCRIPT_RUTGER, 101);
+	if (global_var(GVAR_FIND_WATER_CHIP) != 2) then begin
+		giq_option(4, SCRIPT_RUTGER, 102, Rutger03, NEUTRAL_REACTION);
+	end
+	if (map_var(43) == 1) then begin
+		giq_option(4, SCRIPT_RUTGER, 103, Rutger00a, NEUTRAL_REACTION);
+	end
+	else begin
+		giq_option(4, SCRIPT_RUTGER, 104, Rutger00a, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_RUTGER, 105, Rutger07, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 106, RutgerEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_RUTGER, 107, Rutger00b, NEUTRAL_REACTION);
+end
+
+procedure Rutger00a
+begin
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		call Rutger10;
+	end
+	else begin
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			call Rutger11;
+		end
+		else begin
+			if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+				call Rutger15;
+			end
+			else begin
+				if ((map_var(35) == 1) or (map_var(40) == 1)) then begin
+					call Rutger75;
+				end
+				else begin
+					call Rutger16;
+				end
+			end
+		end
+	end
+end
+
+procedure Rutger00b
+begin
+	if (get_critter_stat(dude_obj, 0) <= 6) then begin
+		call Rutger01;
+	end
+	else begin
+		call Rutger02;
+	end
+end
+
+procedure Rutger01
+begin
+	gsay_message(SCRIPT_RUTGER, 108, BAD_REACTION);
+end
+
+procedure Rutger02
+begin
+	gsay_message(SCRIPT_RUTGER, 109, NEUTRAL_REACTION);
+end
+
+procedure Rutger03
+begin
+	gsay_reply(SCRIPT_RUTGER, 110);
+	if (global_var(GVAR_JUNKTOWN) > 0) then begin
+		giq_option(4, SCRIPT_RUTGER, 111, Rutger04, NEUTRAL_REACTION);
+	end
+	else begin
+		giq_option(4, SCRIPT_RUTGER, 112, Rutger04, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_RUTGER, 113, RutgerEnd, NEUTRAL_REACTION);
+end
+
+procedure Rutger04
+begin
+	gsay_reply(SCRIPT_RUTGER, 114);
+	giq_option(4, SCRIPT_RUTGER, 115, Rutger05, NEUTRAL_REACTION);
+	if (map_var(43) == 1) then begin
+		giq_option(4, SCRIPT_RUTGER, 116, Rutger00a, NEUTRAL_REACTION);
+	end
+	else begin
+		giq_option(4, SCRIPT_RUTGER, 117, Rutger00a, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_RUTGER, 118, RutgerEnd, NEUTRAL_REACTION);
+end
+
+procedure Rutger05
+begin
+	gsay_reply(SCRIPT_RUTGER, 119);
+	giq_option(4, SCRIPT_RUTGER, 120, Rutger06, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 121, RutgerEnd, NEUTRAL_REACTION);
+end
+
+procedure Rutger06
+begin
+	gsay_reply(SCRIPT_RUTGER, 122);
+	giq_option(4, SCRIPT_RUTGER, 123, Rutger07, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 124, RutgerEnd, NEUTRAL_REACTION);
+end
+
+procedure Rutger07
+begin
+	if (local_var(5) == 0) then begin
+		set_local_var(5, 1);
+		gsay_reply(SCRIPT_RUTGER, 125);
+	end
+	else begin
+		gsay_reply(SCRIPT_RUTGER, 126);
+	end
+	giq_option(4, SCRIPT_RUTGER, 127, Rutger08, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 128, RutgerEnd, NEUTRAL_REACTION);
+	if (map_var(43) == 1) then begin
+		giq_option(4, SCRIPT_RUTGER, 129, Rutger00a, NEUTRAL_REACTION);
+	end
+	else begin
+		giq_option(4, SCRIPT_RUTGER, 130, Rutger00a, NEUTRAL_REACTION);
+	end
+end
+
+procedure Rutger08
+begin
+	gsay_reply(SCRIPT_RUTGER, 131);
+	giq_option(4, SCRIPT_RUTGER, 132, Rutger09, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 133, RutgerEnd, NEUTRAL_REACTION);
+end
+
+procedure Rutger09
+begin
+	gsay_reply(SCRIPT_RUTGER, 134);
+	giq_option(4, SCRIPT_RUTGER, 135, RutgerEndBad, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 136, RutgerEnd, NEUTRAL_REACTION);
+	if (map_var(43) == 1) then begin
+		giq_option(4, SCRIPT_RUTGER, 129, Rutger00a, NEUTRAL_REACTION);
+	end
+	else begin
+		giq_option(4, SCRIPT_RUTGER, 130, Rutger00a, NEUTRAL_REACTION);
+	end
+end
+
+procedure Rutger10
+begin
+	set_map_var(34, 1);
+	gsay_message(SCRIPT_RUTGER, 139, NEUTRAL_REACTION);
+end
+
+procedure Rutger11
+begin
+	gsay_reply(SCRIPT_RUTGER, 140);
+	giq_option(4, SCRIPT_RUTGER, 141, Rutger11a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 142, Rutger14, NEUTRAL_REACTION);
+end
+
+procedure Rutger11a
+begin
+	if (is_success(do_check(dude_obj, 3, -1))) then begin
+		call Rutger12;
+	end
+	else begin
+		call Rutger13;
+	end
+end
+
+procedure Rutger12
+begin
+	set_map_var(34, 1);
+	gsay_message(SCRIPT_RUTGER, 143, NEUTRAL_REACTION);
+end
+
+procedure Rutger13
+begin
+	set_map_var(34, 1);
+	if (dude_is_male) then begin
+		gsay_message(SCRIPT_RUTGER, 144, BAD_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_RUTGER, 145, BAD_REACTION);
+	end
+end
+
+procedure Rutger14
+begin
+	set_map_var(34, 1);
+	gsay_message(SCRIPT_RUTGER, 146, NEUTRAL_REACTION);
+end
+
+procedure Rutger15
+begin
+	set_map_var(34, 1);
+	gsay_message(SCRIPT_RUTGER, 147, NEUTRAL_REACTION);
+end
+
+procedure Rutger16
+begin
+	set_map_var(34, 1);
+	gsay_message(SCRIPT_RUTGER, 148, NEUTRAL_REACTION);
+end
+
+procedure Rutger17
+begin
+	gsay_reply(SCRIPT_RUTGER, 149);
+	giq_option(4, SCRIPT_RUTGER, 150, RutgerEndBad, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 151, Rutger17a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 152, RutgerEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_RUTGER, 153, Rutger18, NEUTRAL_REACTION);
+end
+
+procedure Rutger17a
+begin
+	if (is_success(do_check(dude_obj, 3, 1))) then begin
+		call Rutger19;
+	end
+	else begin
+		call Rutger20;
+	end
+end
+
+procedure Rutger18
+begin
+	gsay_message(SCRIPT_RUTGER, 154, BAD_REACTION);
+end
+
+procedure Rutger19
+begin
+	set_map_var(41, 1);
+	set_global_var(GVAR_MISSING_CARAVAN, 1);
+	set_map_var(10, 1);
+	set_map_var(56, 1);
+	gsay_message(SCRIPT_RUTGER, 155, NEUTRAL_REACTION);
+	call Rutger25;
+end
+
+procedure Rutger20
+begin
+	set_map_var(35, 1);
+	set_map_var(40, 1);
+	set_map_var(10, 0);
+	call Bottom_React;
+	gsay_message(SCRIPT_RUTGER, 156, BAD_REACTION);
+end
+
+procedure Rutger21
+begin
+	float_msg(self_obj, message_str(SCRIPT_RUTGER, 157), FLOAT_MSG_RED);
+end
+
+procedure Rutger22
+begin
+	gsay_reply(SCRIPT_RUTGER, 159);
+	if ((global_var(GVAR_THE_VATS) == 2) or (obj_is_carrying_obj_pid(dude_obj, 196) >= 1)) then begin
+		giq_option(4, SCRIPT_RUTGER, 312, Rutger76, NEUTRAL_REACTION);
+	end
+	else begin
+		giq_option(4, SCRIPT_RUTGER, 160, Rutger23, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_RUTGER, 161, Rutger26, NEUTRAL_REACTION);
+	if (map_var(35) == 0) then begin
+		giq_option(4, SCRIPT_RUTGER, 162, Rutger22a, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_RUTGER, 163, RutgerEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_RUTGER, 164, Rutger24, NEUTRAL_REACTION);
+end
+
+procedure Rutger22a
+begin
+	if ((map_var(41) != 3) and (map_var(41) != 4)) then begin
+		call Rutger63;
+	end
+	else begin
+		if (map_var(36) == 1) then begin
+			call Rutger71;
+		end
+	end
+end
+
+procedure Rutger23
+begin
+	gsay_message(SCRIPT_RUTGER, 165, NEUTRAL_REACTION);
+end
+
+procedure Rutger24
+begin
+	gsay_message(SCRIPT_RUTGER, 166, BAD_REACTION);
+end
+
+procedure Rutger25
+begin
+	set_local_var(6, 1);
+	set_global_var(GVAR_HUB_FILLER_29, 1);
+	set_map_var(33, 1);
+	gsay_reply(SCRIPT_RUTGER, 167);
+	call Rutger29;
+end
+
+procedure Rutger26
+begin
+	gsay_message(SCRIPT_RUTGER, 168, NEUTRAL_REACTION);
+	call Rutger25;
+end
+
+procedure Rutger27
+begin
+	gsay_reply(SCRIPT_RUTGER, 169);
+	giq_option(4, SCRIPT_RUTGER, 170, Rutger28, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 171, Rutger30, NEUTRAL_REACTION);
+end
+
+procedure Rutger28
+begin
+	gsay_reply(SCRIPT_RUTGER, 172);
+	call Rutger29;
+end
+
+procedure Rutger29
+begin
+	if (global_var(GVAR_BECOME_AN_INITIATE) != 2) then begin
+		giq_option(4, SCRIPT_RUTGER, 173, Rutger29a, NEUTRAL_REACTION);
+	end
+	else begin
+		giq_option(4, SCRIPT_RUTGER, 174, Rutger29b, NEUTRAL_REACTION);
+	end
+	if (map_var(8) == 1) then begin
+		giq_option(4, SCRIPT_RUTGER, 175, Rutger38, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_RUTGER, 176, Rutger37, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 177, RutgerEnd, NEUTRAL_REACTION);
+end
+
+procedure Rutger29a
+begin
+	if (obj_pid(critter_inven_obj(dude_obj, 0)) == 3) then begin
+		call Rutger27;
+	end
+	else begin
+		call Rutger31;
+	end
+end
+
+procedure Rutger29b
+begin
+	if (obj_pid(critter_inven_obj(dude_obj, 0)) == 3) then begin
+		call Rutger32;
+	end
+	else begin
+		call Rutger33;
+	end
+end
+
+procedure Rutger30
+begin
+	gsay_reply(SCRIPT_RUTGER, 178);
+	call Rutger29;
+end
+
+procedure Rutger31
+begin
+	gsay_reply(SCRIPT_RUTGER, 179);
+	call Rutger29;
+end
+
+procedure Rutger32
+begin
+	gsay_reply(SCRIPT_RUTGER, 180);
+	call Rutger29;
+end
+
+procedure Rutger33
+begin
+	gsay_reply(SCRIPT_RUTGER, 181);
+	giq_option(4, SCRIPT_RUTGER, 182, Rutger34, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 183, Rutger35, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 184, Rutger36, NEUTRAL_REACTION);
+end
+
+procedure Rutger34
+begin
+	gsay_reply(SCRIPT_RUTGER, 185);
+	call Rutger29;
+end
+
+procedure Rutger35
+begin
+	gsay_reply(SCRIPT_RUTGER, 186);
+	call Rutger29;
+end
+
+procedure Rutger36
+begin
+	gsay_reply(SCRIPT_RUTGER, 187);
+	call Rutger29;
+end
+
+procedure Rutger37
+begin
+	set_map_var(10, 1);
+	gsay_reply(SCRIPT_RUTGER, 188);
+	call Rutger29;
+end
+
+procedure Rutger38
+begin
+	gsay_reply(SCRIPT_RUTGER, 189);
+	call Rutger29;
+end
+
+procedure Rutger39
+begin
+	gsay_reply(SCRIPT_RUTGER, 190);
+	giq_option(4, SCRIPT_RUTGER, 191, Rutger39a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 192, RutgerEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_RUTGER, 193, Rutger24, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_RUTGER, 194, Rutger24, NEUTRAL_REACTION);
+end
+
+procedure Rutger39a
+begin
+	if (map_var(42) == 16777267) then begin
+		call Rutger49;
+	end
+	else begin
+		if (map_var(42) == 1) then begin
+			call Rutger50;
+		end
+		else begin
+			if (map_var(42) == 2) then begin
+				call Rutger51;
+			end
+			else begin
+				call Rutger40;
+			end
+		end
+	end
+end
+
+procedure Rutger40
+begin
+	gsay_reply(SCRIPT_RUTGER, 195);
+	giq_option(4, SCRIPT_RUTGER, 196, Rutger40a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 197, Rutger47, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 198, Rutger40b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 199, Rutger41, NEUTRAL_REACTION);
+end
+
+procedure Rutger40a
+begin
+	if (is_success(do_check(dude_obj, 3, 1))) then begin
+		call Rutger42;
+	end
+	else begin
+		call Rutger44;
+	end
+end
+
+procedure Rutger40b
+begin
+	if (is_success(do_check(dude_obj, 3, -2))) then begin
+		call Rutger45;
+	end
+	else begin
+		call Rutger46;
+	end
+end
+
+procedure Rutger41
+begin
+	if (dude_is_male) then begin
+		gsay_message(SCRIPT_RUTGER, 200, BAD_REACTION);
+	end
+	else begin
+		gsay_message(SCRIPT_RUTGER, 201, BAD_REACTION);
+	end
+end
+
+procedure Rutger42
+begin
+	gsay_reply(SCRIPT_RUTGER, 202);
+	giq_option(4, SCRIPT_RUTGER, 203, Rutger43, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 204, Rutger47, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 205, RutgerEnd, NEUTRAL_REACTION);
+end
+
+procedure Rutger43
+begin
+	gsay_message(SCRIPT_RUTGER, 206, NEUTRAL_REACTION);
+end
+
+procedure Rutger44
+begin
+	gsay_message(SCRIPT_RUTGER, 207, BAD_REACTION);
+end
+
+procedure Rutger45
+begin
+	gsay_reply(SCRIPT_RUTGER, 208);
+	giq_option(4, SCRIPT_RUTGER, 209, Rutger47, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 210, Rutger44, NEUTRAL_REACTION);
+end
+
+procedure Rutger46
+begin
+	gsay_message(SCRIPT_RUTGER, 211, BAD_REACTION);
+end
+
+procedure Rutger47
+begin
+	gsay_reply(SCRIPT_RUTGER, 212);
+	if (obj_is_carrying_obj_pid(dude_obj, 196) >= 1) then begin
+		if (global_var(GVAR_KILL_DEATHCLAW) == 2) then begin
+			giq_option(4, SCRIPT_RUTGER, 213, Rutger48, NEUTRAL_REACTION);
+		end
+		else begin
+			giq_option(4, SCRIPT_RUTGER, 214, Rutger48, NEUTRAL_REACTION);
+		end
+	end
+	else begin
+		giq_option(4, SCRIPT_RUTGER, 215, RutgerEnd, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_RUTGER, 216, RutgerEnd, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 217, RutgerEnd, NEUTRAL_REACTION);
+end
+
+procedure Rutger48
+begin
+	variable LVar0 := 0;
+	call Top_React;
+	LVar0 := item_caps_adjust(dude_obj, 800);
+	set_map_var(42, 2);
+	set_map_var(36, 1);
+	set_map_var(35, 0);
+	set_map_var(40, 0);
+	set_map_var(10, 1);
+	set_map_var(41, 4);
+	give_exp_points(1000);
+	display_msg(message_str(SCRIPT_GENCHAT, 103) + 1000 + message_str(SCRIPT_GENCHAT, 104));
+	set_global_var(GVAR_PLAYER_REPUTATION, global_var(GVAR_PLAYER_REPUTATION) + 5);
+	gsay_message(SCRIPT_RUTGER, 218, GOOD_REACTION);
+end
+
+procedure Rutger49
+begin
+	gsay_reply(SCRIPT_RUTGER, 219);
+	giq_option(4, SCRIPT_RUTGER, 220, Rutger40a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 221, Rutger47, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 222, Rutger40b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 223, Rutger41, NEUTRAL_REACTION);
+end
+
+procedure Rutger50
+begin
+	gsay_reply(SCRIPT_RUTGER, 224);
+	giq_option(4, SCRIPT_RUTGER, 225, Rutger40a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 226, Rutger47, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 227, Rutger40b, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 228, Rutger41, NEUTRAL_REACTION);
+end
+
+procedure Rutger51
+begin
+	gsay_reply(SCRIPT_RUTGER, 229);
+	if (obj_is_carrying_obj_pid(dude_obj, 196) >= 1) then begin
+		if (global_var(GVAR_KILL_DEATHCLAW) == 2) then begin
+			giq_option(4, SCRIPT_RUTGER, 230, Rutger48, NEUTRAL_REACTION);
+		end
+		else begin
+			giq_option(4, SCRIPT_RUTGER, 231, Rutger48, NEUTRAL_REACTION);
+		end
+	end
+	else begin
+		giq_option(4, SCRIPT_RUTGER, 232, RutgerEnd, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_RUTGER, 233, RutgerEnd, NEUTRAL_REACTION);
+end
+
+procedure Rutger52
+begin
+	gsay_reply(SCRIPT_RUTGER, 234);
+	if (obj_is_carrying_obj_pid(dude_obj, 196) >= 1) then begin
+		giq_option(4, SCRIPT_RUTGER, 235, Rutger48, NEUTRAL_REACTION);
+	end
+	else begin
+		if (global_var(GVAR_KILL_DEATHCLAW) == 2) then begin
+			giq_option(4, SCRIPT_RUTGER, 236, Rutger53, NEUTRAL_REACTION);
+		end
+	end
+	giq_option(4, SCRIPT_RUTGER, 237, RutgerEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_RUTGER, 238, Rutger24, NEUTRAL_REACTION);
+end
+
+procedure Rutger53
+begin
+	gsay_message(SCRIPT_RUTGER, 239, NEUTRAL_REACTION);
+end
+
+procedure Rutger54
+begin
+	gsay_reply(SCRIPT_RUTGER, 240);
+	giq_option(4, SCRIPT_RUTGER, 241, Rutger39a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 242, RutgerEnd, NEUTRAL_REACTION);
+end
+
+procedure Rutger55
+begin
+	gsay_reply(SCRIPT_RUTGER, 243);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_RUTGER, 244, Rutger59, NEUTRAL_REACTION);
+	end
+	else begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			giq_option(4, SCRIPT_RUTGER, 245, Rutger59, NEUTRAL_REACTION);
+		end
+		else begin
+			giq_option(4, SCRIPT_RUTGER, 246, Rutger59, NEUTRAL_REACTION);
+		end
+	end
+	giq_option(4, SCRIPT_RUTGER, 247, Rutger55a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 248, RutgerEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_RUTGER, 249, RutgerEnd, NEUTRAL_REACTION);
+end
+
+procedure Rutger55a
+begin
+	if ((map_var(40) == 1) or (map_var(35) == 1)) then begin
+		call Rutger67;
+	end
+	else begin
+		if (map_var(36) == 1) then begin
+			call Rutger71;
+		end
+		else begin
+			call Rutger62;
+		end
+	end
+end
+
+procedure Rutger56
+begin
+	if (dude_is_male) then begin
+		gsay_reply(SCRIPT_RUTGER, 250);
+	end
+	else begin
+		if (get_critter_stat(dude_obj, 3) >= 7) then begin
+			gsay_reply(SCRIPT_RUTGER, 252);
+		end
+		else begin
+			gsay_reply(SCRIPT_RUTGER, 253);
+		end
+	end
+	giq_option(4, SCRIPT_RUTGER, 254, Rutger55a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 255, Rutger56a, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_RUTGER, 256, Rutger24, NEUTRAL_REACTION);
+end
+
+procedure Rutger56a
+begin
+	if ((global_var(GVAR_MASTER_BLOWN) == 1) or (global_var(GVAR_VATS_BLOWN) == 1)) then begin
+		call Rutger57;
+	end
+	else begin
+		call Rutger61;
+	end
+end
+
+procedure Rutger57
+begin
+	gsay_message(SCRIPT_RUTGER, 257, GOOD_REACTION);
+end
+
+procedure Rutger58
+begin
+	gsay_reply(SCRIPT_RUTGER, 258);
+	if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+		giq_option(4, SCRIPT_RUTGER, 259, Rutger60, NEUTRAL_REACTION);
+	end
+	else begin
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			giq_option(4, SCRIPT_RUTGER, 260, Rutger60, NEUTRAL_REACTION);
+			giq_option(4, SCRIPT_RUTGER, 261, Rutger60, NEUTRAL_REACTION);
+		end
+		else begin
+			giq_option(4, SCRIPT_RUTGER, 262, Rutger61, NEUTRAL_REACTION);
+		end
+	end
+	giq_option(4, SCRIPT_RUTGER, 263, Rutger55a, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 248, RutgerEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_RUTGER, 264, RutgerEnd, NEUTRAL_REACTION);
+end
+
+procedure Rutger59
+begin
+	gsay_message(SCRIPT_RUTGER, 265, NEUTRAL_REACTION);
+end
+
+procedure Rutger60
+begin
+	gsay_message(SCRIPT_RUTGER, 266, NEUTRAL_REACTION);
+end
+
+procedure Rutger61
+begin
+	gsay_message(SCRIPT_RUTGER, 267, NEUTRAL_REACTION);
+end
+
+procedure Rutger62
+begin
+	gsay_reply(SCRIPT_RUTGER, 268);
+	giq_option(4, SCRIPT_RUTGER, 269, Rutger65, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 270, Rutger64, NEUTRAL_REACTION);
+end
+
+procedure Rutger63
+begin
+	gsay_reply(SCRIPT_RUTGER, 271);
+	giq_option(4, SCRIPT_RUTGER, 272, Rutger68, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 273, Rutger70, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 274, RutgerEnd, NEUTRAL_REACTION);
+end
+
+procedure Rutger64
+begin
+	gsay_message(SCRIPT_RUTGER, 275, NEUTRAL_REACTION);
+end
+
+procedure Rutger65
+begin
+	set_map_var(36, 1);
+	gsay_message(SCRIPT_RUTGER, 276, NEUTRAL_REACTION);
+end
+
+procedure Rutger67
+begin
+	if (local_var(7) == 0) then begin
+		set_local_var(7, 1);
+		gsay_message(SCRIPT_RUTGER, 279, NEUTRAL_REACTION);
+	end
+	gsay_message(SCRIPT_RUTGER, 280, NEUTRAL_REACTION);
+end
+
+procedure Rutger68
+begin
+	gsay_reply(SCRIPT_RUTGER, 281);
+	giq_option(4, SCRIPT_RUTGER, 282, Rutger72, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 283, Rutger69, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 284, Rutger70, NEUTRAL_REACTION);
+end
+
+procedure Rutger69
+begin
+	gsay_message(SCRIPT_RUTGER, 285, NEUTRAL_REACTION);
+end
+
+procedure Rutger70
+begin
+	set_map_var(36, 1);
+	gsay_message(SCRIPT_RUTGER, 286, NEUTRAL_REACTION);
+end
+
+procedure Rutger71
+begin
+	set_map_var(36, 1);
+	gsay_message(SCRIPT_RUTGER, 287, NEUTRAL_REACTION);
+end
+
+procedure Rutger72
+begin
+	gsay_reply(SCRIPT_RUTGER, 289);
+	giq_option(4, SCRIPT_RUTGER, 290, RutgerEnd, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 291, Rutger70, NEUTRAL_REACTION);
+end
+
+procedure Rutger73
+begin
+	gsay_reply(SCRIPT_RUTGER, 292);
+	if (global_var(GVAR_FIND_WATER_CHIP) != 2) then begin
+		giq_option(4, SCRIPT_RUTGER, 294, Rutger03, NEUTRAL_REACTION);
+	end
+	if (map_var(43) == 1) then begin
+		giq_option(4, SCRIPT_RUTGER, 295, Rutger00a, NEUTRAL_REACTION);
+	end
+	else begin
+		giq_option(4, SCRIPT_RUTGER, 296, Rutger00a, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_RUTGER, 297, Rutger07, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 298, RutgerEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_RUTGER, 299, Rutger00b, NEUTRAL_REACTION);
+end
+
+procedure Rutger74
+begin
+	gsay_reply(SCRIPT_RUTGER, random(300, 303));
+	if (global_var(GVAR_FIND_WATER_CHIP) != 2) then begin
+		giq_option(4, SCRIPT_RUTGER, 305, Rutger03, NEUTRAL_REACTION);
+	end
+	if (map_var(43) == 1) then begin
+		giq_option(4, SCRIPT_RUTGER, 306, Rutger00a, NEUTRAL_REACTION);
+	end
+	else begin
+		giq_option(4, SCRIPT_RUTGER, 307, Rutger00a, NEUTRAL_REACTION);
+	end
+	giq_option(4, SCRIPT_RUTGER, 308, Rutger07, NEUTRAL_REACTION);
+	giq_option(4, SCRIPT_RUTGER, 309, RutgerEnd, NEUTRAL_REACTION);
+	giq_option(-3, SCRIPT_RUTGER, 310, Rutger00b, NEUTRAL_REACTION);
+end
+
+procedure Rutger75
+begin
+	gsay_message(SCRIPT_RUTGER, 311, NEUTRAL_REACTION);
+end
+
+procedure Rutger76
+begin
+	gsay_message(SCRIPT_RUTGER, 313, NEUTRAL_REACTION);
+end
+
+procedure RutgerEnd
+begin
+end
+
+procedure RutgerEndBad
+begin
+	call Down_React_Level;
+end
+
+procedure Get_Reaction
+begin
+	if (local_var(2) == 0) then begin
+		set_local_var(0, 50);
+		set_local_var(1, 2);
+		set_local_var(2, 1);
+		set_local_var(0, local_var(0) + (5 * get_critter_stat(dude_obj, 3)) - 25);
+		set_local_var(0, local_var(0) + (10 * has_trait(0, dude_obj, 10)));
+		if (has_trait(0, dude_obj, 39)) then begin
+			if (global_var(GVAR_PLAYER_REPUTATION) > 0) then begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		else begin
+			if (local_var(3) == 1) then begin
+				set_local_var(0, local_var(0) - global_var(GVAR_PLAYER_REPUTATION));
+			end
+			else begin
+				set_local_var(0, local_var(0) + global_var(GVAR_PLAYER_REPUTATION));
+			end
+		end
+		if (global_var(GVAR_CHILDKILLER_REPUTATION) > 2) then begin
+			set_local_var(0, local_var(0) - 30);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_BAD_MONSTER) > (3 * global_var(GVAR_GOOD_MONSTER))) or (global_var(GVAR_CHAMPION_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) + 20);
+		end
+		if (((global_var(GVAR_BAD_MONSTER) + global_var(GVAR_GOOD_MONSTER)) >= 25) and ((global_var(GVAR_GOOD_MONSTER) > (2 * global_var(GVAR_BAD_MONSTER))) or (global_var(GVAR_BERSERKER_REPUTATION) == 1))) then begin
+			set_local_var(0, local_var(0) - 20);
+		end
+		call React_To_Level;
+	end
+end
+
+procedure React_To_Level
+begin
+	if (local_var(0) <= 25) then begin
+		set_local_var(1, 1);
+	end
+	else begin
+		if (local_var(0) <= 75) then begin
+			set_local_var(1, 2);
+		end
+		else begin
+			set_local_var(1, 3);
+		end
+	end
+end
+
+procedure Level_To_React
+begin
+	if (local_var(1) == 1) then begin
+		set_local_var(0, random(1, 25));
+	end
+	else begin
+		if (local_var(1) == 2) then begin
+			set_local_var(0, random(26, 75));
+		end
+		else begin
+			set_local_var(0, random(76, 100));
+		end
+	end
+end
+
+procedure Up_React
+begin
+	set_local_var(0, local_var(0) + 10);
+	call React_To_Level;
+end
+
+procedure Down_React
+begin
+	set_local_var(0, local_var(0) - 10);
+	call React_To_Level;
+end
+
+procedure Bottom_React
+begin
+	set_local_var(1, 1);
+	set_local_var(0, 1);
+end
+
+procedure Top_React
+begin
+	set_local_var(0, 100);
+	set_local_var(1, 3);
+end
+
+procedure Big_Up_React
+begin
+	set_local_var(0, local_var(0) + 25);
+	call React_To_Level;
+end
+
+procedure Big_Down_React
+begin
+	set_local_var(0, local_var(0) - 25);
+	call React_To_Level;
+end
+
+procedure Up_React_Level
+begin
+	set_local_var(1, local_var(1) + 1);
+	if (local_var(1) > 3) then begin
+		set_local_var(1, 3);
+	end
+	call Level_To_React;
+end
+
+procedure Down_React_Level
+begin
+	set_local_var(1, local_var(1) - 1);
+	if (local_var(1) < 1) then begin
+		set_local_var(1, 1);
+	end
+	call Level_To_React;
+end
+
+procedure Goodbyes
+begin
+	exit_line := message_str(SCRIPT_MODREACT, random(100, 105));
+end
