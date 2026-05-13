@@ -152,3 +152,12 @@ Fallout Vanilla Port is for those who want:
 This project is released under the MIT License. See [LICENSE](LICENSE) for details.
 
 *Fallout 1 and Fallout 2 are trademarks of Bethesda Softworks. This project is a fan-made modification and is not affiliated with or endorsed by Bethesda.*
+
+---
+
+## Screenshots
+
+| | | | | |
+| :---: | :---: | :---: | :---: | :---: |
+| ![](screenshots/1.jpg) | ![](screenshots/2.jpg) | ![](screenshots/3.jpg) | ![](screenshots/4.jpg) | ![](screenshots/5.jpg) |
+| ![](screenshots/6.jpg) | ![](screenshots/7.jpg) | ![](screenshots/8.jpg) | ![](screenshots/9.jpg) | ![](screenshots/10.jpg) |
